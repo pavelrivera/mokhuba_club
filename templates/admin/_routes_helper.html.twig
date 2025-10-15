@@ -1,0 +1,18 @@
+{# Reusable helper to build admin routes with basePath, valid for localhost (subcarpeta) y producción #}
+<script>
+  (function() {
+    const BASE = "{{ app.request.basePath }}";
+    window.AdminRoutes = {
+      // url for endpoints with an ID: AdminRoutes.id('users', 10, 'toggle-status')
+      id: function(module, id, action) {
+        let url = BASE + "/admin/" + String(module) + "/" + String(id);
+        if (action) url += "/" + String(action);
+        return url;
+      },
+      // url for endpoints without ID (create/new): AdminRoutes.action('users','create')
+      action: function(module, action) {
+        return BASE + "/admin/" + String(module) + "/" + String(action);
+      }
+    };
+  })();
+</script>

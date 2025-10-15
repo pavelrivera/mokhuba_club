@@ -1,0 +1,113 @@
+# config/packages/monolog.yaml
+
+when@dev:
+  monolog:
+    # registra los canales personalizados que usaremos en handlers
+    channels: ['api', 'security', 'business']
+
+    handlers:
+      # Log principal de desarrollo
+      main:
+        type: stream
+        path: "%kernel.logs_dir%/%kernel.environment%.log"
+        level: debug
+        channels: ["!event"]
+
+      # Canal separado para peticiones de API
+      api:
+        type: stream
+        path: "%kernel.logs_dir%/api.log"
+        level: info
+        channels: ["api"]
+
+      # Canal separado para eventos de seguridad (login, denegados, etc.)
+      security:
+        type: stream
+        path: "%kernel.logs_dir%/security.log"
+        level: info
+        channels: ["security"]
+
+      # Canal separado para reglas de negocio / domain events
+      business:
+        type: stream
+        path: "%kernel.logs_dir%/business.log"
+        level: info
+        channels: ["business"]
+
+      # Salida en consola (reduce ruido de event/doctrine/console anidados)
+      console:
+        type: console
+        process_psr_3_messages: false
+        channels: ["!event", "!doctrine", "!console"]
+
+when@test:
+  monolog:
+    channels: ['api', 'security', 'business']
+
+    handlers:
+      main:
+        type: fingers_crossed
+        action_level: error
+        handler: nested
+        excluded_http_codes: [404, 405]
+
+      nested:
+        type: stream
+        path: "%kernel.logs_dir%/%kernel.environment%.log"
+        level: debug
+
+when@prod:
+  monolog:
+    channels: ['api', 'security', 'business']
+
+    handlers:
+      # Agrupa y abre solo a partir de error
+      main:
+        type: fingers_crossed
+        action_level: error
+        handler: nested
+        excluded_http_codes: [404, 405]
+        buffer_size: 50
+
+      # Escribe el log principal en JSON
+      nested:
+        type: stream
+        path: "%kernel.logs_dir%/%kernel.environment%.log"
+        level: debug
+        formatter: monolog.formatter.json
+
+      # API en producción (JSON)
+      api:
+        type: stream
+        path: "%kernel.logs_dir%/api.log"
+        level: info
+        channels: ["api"]
+        formatter: monolog.formatter.json
+
+      # Seguridad en producción (JSON, nivel warning+)
+      security:
+        type: stream
+        path: "%kernel.logs_dir%/security.log"
+        level: warning
+        channels: ["security"]
+        formatter: monolog.formatter.json
+
+      # Negocio en producción (JSON)
+      business:
+        type: stream
+        path: "%kernel.logs_dir%/business.log"
+        level: info
+        channels: ["business"]
+        formatter: monolog.formatter.json
+
+      # Deprecations a fichero aparte
+      deprecation:
+        type: stream
+        channels: [deprecation]
+        path: "%kernel.logs_dir%/deprecation.log"
+
+      # Consola en prod
+      console:
+        type: console
+        process_psr_3_messages: false
+        channels: ["!event", "!doctrine", "!console"]

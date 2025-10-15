@@ -1,0 +1,227 @@
+{# templates/partials/invitation_modal.html.twig #}
+
+<!-- Modal de Invitación -->
+<div class="modal fade" id="invitationModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9)); border: 2px solid var(--gold-primary); border-radius: 20px; overflow: hidden;">
+            
+            <!-- Header del modal -->
+            <div class="modal-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.3); background: rgba(0, 0, 0, 0.2);">
+                <h5 class="modal-title" id="invitationModalLabel" style="color: var(--gold-primary); font-family: var(--font-heading); font-size: 1.5rem;">
+                    <i class="fas fa-envelope-open-text me-2"></i>
+                    Enviar Invitación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body del modal -->
+            <div class="modal-body" style="padding: 30px;">
+                <form id="invitationForm">
+                    <div class="mb-3">
+                        <label for="inviteeName" class="form-label" style="color: var(--cream); font-weight: 600;">
+                            <i class="fas fa-user me-2"></i>Nombre Completo *
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="inviteeName" 
+                            name="name" 
+                            required
+                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.5); color: var(--cream); border-radius: 10px; padding: 12px;"
+                            placeholder="Ej: Juan Pérez">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inviteeEmail" class="form-label" style="color: var(--cream); font-weight: 600;">
+                            <i class="fas fa-envelope me-2"></i>Email *
+                        </label>
+                        <input 
+                            type="email" 
+                            class="form-control" 
+                            id="inviteeEmail" 
+                            name="email" 
+                            required
+                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.5); color: var(--cream); border-radius: 10px; padding: 12px;"
+                            placeholder="juan@ejemplo.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inviteePhone" class="form-label" style="color: var(--cream); font-weight: 600;">
+                            <i class="fas fa-phone me-2"></i>Teléfono (opcional)
+                        </label>
+                        <input 
+                            type="tel" 
+                            class="form-control" 
+                            id="inviteePhone" 
+                            name="phone"
+                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.5); color: var(--cream); border-radius: 10px; padding: 12px;"
+                            placeholder="+1 234 567 8900">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inviteeMessage" class="form-label" style="color: var(--cream); font-weight: 600;">
+                            <i class="fas fa-comment me-2"></i>Mensaje Personal (opcional)
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="inviteeMessage" 
+                            name="message" 
+                            rows="3"
+                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.5); color: var(--cream); border-radius: 10px; padding: 12px; resize: none;"
+                            placeholder="Escribe un mensaje personalizado para tu invitado..."></textarea>
+                    </div>
+
+                    <div class="alert alert-info" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: #93c5fd;">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Se enviará un email con un enlace único para que tu invitado pueda registrarse en el club.
+                    </div>
+
+                    <div id="invitationAlert" class="alert d-none" role="alert"></div>
+                </form>
+            </div>
+
+            <!-- Footer del modal -->
+            <div class="modal-footer" style="border-top: 1px solid rgba(212, 175, 55, 0.3); background: rgba(0, 0, 0, 0.2);">
+                <button 
+                    type="button" 
+                    class="btn" 
+                    data-bs-dismiss="modal"
+                    style="background: rgba(108, 117, 125, 0.3); border: 1px solid rgba(108, 117, 125, 0.5); color: var(--cream); border-radius: 10px; padding: 10px 20px; transition: all 0.3s;">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button 
+                    type="button" 
+                    class="btn" 
+                    id="sendInvitationBtn"
+                    style="background: linear-gradient(135deg, var(--gold-primary), var(--gold-light)); border: none; color: var(--dark-brown); font-weight: 700; border-radius: 10px; padding: 10px 30px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Invitación
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos adicionales para el modal */
+    #invitationModal .form-control:focus {
+        background: rgba(0, 0, 0, 0.4);
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        color: var(--cream);
+    }
+
+    #invitationModal .form-control::placeholder {
+        color: rgba(248, 242, 231, 0.5);
+    }
+
+    #sendInvitationBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    #sendInvitationBtn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+// Script para enviar invitación
+document.addEventListener('DOMContentLoaded', function() {
+    const sendBtn = document.getElementById('sendInvitationBtn');
+    const form = document.getElementById('invitationForm');
+    const alertDiv = document.getElementById('invitationAlert');
+    const modal = document.getElementById('invitationModal');
+
+    if (sendBtn && form) {
+        sendBtn.addEventListener('click', async function() {
+            // Limpiar alertas previas
+            alertDiv.classList.add('d-none');
+            alertDiv.textContent = '';
+
+            // Obtener datos del formulario
+            const formData = {
+                name: document.getElementById('inviteeName').value.trim(),
+                email: document.getElementById('inviteeEmail').value.trim(),
+                phone: document.getElementById('inviteePhone').value.trim(),
+                message: document.getElementById('inviteeMessage').value.trim()
+            };
+
+            // Validaciones básicas
+            if (!formData.name || !formData.email) {
+                showAlert('El nombre y el email son obligatorios', 'danger');
+                return;
+            }
+
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showAlert('Por favor ingresa un email válido', 'danger');
+                return;
+            }
+
+            // Deshabilitar botón y mostrar loading
+            sendBtn.disabled = true;
+            const originalText = sendBtn.innerHTML;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+
+            try {
+                // Enviar petición
+                const response = await fetch('{{ path("invitation_send") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('¡Invitación enviada exitosamente! 🎉', 'success');
+                    
+                    // Limpiar formulario
+                    form.reset();
+
+                    // Cerrar modal después de 2 segundos
+                    setTimeout(() => {
+                        const bsModal = bootstrap.Modal.getInstance(modal);
+                        if (bsModal) {
+                            bsModal.hide();
+                        }
+                        // Recargar página para actualizar lista de invitaciones (si existe)
+                        if (window.location.pathname.includes('invitation')) {
+                            window.location.reload();
+                        }
+                    }, 2000);
+                } else {
+                    showAlert(result.message || 'Error al enviar la invitación', 'danger');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error de conexión. Por favor, intenta de nuevo.', 'danger');
+            } finally {
+                // Rehabilitar botón
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = originalText;
+            }
+        });
+    }
+
+    function showAlert(message, type) {
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.textContent = message;
+        alertDiv.classList.remove('d-none');
+    }
+
+    // Limpiar formulario al cerrar modal
+    if (modal) {
+        modal.addEventListener('hidden.bs.modal', function() {
+            form.reset();
+            alertDiv.classList.add('d-none');
+        });
+    }
+});
+</script>

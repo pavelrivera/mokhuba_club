@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% set body_class = 'body home' %}
+{% block body %}
+{% set memberCount = memberCount|default(247) %}
+{% set cigarCount = cigarCount|default(0) %}
+{% set eventCount = eventCount|default(3) %}
+
+<section class="hero-section">
+  <div class="w-container">
+    <div class="hero-badge">
+      <div class="premium-chip gold"><span class="chip-text">MIEMBRO EXCLUSIVO</span></div>
+    </div>
+    <h1 class="hero-title">Bienvenido</h1>
+    <p class="hero-subtitle">Club VIP Mokhuba | Cigarros Exclusivos</p>
+
+    <div class="hero-stats">
+      <div class="w-row">
+        <div class="w-col w-col-4 w-col-small-12">
+          <div class="stat-item">
+            <div class="stat-number">{{ memberCount }}</div>
+            <div class="stat-label">Miembros</div>
+          </div>
+        </div>
+        <div class="w-col w-col-4 w-col-small-12">
+          <div class="stat-item">
+            <div class="stat-number">{{ cigarCount }}</div>
+            <div class="stat-label">Cigarros</div>
+          </div>
+        </div>
+        <div class="w-col w-col-4 w-col-small-12">
+          <div class="stat-item">
+            <div class="stat-number">{{ eventCount }}</div>
+            <div class="stat-label">Eventos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <a href="{{ path('auth_login') }}" class="button gold w-button">Iniciar Sesión</a>
+      <a href="{{ path('beneficios') }}" class="button outline gold w-button">Explorar Beneficios</a>
+    </div>
+  </div>
+</section>
+
+<div class="modal-overlay" data-modal style="display:none">
+  <div class="modal-card">
+    <div class="modal-header"><div class="logo">MOKHUBA</div></div>
+    <div class="modal-body">
+      <h3>Acceso al Club Privado</h3>
+      <p>Para acceder a los beneficios exclusivos del club, debes iniciar sesión como miembro.</p>
+      <a href="{{ path('auth_login') }}" class="button gold w-button">Iniciar Sesión</a>
+    </div>
+  </div>
+</div>
+
+<section id="beneficios" class="section">
+  <div class="w-container">
+    <h2 class="section-title text-center">Beneficios del Club</h2>
+  </div>
+</section>
+{% endblock %}

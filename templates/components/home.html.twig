@@ -1,0 +1,598 @@
+{# templates/components/home.html.twig #}
+{% set memberCount = memberCount|default(247) + 156 %}
+{% set cigarCount = cigarCount|default(0) + 2847 %}
+{% set eventCount = eventCount|default(3) + 12 %}
+
+<style>
+/* Hero Section Premium */
+.hero-premium {
+    min-height: 100vh;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 10, 6, 0.95) 0%,
+        rgba(44, 24, 16, 0.9) 30%,
+        rgba(92, 26, 26, 0.8) 70%,
+        rgba(13, 10, 6, 0.95) 100%
+    ),
+    url('{{ app.request.basePath }}/images/logomain.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    padding: 60px 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.premium-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    color: var(--dark-brown);
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-gold);
+    animation: pulseGlow 3s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--gold-primary);
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin: 50px 0;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: rgba(45, 24, 23, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 16px;
+    padding: 30px 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold-primary);
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--gold-primary);
+    display: block;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    color: var(--cream);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.btn-premium {
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    color: var(--dark-brown);
+    box-shadow: var(--shadow-gold);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--gold-primary);
+    border: 2px solid var(--gold-primary);
+}
+
+.btn-outline:hover {
+    background: var(--gold-primary);
+    color: var(--dark-brown);
+    transform: translateY(-3px);
+}
+
+/* Floating particles */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--gold-primary);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp 8s infinite linear;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% {
+        transform: translateY(-20px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Modal Premium */
+.modal-premium {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-premium.active {
+    display: flex;
+}
+
+.modal-content-premium {
+    background: linear-gradient(135deg, var(--dark-brown), var(--black-premium));
+    border: 2px solid var(--gold-primary);
+    border-radius: 20px;
+    padding: 50px 40px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+}
+
+.modal-header-premium {
+    margin-bottom: 30px;
+}
+
+.modal-logo {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--gold-primary);
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    color: var(--cream);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.modal-description {
+    color: rgba(255, 248, 220, 0.8);
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Benefits Section */
+.benefits-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, var(--black-premium), var(--dark-brown));
+    position: relative;
+}
+
+.benefits-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--gold-primary);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 248, 220, 0.7);
+    margin-bottom: 60px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.benefit-card {
+    background: rgba(45, 24, 23, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.benefit-card:hover::before {
+    left: 100%;
+}
+
+.benefit-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold-primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    color: var(--gold-primary);
+    margin-bottom: 25px;
+    display: block;
+}
+
+.benefit-title {
+    font-size: 1.5rem;
+    color: var(--cream);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.benefit-description {
+    color: rgba(255, 248, 220, 0.8);
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .hero-stats {
+        gap: 30px;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-premium {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .modal-content-premium {
+        padding: 30px 25px;
+        margin: 20px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .section-title {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+    }
+}
+</style>
+
+<!-- Hero Section Premium -->
+<section class="hero-premium">
+    <div class="hero-content">
+        <div class="premium-badge">
+            <i class="fas fa-crown"></i>
+            MIEMBRO EXCLUSIVO
+        </div>
+        
+        <h1 class="hero-title">Bienvenido</h1>
+        <p class="hero-subtitle">Club VIP Mokhuba | Cigarros Exclusivos</p>
+
+        <div class="hero-stats">
+            <div class="stat-card">
+                <span class="stat-number">{{ memberCount }}</span>
+                <span class="stat-label">Miembros</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ cigarCount }}</span>
+                <span class="stat-label">Cigarros</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ eventCount }}</span>
+                <span class="stat-label">Eventos</span>
+            </div>
+        </div>
+
+        <div class="hero-buttons">
+            <a href="{{ path('auth_login') }}" class="btn-premium btn-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                Iniciar Sesión
+            </a>
+            <a href="#beneficios" class="btn-premium btn-outline" onclick="scrollToBenefits()">
+                <i class="fas fa-star"></i>
+                Explorar Beneficios
+            </a>
+        </div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles">
+        {% for i in 1..15 %}
+            <div class="particle" style="
+                left: {{ random(100) }}%;
+                animation-delay: {{ random(8) }}s;
+                animation-duration: {{ 6 + random(4) }}s;
+            "></div>
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- Benefits Section -->
+<section id="beneficios" class="benefits-section">
+    <div class="benefits-content">
+        <h2 class="section-title">Beneficios del Club</h2>
+        <p class="section-subtitle">
+            Descubre los privilegios exclusivos que te esperan en nuestro club premium
+        </p>
+
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <i class="fas fa-crown benefit-icon"></i>
+                <h3 class="benefit-title">Acceso VIP</h3>
+                <p class="benefit-description">
+                    Experiencias exclusivas y eventos privados solo para miembros selectos del club.
+                </p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fas fa-gem benefit-icon"></i>
+                <h3 class="benefit-title">Cigarros Premium</h3>
+                <p class="benefit-description">
+                    Acceso a colecciones limitadas y habanos de las mejores cosechas mundiales.
+                </p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fas fa-users benefit-icon"></i>
+                <h3 class="benefit-title">Comunidad Elite</h3>
+                <p class="benefit-description">
+                    Conecta con otros aficionados y expertos en un ambiente exclusivo y refinado.
+                </p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fas fa-calendar-star benefit-icon"></i>
+                <h3 class="benefit-title">Eventos Exclusivos</h3>
+                <p class="benefit-description">
+                    Cenas de maridaje, catas privadas y encuentros con maestros tabaqueros.
+                </p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fas fa-shipping-fast benefit-icon"></i>
+                <h3 class="benefit-title">Envío Premium</h3>
+                <p class="benefit-description">
+                    Entrega prioritaria y embalaje especial para proteger tus cigarros selectos.
+                </p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fas fa-concierge-bell benefit-icon"></i>
+                <h3 class="benefit-title">Servicio Personalizado</h3>
+                <p class="benefit-description">
+                    Atención dedicada y recomendaciones personalizadas según tus preferencias.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Función para mostrar modal
+function showAccessModal() {
+    document.getElementById('accessModal').classList.add('active');
+}
+
+// Función para cerrar modal
+function closeModal() {
+    document.getElementById('accessModal').classList.remove('active');
+}
+
+// Función para scroll suave a beneficios
+function scrollToBenefits() {
+    document.getElementById('beneficios').scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+
+// Cerrar modal al hacer click fuera
+document.getElementById('accessModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+// Efecto de contador animado
+document.addEventListener('DOMContentLoaded', function() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    const animateCounter = (element, target) => {
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+        }, 50);
+    };
+
+    // Observer para animar cuando aparecen en vista
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.getAttribute('data-target') || entry.target.textContent);
+                animateCounter(entry.target, target);
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+
+    statNumbers.forEach(stat => {
+        const target = parseInt(stat.textContent);
+        stat.setAttribute('data-target', target);
+        stat.textContent = '0';
+        observer.observe(stat);
+    });
+
+    // Efecto parallax suave
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.benefit-card');
+        
+        parallaxElements.forEach((element, index) => {
+            const speed = 0.05 * (index + 1);
+            element.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+});
+
+// Prevenir errores de scroll en elementos que no existen
+window.addEventListener('error', function(e) {
+    if (e.target.tagName === 'IMG') {
+        e.target.style.display = 'none';
+    }
+});
+</script>

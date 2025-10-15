@@ -1,0 +1,18 @@
+{# templates/payment/_payment_bootstrap.html.twig #}
+{% set base = app.request.basePath|default('') %}
+{% set checkout_path = base ~ '/payment/create-checkout-session' %}
+
+<script>
+  window.PAYMENT_CFG = {
+    checkoutUrl: '{{ checkout_path }}',
+    csrf: '{{ csrf_token('checkout') }}'
+  };
+  console.log('[payment bootstrap] cfg injected', window.PAYMENT_CFG);
+</script>
+<script src="{{ asset('js/payment.js') }}"></script>
+<script src="{{ asset('js/payment-bind.js') }}"></script>
+{# Uso en tu modal/botón:
+<button class="btn btn-primary w-100"
+        data-action="proceed-payment"
+        data-level="platinum">PROCEDER AL PAGO</button>
+#}

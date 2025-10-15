@@ -1,0 +1,13 @@
+# config/packages/validator.yaml
+framework:
+    validation:
+        email_validation_mode: html5
+        
+        # Enable validation
+        enabled: true
+        
+        # Translation domain for validation messages
+        translation_domain: validators
+        
+        # Enable auto mapping for entities
+        enable_annotations: true

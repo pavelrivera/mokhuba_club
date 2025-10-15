@@ -1,0 +1,1185 @@
+{# templates/dashboard/platinum/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Platino - Mokhuba Club{% endblock %}
+
+{% block body_class %}platinum-dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       VARIABLES DE COLOR PARA MEMBRESÍA PLATINO
+    ===================================================== */
+    :root {
+        --platinum-primary: #95a5a6;
+        --platinum-secondary: #7f8c8d;
+        --platinum-accent: #bdc3c7;
+        --platinum-light: rgba(149, 165, 166, 0.1);
+        --platinum-gradient: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 50%, #6c7b7d 100%);
+        --platinum-shine: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 50%, #95a5a6 100%);
+    }
+
+    /* =====================================================
+       LAYOUT PRINCIPAL
+    ===================================================== */
+    .platinum-layout {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 50%, #2a1a19 100%);
+    }
+
+    /* =====================================================
+       SIDEBAR NAVIGATION
+    ===================================================== */
+    .member-sidebar {
+        width: 280px;
+        background: rgba(26, 15, 14, 0.95);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(149, 165, 166, 0.3);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        transition: var(--transition-smooth);
+    }
+
+    .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 1px solid rgba(149, 165, 166, 0.2);
+        background: linear-gradient(135deg, rgba(149, 165, 166, 0.1), rgba(127, 140, 141, 0.05));
+    }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--cream);
+        text-decoration: none;
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .sidebar-logo:hover {
+        color: var(--platinum-primary);
+    }
+
+    .sidebar-logo .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--platinum-shine);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-size: 1.2rem;
+        box-shadow: 0 0 20px rgba(149, 165, 166, 0.4);
+    }
+
+    .sidebar-nav {
+        padding: 20px 0;
+    }
+
+    .nav-section {
+        margin-bottom: 32px;
+    }
+
+    .nav-section-title {
+        padding: 0 20px 8px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(149, 165, 166, 0.7);
+        font-weight: 600;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: rgba(255, 248, 220, 0.8);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+
+    .nav-link:hover {
+        background: rgba(149, 165, 166, 0.1);
+        color: var(--platinum-primary);
+        padding-left: 28px;
+    }
+
+    .nav-link.active {
+        background: linear-gradient(135deg, rgba(149, 165, 166, 0.2), rgba(127, 140, 141, 0.1));
+        color: var(--platinum-primary);
+        border-right: 3px solid var(--platinum-primary);
+    }
+
+    .nav-icon {
+        width: 20px;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .nav-badge {
+        margin-left: auto;
+        background: var(--platinum-gradient);
+        color: white;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .premium-indicator {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 16px;
+        background: var(--platinum-shine);
+        border-radius: 2px;
+        opacity: 0;
+        transition: var(--transition-smooth);
+    }
+
+    .nav-link.premium:hover .premium-indicator {
+        opacity: 1;
+    }
+
+    /* =====================================================
+       MAIN CONTENT AREA
+    ===================================================== */
+    .member-main {
+        flex: 1;
+        margin-left: 280px;
+        min-height: 100vh;
+    }
+
+    .member-header {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(149, 165, 166, 0.3);
+        padding: 16px 32px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--cream);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .membership-badge {
+        background: var(--platinum-shine);
+        color: var(--dark-brown);
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 0 20px rgba(149, 165, 166, 0.4);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+    }
+
+    .user-info-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--platinum-shine);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-weight: 600;
+        box-shadow: 0 0 20px rgba(149, 165, 166, 0.4);
+        border: 2px solid rgba(149, 165, 166, 0.3);
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: var(--cream);
+    }
+
+    .user-since {
+        font-size: 0.75rem;
+        color: rgba(255, 248, 220, 0.7);
+    }
+
+    .logout-btn {
+        background: transparent;
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: var(--error);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        text-decoration: none;
+    }
+
+    .logout-btn:hover {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+    }
+
+    /* =====================================================
+       DASHBOARD CONTENT
+    ===================================================== */
+    .dashboard-content {
+        padding: 32px;
+    }
+
+    .welcome-section {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--platinum-shine);
+    }
+
+    .welcome-section::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        color: var(--cream);
+        margin-bottom: 8px;
+        font-family: var(--font-heading);
+    }
+
+    .welcome-subtitle {
+        color: var(--platinum-primary);
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+
+    .welcome-description {
+        color: rgba(255, 248, 220, 0.8);
+        line-height: 1.6;
+        max-width: 600px;
+    }
+
+    /* =====================================================
+       STATS GRID
+    ===================================================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+        opacity: 0;
+        transition: var(--transition-smooth);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--platinum-primary);
+        box-shadow: 0 8px 32px rgba(149, 165, 166, 0.2);
+    }
+
+    .stat-card:hover::after {
+        opacity: 1;
+    }
+
+    .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--platinum-shine);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-size: 1.2rem;
+        box-shadow: 0 0 20px rgba(149, 165, 166, 0.4);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--platinum-primary);
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        color: rgba(255, 248, 220, 0.8);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* =====================================================
+       BRANDS SECTION PREMIUM
+    ===================================================== */
+    .brands-section {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .brands-section::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .section-title {
+        color: var(--cream);
+        font-size: 1.5rem;
+        font-family: var(--font-heading);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brands-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .brand-card {
+        background: rgba(149, 165, 166, 0.05);
+        border: 1px solid rgba(149, 165, 166, 0.2);
+        border-radius: 12px;
+        padding: 24px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .brand-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+        opacity: 0;
+        transition: var(--transition-smooth);
+    }
+
+    .brand-card:hover {
+        background: rgba(149, 165, 166, 0.1);
+        border-color: var(--platinum-primary);
+        transform: translateY(-2px);
+    }
+
+    .brand-card:hover::after {
+        opacity: 1;
+    }
+
+    .brand-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .brand-name {
+        color: var(--cream);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .brand-status {
+        background: var(--platinum-shine);
+        color: var(--dark-brown);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .brand-info {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 12px;
+    }
+
+    .brand-stat {
+        text-align: center;
+    }
+
+    .brand-stat-value {
+        color: var(--platinum-primary);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .brand-stat-label {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .create-brand-btn {
+        background: var(--platinum-shine);
+        color: var(--dark-brown);
+        padding: 16px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-weight: 600;
+        transition: var(--transition-smooth);
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(149, 165, 166, 0.4);
+    }
+
+    .create-brand-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(149, 165, 166, 0.6);
+    }
+
+    .capacity-indicator {
+        background: rgba(149, 165, 166, 0.1);
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .capacity-title {
+        color: var(--platinum-primary);
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .capacity-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(149, 165, 166, 0.2);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    .capacity-progress {
+        height: 100%;
+        background: var(--platinum-gradient);
+        transition: width 0.6s ease;
+    }
+
+    .capacity-text {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.875rem;
+    }
+
+    /* =====================================================
+       VIP FEATURES SECTION
+    ===================================================== */
+    .vip-section {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .vip-section::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .vip-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .vip-card {
+        background: rgba(149, 165, 166, 0.05);
+        border: 1px solid rgba(149, 165, 166, 0.2);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .vip-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+        opacity: 0;
+        transition: var(--transition-smooth);
+    }
+
+    .vip-card:hover {
+        background: rgba(149, 165, 166, 0.1);
+        border-color: var(--platinum-primary);
+        transform: translateY(-4px);
+    }
+
+    .vip-card:hover::after {
+        opacity: 1;
+    }
+
+    .vip-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--platinum-shine);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        margin: 0 auto 16px;
+        font-size: 1.5rem;
+        box-shadow: 0 0 20px rgba(149, 165, 166, 0.4);
+    }
+
+    .vip-title {
+        color: var(--cream);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .vip-value {
+        color: var(--platinum-primary);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .vip-label {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.875rem;
+    }
+
+    /* =====================================================
+       BENEFITS SECTION
+    ===================================================== */
+    .benefits-section {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .benefits-section::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .benefit-card {
+        background: rgba(149, 165, 166, 0.05);
+        border: 1px solid rgba(149, 165, 166, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .benefit-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(149, 165, 166, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+        opacity: 0;
+        transition: var(--transition-smooth);
+    }
+
+    .benefit-card:hover {
+        background: rgba(149, 165, 166, 0.1);
+        border-color: var(--platinum-primary);
+    }
+
+    .benefit-card:hover::after {
+        opacity: 1;
+    }
+
+    .benefit-card.exclusive {
+        border-color: var(--platinum-primary);
+        background: rgba(149, 165, 166, 0.1);
+    }
+
+    .benefit-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--platinum-shine);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        margin-bottom: 12px;
+        font-size: 1rem;
+        box-shadow: 0 0 15px rgba(149, 165, 166, 0.4);
+    }
+
+    .benefit-title {
+        color: var(--cream);
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .exclusive-badge {
+        background: var(--platinum-shine);
+        color: var(--dark-brown);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .benefit-description {
+        color: rgba(255, 248, 220, 0.8);
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 1024px) {
+        .member-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .member-main {
+            margin-left: 0;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-content {
+            padding: 20px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .brands-grid,
+        .vip-grid,
+        .benefits-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header-content {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .user-info-header {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: 1px solid rgba(149, 165, 166, 0.5);
+        color: var(--platinum-primary);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+
+    .mobile-menu-btn:hover {
+        background: rgba(149, 165, 166, 0.1);
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="platinum-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="member-sidebar" id="memberSidebar">
+        <div class="sidebar-header">
+            <a href="{{ path('home') }}" class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <span>Mokhuba Platino</span>
+            </a>
+        </div>
+
+        <div class="sidebar-nav">
+            <!-- Dashboard Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Dashboard</div>
+                <a href="{{ path('platinum_dashboard') }}" class="nav-link active">
+                    <i class="nav-icon fas fa-home"></i>
+                    <span>Inicio</span>
+                    <div class="premium-indicator"></div>
+                </a>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-user-crown"></i>
+                    <span>Perfil VIP</span>
+                    <div class="premium-indicator"></div>
+                </a>
+            </div>
+
+            <!-- Membresía Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Mi Membresía</div>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-crown"></i>
+                    <span>Beneficios VIP</span>
+                    <div class="premium-indicator"></div>
+                </a>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-palette"></i>
+                    <span>Mis Marcas</span>
+                    <span class="nav-badge">{{ stats.brands_created ?? 0 }}/3</span>
+                    <div class="premium-indicator"></div>
+                </a>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-calendar-star"></i>
+                    <span>Eventos VIP</span>
+                    <div class="premium-indicator"></div>
+                </a>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span>Mis Invitados</span>
+                    <span class="nav-badge">2</span>
+                    <div class="premium-indicator"></div>
+                </a>
+            </div>
+
+            <!-- Club Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Club Exclusivo</div>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-calendar"></i>
+                    <span>Eventos Platinum</span>
+                    <div class="premium-indicator"></div>
+                </a>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-user-friends"></i>
+                    <span>Comunidad VIP</span>
+                    <div class="premium-indicator"></div>
+                </a>
+                <a href="#" class="nav-link premium">
+                    <i class="nav-icon fas fa-concierge-bell"></i>
+                    <span>Concierge</span>
+                    <div class="premium-indicator"></div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="member-main">
+        <!-- Header -->
+        <header class="member-header">
+            <div class="header-content">
+                <div>
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">
+                        <span>Dashboard VIP</span>
+                        <span class="membership-badge">
+                            <i class="fas fa-star"></i>
+                            Membresía Platino
+                        </span>
+                    </h1>
+                </div>
+
+                <div class="user-info-header">
+                    <div class="user-avatar">
+                        {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                        <div class="user-since">VIP desde {{ user.createdAt|date('M Y') }}</div>
+                    </div>
+
+                    <a href="{{ path('auth_logout') }}" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Salir</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">¡Bienvenido, {{ user.firstName }}!</h1>
+                <h2 class="welcome-subtitle">Tu experiencia Platino VIP de máximo lujo</h2>
+                <p class="welcome-description">
+                    Como miembro Platino de Mokhuba Cigar Club, disfrutas del nivel más exclusivo de nuestra membresía. 
+                    Crea hasta 3 marcas personalizadas con 6 líneas cada una, trae 2 acompañantes a eventos especiales, 
+                    y recibe atención concierge personalizada. Tu experiencia premium no tiene límites.
+                </p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ stats.brands_created ?? 0 }}</div>
+                    <div class="stat-label">Marcas Creadas</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ (stats.brands_created ?? 0) * 6 }}</div>
+                    <div class="stat-label">Líneas Totales</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Invitados VIP</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ stats.events_attended ?? 0 }}</div>
+                    <div class="stat-label">Eventos Asistidos</div>
+                </div>
+            </div>
+
+            <!-- VIP Features -->
+            <div class="vip-section">
+                <h2 class="section-title">
+                    <i class="fas fa-crown"></i>
+                    Características VIP Platino
+                </h2>
+                <div class="vip-grid">
+                    <div class="vip-card">
+                        <div class="vip-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 class="vip-title">Marcas Premium</h3>
+                        <div class="vip-value">3</div>
+                        <div class="vip-label">Marcas Personalizadas</div>
+                    </div>
+
+                    <div class="vip-card">
+                        <div class="vip-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3 class="vip-title">Líneas Exclusivas</h3>
+                        <div class="vip-value">6</div>
+                        <div class="vip-label">Líneas por Marca</div>
+                    </div>
+
+                    <div class="vip-card">
+                        <div class="vip-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="vip-title">Acompañantes</h3>
+                        <div class="vip-value">2</div>
+                        <div class="vip-label">Invitados a Eventos</div>
+                    </div>
+
+                    <div class="vip-card">
+                        <div class="vip-icon">
+                            <i class="fas fa-concierge-bell"></i>
+                        </div>
+                        <h3 class="vip-title">Concierge</h3>
+                        <div class="vip-value">24/7</div>
+                        <div class="vip-label">Atención Premium</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Brands Section -->
+            <div class="brands-section">
+                <h2 class="section-title">
+                    <i class="fas fa-palette"></i>
+                    Mi Imperio de Marcas
+                </h2>
+
+                {% if stats.brands_created == 0 %}
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="color: var(--platinum-primary); font-size: 3rem; margin-bottom: 16px;">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3 style="color: var(--cream); margin-bottom: 8px;">Construye Tu Imperio</h3>
+                        <p style="color: rgba(255, 248, 220, 0.7); margin-bottom: 24px;">
+                            Como miembro Platino, puedes crear hasta 3 marcas premium con 6 líneas exclusivas cada una.
+                        </p>
+                        <button class="create-brand-btn">
+                            <i class="fas fa-plus"></i>
+                            <span>Crear Mi Primera Marca</span>
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="brands-grid">
+                        <div class="brand-card">
+                            <div class="brand-header">
+                                <h3 class="brand-name">Marca Premium #1</h3>
+                                <span class="brand-status">Activa</span>
+                            </div>
+                            <div class="brand-info">
+                                <div class="brand-stat">
+                                    <div class="brand-stat-value">6</div>
+                                    <div class="brand-stat-label">Líneas</div>
+                                </div>
+                                <div class="brand-stat">
+                                    <div class="brand-stat-value">580</div>
+                                    <div class="brand-stat-label">Ventas</div>
+                                </div>
+                                <div class="brand-stat">
+                                    <div class="brand-stat-value">4.9</div>
+                                    <div class="brand-stat-label">Rating</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="capacity-indicator">
+                        <div class="capacity-title">Capacidad Utilizada</div>
+                        <div class="capacity-bar">
+                            <div class="capacity-progress" style="width: {{ ((stats.brands_created ?? 0) / 3) * 100 }}%;"></div>
+                        </div>
+                        <div class="capacity-text">{{ stats.brands_created ?? 0 }} de 3 marcas creadas</div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h2 class="section-title">
+                    <i class="fas fa-crown"></i>
+                    Todos Tus Beneficios Platino
+                </h2>
+                <div class="benefits-grid">
+                    {% for benefit in benefits %}
+                    <div class="benefit-card {{ loop.index > 6 ? 'exclusive' : '' }}">
+                        <div class="benefit-icon">
+                            <i class="{{ benefit.icon }}"></i>
+                        </div>
+                        <h3 class="benefit-title">
+                            {{ benefit.title }}
+                            {% if loop.index > 6 %}
+                                <span class="exclusive-badge">VIP</span>
+                            {% endif %}
+                        </h3>
+                        <p class="benefit-description">{{ benefit.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Overlay para mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<script>
+// Mobile sidebar functionality
+function toggleSidebar() {
+    const sidebar = document.getElementById('memberSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('memberSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024) {
+        closeSidebar();
+    }
+});
+</script>
+
+
+{% include 'partials/logout_and_confirm.html.twig' %}
+{% endblock %}

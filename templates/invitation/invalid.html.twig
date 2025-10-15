@@ -1,0 +1,149 @@
+{# templates/invitation/invalid.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Invitación Inválida | Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .invalid-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .invalid-card {
+            max-width: 500px;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9));
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .invalid-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+        }
+
+        .invalid-icon.expired {
+            color: #f59e0b;
+        }
+
+        .invalid-icon.used {
+            color: #8b5cf6;
+        }
+
+        .invalid-icon.not-found {
+            color: #ef4444;
+        }
+
+        .invalid-icon.already-registered {
+            color: #10b981;
+        }
+
+        .invalid-title {
+            color: var(--gold-primary);
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .invalid-message {
+            color: var(--cream);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-action {
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary-action {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            color: var(--dark-brown);
+            border: none;
+        }
+
+        .btn-primary-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary-action {
+            background: transparent;
+            color: var(--cream);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-secondary-action:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold-primary);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="invalid-container">
+    <div class="invalid-card">
+        {% if reason == 'expired' %}
+            <div class="invalid-icon expired">⏰</div>
+            <h1 class="invalid-title">Invitación Expirada</h1>
+            <p class="invalid-message">
+                Esta invitación ha expirado. Las invitaciones son válidas por 72 horas desde su envío.
+                Por favor, contacta al administrador para recibir una nueva invitación.
+            </p>
+        {% elseif reason == 'used' %}
+            <div class="invalid-icon used">✅</div>
+            <h1 class="invalid-title">Invitación Ya Utilizada</h1>
+            <p class="invalid-message">
+                Esta invitación ya fue utilizada para crear una cuenta.
+                Si ya tienes una cuenta, por favor inicia sesión.
+            </p>
+        {% elseif reason == 'already_registered' %}
+            <div class="invalid-icon already-registered">👤</div>
+            <h1 class="invalid-title">Ya Estás Registrado</h1>
+            <p class="invalid-message">
+                El correo de esta invitación ya está registrado en nuestro sistema.
+                Por favor inicia sesión con tus credenciales existentes.
+            </p>
+        {% else %}
+            <div class="invalid-icon not-found">❌</div>
+            <h1 class="invalid-title">Invitación No Encontrada</h1>
+            <p class="invalid-message">
+                No pudimos encontrar esta invitación. El enlace puede estar incorrecto o la invitación puede haber sido eliminada.
+            </p>
+        {% endif %}
+
+        <div class="action-buttons">
+            {% if reason == 'already_registered' or reason == 'used' %}
+                <a href="{{ login_url ?? path('auth_login') }}" class="btn-action btn-primary-action">
+                    <i class="fas fa-sign-in-alt me-2"></i>Ir al Login
+                </a>
+            {% endif %}
+            
+            <a href="{{ path('home') }}" class="btn-action btn-secondary-action">
+                <i class="fas fa-home me-2"></i>Volver al Inicio
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

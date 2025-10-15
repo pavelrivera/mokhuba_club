@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Ruby - {{ user.fullName }} | Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ruby-dashboard {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0505 0%, #5c1a1a 100%);
+            padding: 40px 0;
+        }
+
+        .ruby-header {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.2), rgba(190, 18, 60, 0.1));
+            border: 2px solid #e11d48;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .ruby-icon {
+            font-size: 5rem;
+            color: #e11d48;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(225, 29, 72, 0.5));
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: rgba(45, 24, 23, 0.8);
+            border: 1px solid rgba(225, 29, 72, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #e11d48;
+            box-shadow: 0 15px 30px rgba(225, 29, 72, 0.3);
+        }
+
+        .upgrade-section {
+            background: rgba(45, 24, 23, 0.9);
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .upgrade-button {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--dark-brown);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upgrade-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="ruby-dashboard">
+    <div class="container">
+        <!-- Header Ruby -->
+        <div class="ruby-header">
+            <div class="ruby-icon">
+                <i class="fas fa-gem"></i>
+            </div>
+            <h1 style="color: #e11d48; font-size: 3rem; margin-bottom: 15px;">Membresía Ruby</h1>
+            <p style="color: var(--cream); font-size: 1.3rem; margin-bottom: 10px;">
+                Bienvenido, <strong>{{ user.fullName }}</strong>
+            </p>
+            <div class="user-code" style="background: rgba(0, 0, 0, 0.3); border: 1px solid #e11d48; border-radius: 12px; padding: 8px 16px; display: inline-block; margin-top: 10px;">
+                <strong style="color: #e11d48;">Código:</strong> <span style="color: var(--cream);">{{ user.userCode }}</span>
+            </div>
+            <p style="color: rgba(255, 248, 220, 0.7); margin-top: 20px;">
+                Estado: <strong style="color: #10b981;">Activa</strong> | Renovación: <strong>{{ "now"|date_modify('+1 year')|date('d/m/Y') }}</strong>
+            </p>
+        </div>
+
+        <!-- Características de Ruby -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-tachometer-alt" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Dashboard Completo</h3>
+                <p style="color: var(--cream);">Acceso total a tu panel de control personal con todas las funciones básicas</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-calendar-week" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Contenido Semanal</h3>
+                <p style="color: var(--cream);">Nuevas publicaciones y recursos cada semana exclusivos para miembros</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-headset" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Soporte 24/7</h3>
+                <p style="color: var(--cream);">Atención por email las 24 horas del día, los 7 días de la semana</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-users" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Comunidad Privada</h3>
+                <p style="color: var(--cream);">Acceso a nuestro grupo exclusivo de miembros Ruby</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-calendar-alt" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Eventos Mensuales</h3>
+                <p style="color: var(--cream);">Invitaciones a eventos mensuales para miembros Ruby</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-shopping-bag" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Compras Exclusivas</h3>
+                <p style="color: var(--cream);">Acceso anticipado a nuevos productos y lanzamientos</p>
+            </div>
+        </div>
+
+        <!-- Upgrade Section -->
+        <div class="upgrade-section">
+            <h2 style="color: var(--gold-primary); font-size: 2.5rem; margin-bottom: 15px;">
+                <i class="fas fa-arrow-up"></i> ¿Quieres más beneficios?
+            </h2>
+            <p style="color: var(--cream); font-size: 1.2rem; margin-bottom: 30px;">
+                Upgrade a <strong style="color: #ffc107;">Gold Club</strong> o <strong style="color: #17a2b8;">Platinum Club</strong> para acceder a contenido premium y beneficios exclusivos
+            </p>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div style="background: rgba(255, 193, 7, 0.1); border: 2px solid #ffc107; border-radius: 16px; padding: 30px;">
+                        <i class="fas fa-medal" style="font-size: 3rem; color: #ffc107; margin-bottom: 15px;"></i>
+                        <h3 style="color: #ffc107; margin-bottom: 15px;">Gold Club</h3>
+                        <p style="font-size: 2rem; color: var(--gold-primary); font-weight: 800; margin-bottom: 15px;">$599/año</p>
+                        <ul style="list-style: none; padding: 0; text-align: left; margin-bottom: 20px;">
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Todo de Ruby +</li>
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Dashboard premium</li>
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Eventos VIP semanales</li>
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Sesiones de coaching</li>
+                        </ul>
+                        <button class="upgrade-button" onclick="openPaymentModal('gold')" style="background: linear-gradient(135deg, #ffc107, #e0a800);">
+                            <i class="fas fa-arrow-up"></i> Upgrade a Gold
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div style="background: rgba(23, 162, 184, 0.1); border: 2px solid #17a2b8; border-radius: 16px; padding: 30px;">
+                        <i class="fas fa-crown" style="font-size: 3rem; color: #17a2b8; margin-bottom: 15px;"></i>
+                        <h3 style="color: #17a2b8; margin-bottom: 15px;">Platinum Club</h3>
+                        <p style="font-size: 2rem; color: var(--gold-primary); font-weight: 800; margin-bottom: 15px;">$999/año</p>
+                        <ul style="list-style: none; padding: 0; text-align: left; margin-bottom: 20px;">
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Todo de Gold +</li>
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Conserje personal 24/7</li>
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Networking elite</li>
+                            <li style="color: var(--cream); margin-bottom: 10px;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Eventos ilimitados</li>
+                        </ul>
+                        <button class="upgrade-button" onclick="openPaymentModal('platinum')" style="background: linear-gradient(135deg, #17a2b8, #138496);">
+                            <i class="fas fa-arrow-up"></i> Upgrade a Platinum
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Incluir el modal de pago #}
+{% include 'payment/_payment_modal.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/payment-modal.js') }}"></script>
+{% endblock %}

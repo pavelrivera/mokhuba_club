@@ -1,0 +1,130 @@
+{# templates/payment/_payment_modal.html.twig #}
+<!-- Modal de Pago con Formulario de Tarjeta -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark text-light border-warning">
+            <div class="modal-header border-warning">
+                <h5 class="modal-title" id="paymentModalLabel">
+                    <i class="fas fa-credit-card"></i> Procesar Pago
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Info de la membresía seleccionada -->
+                <div class="selected-membership-info mb-4 p-3 bg-secondary rounded">
+                    <h6>Membresía Seleccionada:</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="membership-type-display fw-bold fs-5">Ruby Club</span>
+                            <p class="mb-0 text-muted small">Acceso completo a funciones Ruby</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="membership-price-display fs-4 fw-bold text-warning">$299</span>
+                            <p class="mb-0 text-muted small">/año</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Pago -->
+                <form id="paymentForm" action="{{ path('payment_process') }}" method="POST">
+                    <input type="hidden" id="membershipType" name="membershipType" value="">
+                    
+                    <!-- Información del Titular -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label for="cardholderName" class="form-label">
+                                <i class="fas fa-user"></i> Nombre del Titular
+                            </label>
+                            <input type="text" 
+                                   class="form-control bg-secondary text-light border-dark" 
+                                   id="cardholderName" 
+                                   name="cardholderName" 
+                                   placeholder="Juan Pérez" 
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Número de Tarjeta -->
+                    <div class="mb-3">
+                        <label for="cardNumber" class="form-label">
+                            <i class="fas fa-credit-card"></i> Número de Tarjeta
+                        </label>
+                        <input type="text" 
+                               class="form-control bg-secondary text-light border-dark" 
+                               id="cardNumber" 
+                               name="cardNumber" 
+                               placeholder="4242 4242 4242 4242" 
+                               maxlength="19"
+                               required>
+                        <small class="text-muted">Usa 4242 4242 4242 4242 para pruebas</small>
+                    </div>
+
+                    <!-- Fecha de Expiración y CVV -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="expiryDate" class="form-label">
+                                <i class="fas fa-calendar"></i> Fecha de Expiración
+                            </label>
+                            <input type="text" 
+                                   class="form-control bg-secondary text-light border-dark" 
+                                   id="expiryDate" 
+                                   name="expiryDate" 
+                                   placeholder="MM/AA" 
+                                   maxlength="5"
+                                   required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cvv" class="form-label">
+                                <i class="fas fa-lock"></i> CVV
+                            </label>
+                            <input type="text" 
+                                   class="form-control bg-secondary text-light border-dark" 
+                                   id="cvv" 
+                                   name="cvv" 
+                                   placeholder="123" 
+                                   maxlength="4"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" 
+                               class="form-control bg-secondary text-light border-dark" 
+                               id="email" 
+                               name="email" 
+                               value="{{ app.user.email }}"
+                               required>
+                    </div>
+
+                    <!-- Términos y Condiciones -->
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="acceptTerms" required>
+                        <label class="form-check-label" for="acceptTerms">
+                            Acepto los <a href="#" class="text-warning">términos y condiciones</a>
+                        </label>
+                    </div>
+
+                    <!-- Modo de Desarrollo -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Modo Desarrollo:</strong> Esta transacción no procesará cargos reales. Usa tarjeta de prueba.
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer border-warning">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="submit" form="paymentForm" class="btn btn-warning" id="submitPaymentBtn">
+                    <i class="fas fa-lock"></i> Pagar <span id="finalAmount">$299</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

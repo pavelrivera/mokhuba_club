@@ -1,0 +1,1142 @@
+{# templates/homev2.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Mokhuba Club VIP - Experiencia Premium{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Estilos 3D y efectos premium */
+        .clay-surface {
+            background: linear-gradient(145deg, #2d1817, #1a0f0e);
+            box-shadow: 
+                20px 20px 40px #0d0706,
+                -20px -20px 40px #3d241f,
+                inset 5px 5px 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .isometric-container {
+            transform: perspective(1000px) rotateX(5deg);
+            transform-style: preserve-3d;
+        }
+
+        .fluorescent-glow {
+            position: relative;
+        }
+
+        .fluorescent-glow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.3), transparent 70%);
+            pointer-events: none;
+        }
+
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .glossy-surface {
+            background: linear-gradient(135deg, 
+                rgba(212, 175, 55, 0.9) 0%,
+                rgba(184, 148, 31, 0.8) 25%,
+                rgba(255, 215, 0, 0.9) 50%,
+                rgba(184, 148, 31, 0.8) 75%,
+                rgba(212, 175, 55, 0.9) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glossy-surface::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: glossyShine 3s infinite;
+        }
+
+        @keyframes glossyShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .edge-light {
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            box-shadow: 
+                0 0 20px rgba(212, 175, 55, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .text-3d {
+            text-shadow: 
+                2px 2px 0px rgba(0, 0, 0, 0.5),
+                4px 4px 10px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .contour-light {
+            -webkit-text-stroke: 1px rgba(212, 175, 55, 0.3);
+        }
+
+        .fluorescent-text {
+            color: var(--gold-primary);
+            filter: drop-shadow(0 0 10px var(--gold-primary));
+        }
+
+        .soft-glow {
+            text-shadow: 0 0 20px rgba(255, 248, 220, 0.3);
+        }
+
+        .glass-morphism {
+            background: rgba(45, 24, 23, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+        }
+
+        .clay-depth {
+            box-shadow: 
+                8px 8px 16px rgba(0, 0, 0, 0.4),
+                -8px -8px 16px rgba(61, 36, 31, 0.2),
+                inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .isometric-card {
+            transform: perspective(600px) rotateY(-5deg) rotateX(5deg);
+            transition: transform 0.3s ease;
+        }
+
+        .isometric-card:hover {
+            transform: perspective(600px) rotateY(0deg) rotateX(0deg) translateY(-10px);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+        }
+
+        .glossy-text {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .clay-button {
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .clay-image {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fluorescent-chip {
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        .fluorescent-icon {
+            filter: drop-shadow(0 0 3px currentColor);
+        }
+
+        .hover-glow {
+            transition: all 0.3s ease;
+        }
+
+        .hover-glow:hover {
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+
+        .fluorescent-border {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Secciones específicas */
+        .hero-section {
+            min-height: 100vh;
+            background: 
+                linear-gradient(135deg, rgba(13, 10, 6, 0.9), rgba(92, 26, 26, 0.8)),
+                url('{{ app.request.basePath }}/images/logomain.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-overlay {
+            width: 100%;
+            padding: 60px 20px;
+        }
+
+        .min-height-100vh {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-badge {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .premium-chip {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chip-text {
+            color: var(--dark-brown);
+            font-weight: 700;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--cream);
+        }
+
+        .gold-text {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: rgba(255, 248, 220, 0.9);
+        }
+
+        .hero-stats {
+            background: rgba(45, 24, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin: 3rem 0;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gold-primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--cream);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-cta {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .premium-button {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--dark-brown);
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .button-text {
+            color: inherit;
+        }
+
+        /* Grid responsivo */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col {
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .col-12 { width: 100%; }
+        .col-6 { width: 50%; }
+        .col-4 { width: 33.333%; }
+        .col-3 { width: 25%; }
+
+        @media (max-width: 768px) {
+            .col-6, .col-4, .col-3 { width: 100%; }
+            .hero-title { font-size: 2.5rem; }
+        }
+
+        /* Secciones del sitio */
+        .section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--black-premium), var(--dark-brown));
+        }
+
+        .section-title-light, .section-title-dark, .section-title {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--gold-primary);
+        }
+
+        .section-subtitle-light, .section-subtitle-dark, .section-subtitle {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: rgba(255, 248, 220, 0.8);
+        }
+
+        /* Cards y elementos */
+        .benefit-card, .product-card, .testimonial-card {
+            background: rgba(45, 24, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .benefit-card:hover, .product-card:hover, .testimonial-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold-primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 3rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 3rem;
+        }
+
+        /* Iconos y elementos premium */
+        .premium-avatar {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--dark-brown);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .regular-avatar {
+            background: rgba(45, 24, 23, 0.8);
+            color: var(--cream);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .premium-chip-small {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        }
+
+        .chip-text-small {
+            color: var(--dark-brown);
+            font-weight: 600;
+        }
+
+        .chip-text-dark {
+            color: var(--dark-brown);
+            font-weight: 600;
+        }
+
+        /* Elementos específicos */
+        .countdown-timer {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .timer-label {
+            color: rgba(255, 248, 220, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .timer-display {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .timer-unit {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 300px;
+            background: url('{{ app.request.basePath }}/images/event-placeholder.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+        }
+
+        /* Footer */
+        .footer-section {
+            background: var(--black-premium);
+            color: var(--cream);
+            padding: 60px 0 40px;
+        }
+
+        .footer-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: rgba(255, 248, 220, 0.8);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: var(--gold-primary);
+            color: var(--dark-brown);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-link {
+            color: rgba(255, 248, 220, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--gold-primary);
+        }
+
+        .footer-subtitle {
+            font-size: 1.2rem;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 248, 220, 0.8);
+        }
+
+        .contact-icon {
+            color: var(--gold-primary);
+            width: 20px;
+        }
+
+        .footer-divider {
+            border: none;
+            height: 1px;
+            background: rgba(212, 175, 55, 0.3);
+            margin: 40px 0 20px;
+        }
+
+        .copyright {
+            text-align: center;
+            color: rgba(255, 248, 220, 0.6);
+            font-size: 0.9rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+{# Variables por defecto #}
+{% set memberCount = memberCount|default(247) %}
+{% set exclusiveProducts = exclusiveProducts|default(2847) %}
+{% set eventsThisMonth = eventsThisMonth|default(15) %}
+{% set nextEvent = nextEvent|default({
+    title: 'Cata Exclusiva Premium',
+    description: 'Una experiencia única con los mejores habanos cubanos de la temporada.',
+    date: '15 de Octubre, 2024',
+    time: '19:00 - 22:00',
+    attendees: 24
+}) %}
+{% set countdown = countdown|default({days: 5, hours: 14, minutes: 32}) %}
+
+{% set benefits = [
+    {
+        icon: 'fas fa-crown',
+        title: 'Acceso VIP Exclusivo',
+        description: 'Experiencias únicas reservadas solo para miembros selectos del club premium.',
+        featured: true
+    },
+    {
+        icon: 'fas fa-gem',
+        title: 'Colección Premium',
+        description: 'Acceso a habanos de edición limitada y cosechas excepcionales.',
+        featured: false
+    },
+    {
+        icon: 'fas fa-calendar-star',
+        title: 'Eventos Privados',
+        description: 'Cenas de maridaje y encuentros exclusivos con maestros tabaqueros.',
+        featured: false
+    },
+    {
+        icon: 'fas fa-shipping-fast',
+        title: 'Envío Premium',
+        description: 'Entrega prioritaria con embalaje especializado para proteger tu selección.',
+        featured: false
+    },
+    {
+        icon: 'fas fa-users',
+        title: 'Comunidad Elite',
+        description: 'Conecta con aficionados expertos en un ambiente refinado y exclusivo.',
+        featured: false
+    },
+    {
+        icon: 'fas fa-concierge-bell',
+        title: 'Servicio Personalizado',
+        description: 'Atención dedicada y recomendaciones según tus preferencias únicas.',
+        featured: false
+    }
+] %}
+
+{% set vipProducts = [
+    {
+        name: 'Cohiba Behike 56',
+        description: 'La joya de la corona de Cohiba, elaborado con las hojas más selectas.',
+        origin: 'Cuba',
+        vitola: 'Gran Corona',
+        stock: 12,
+        originalPrice: 2500,
+        memberPrice: 2100,
+        image: 'product1.jpg',
+        limited: true
+    },
+    {
+        name: 'Padrón 1964 Anniversary',
+        description: 'Edición limitada conmemorativa con tabaco envejecido excepcional.',
+        origin: 'Nicaragua',
+        vitola: 'Torpedo',
+        stock: 8,
+        originalPrice: 1200,
+        memberPrice: 950,
+        image: 'product2.jpg',
+        limited: true
+    },
+    {
+        name: 'Arturo Fuente Opus X',
+        description: 'Una obra maestra de la tabaquería dominicana con sabores únicos.',
+        origin: 'República Dominicana',
+        vitola: 'Robusto',
+        stock: 15,
+        originalPrice: 800,
+        memberPrice: 650,
+        image: 'product3.jpg',
+        limited: false
+    }
+] %}
+
+{% set testimonials = [
+    {
+        quote: 'Una experiencia incomparable. Cada habano es una obra de arte y el servicio es excepcional.',
+        name: 'Carlos Montenegro',
+        title: 'Miembro Platinum',
+        avatar: 'avatar1.jpg'
+    },
+    {
+        quote: 'El club ha superado todas mis expectativas. La calidad y exclusividad son inigualables.',
+        name: 'Isabella Rodriguez',
+        title: 'Miembro Oro',
+        avatar: 'avatar2.jpg'
+    },
+    {
+        quote: 'Los eventos privados son extraordinarios. He conocido a verdaderos expertos y grandes amigos.',
+        name: 'Ricardo Valdez',
+        title: 'Miembro VIP',
+        avatar: 'avatar3.jpg'
+    }
+] %}
+
+{% set forumStats = {
+    discussions: 156,
+    messages: 2840,
+    activeMembers: 89
+} %}
+
+{% set recentPosts = [
+    {
+        author: 'Miguel Torres',
+        time: 'hace 2 horas',
+        title: '¿Qué opinan del nuevo Romeo y Julieta Reserva Real?',
+        replies: 12,
+        likes: 8,
+        avatar: 'user1.jpg'
+    },
+    {
+        author: 'Ana Gutierrez',
+        time: 'hace 4 horas',
+        title: 'Mi experiencia en la fábrica de Cohiba en Cuba',
+        replies: 23,
+        likes: 31,
+        avatar: 'user2.jpg'
+    },
+    {
+        author: 'David Morales',
+        time: 'hace 1 día',
+        title: 'Técnicas de corte: ¿guillotina o punch?',
+        replies: 18,
+        likes: 15,
+        avatar: 'user3.jpg'
+    }
+] %}
+
+{% set socialLinks = [
+    {name: 'instagram', icon: 'fab fa-instagram'},
+    {name: 'facebook', icon: 'fab fa-facebook'},
+    {name: 'twitter', icon: 'fab fa-twitter'},
+    {name: 'youtube', icon: 'fab fa-youtube'}
+] %}
+
+<!-- Hero Section -->
+<section class="hero-section clay-surface isometric-container">
+    <div class="container">
+        <div class="hero-overlay fluorescent-glow">
+            <div class="container">
+                <div class="row min-height-100vh">
+                    <div class="col-12">
+                        <div class="hero-badge mb-6 floating-animation">
+                            <div class="premium-chip gold glossy-surface edge-light">
+                                <i class="fas fa-crown" style="margin-right: 8px; color: var(--dark-brown);"></i>
+                                <span class="chip-text">MIEMBRO EXCLUSIVO</span>
+                            </div>
+                        </div>
+                        <h1 class="hero-title mb-6 text-3d contour-light">
+                            Bienvenido al <br/>
+                            <span class="gold-text fluorescent-text">Club Privado Mokhuba</span>
+                        </h1>
+                        <p class="hero-subtitle mb-8 soft-glow">
+                            Tu acceso exclusivo a los habanos más selectos del mundo. 
+                            Donde la tradición cubana se encuentra con la excelencia.
+                        </p>
+                        <div class="hero-stats mb-8 glass-morphism clay-depth">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="stat-item hover-lift">
+                                        <div class="stat-number glossy-text">{{ memberCount }}</div>
+                                        <div class="stat-label">Miembros</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item hover-lift">
+                                        <div class="stat-number glossy-text">{{ exclusiveProducts }}</div>
+                                        <div class="stat-label">Productos VIP</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-item hover-lift">
+                                        <div class="stat-number glossy-text">{{ eventsThisMonth }}</div>
+                                        <div class="stat-label">Eventos</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-cta">
+                            <button class="premium-button gold glossy-button clay-button pulse-animation" onclick="scrollToSection('beneficios')">
+                                <i class="fas fa-diamond" style="color: var(--dark-brown);"></i>
+                                <span class="button-text">Explorar Beneficios</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Próximo Evento Destacado -->
+<section class="section clay-surface">
+    <div class="container">
+        <div class="benefit-card isometric-card">
+            <div class="row">
+                <div class="col-6">
+                    <div class="event-image clay-image edge-light"></div>
+                </div>
+                <div class="col-6" style="padding: 2rem;">
+                    <div class="fluorescent-chip" style="background: #dc2626; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 1rem; display: inline-block;">
+                        <span class="chip-text-dark" style="color: white;">PRÓXIMO EVENTO</span>
+                    </div>
+                    <h2 class="text-3d" style="font-size: 2rem; margin-bottom: 1rem;">{{ nextEvent.title }}</h2>
+                    <p style="margin-bottom: 1.5rem; color: rgba(255, 248, 220, 0.9);">{{ nextEvent.description }}</p>
+                    
+                    <div class="glass-morphism" style="padding: 1rem; margin-bottom: 1.5rem;">
+                        <div class="hover-glow" style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                            <i class="fas fa-calendar fluorescent-icon" style="margin-right: 12px; color: var(--gold-primary);"></i>
+                            <span>{{ nextEvent.date }}</span>
+                        </div>
+                        <div class="hover-glow" style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                            <i class="fas fa-clock fluorescent-icon" style="margin-right: 12px; color: var(--gold-primary);"></i>
+                            <span>{{ nextEvent.time }}</span>
+                        </div>
+                        <div class="hover-glow" style="display: flex; align-items: center;">
+                            <i class="fas fa-users fluorescent-icon" style="margin-right: 12px; color: var(--gold-primary);"></i>
+                            <span>{{ nextEvent.attendees }} confirmados</span>
+                        </div>
+                    </div>
+
+                    <button class="premium-button glossy-button clay-button" style="width: 100%; margin-bottom: 1rem;">
+                        <i class="fas fa-calendar-plus" style="color: var(--dark-brown);"></i>
+                        <span class="button-text">Confirmar Asistencia</span>
+                    </button>
+                    
+                    <div class="countdown-timer glass-morphism clay-depth">
+                        <div class="timer-label">Tiempo restante:</div>
+                        <div class="timer-display">
+                            <span class="timer-unit glossy-text fluorescent-text">{{ countdown.days }}d</span>
+                            <span class="timer-unit glossy-text fluorescent-text">{{ countdown.hours }}h</span>
+                            <span class="timer-unit glossy-text fluorescent-text">{{ countdown.minutes }}m</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Beneficios Exclusivos -->
+<section id="beneficios" class="section clay-surface">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2 class="section-title-light text-3d contour-light">Beneficios Exclusivos</h2>
+            <p class="section-subtitle-light soft-glow">Privilegios únicos para miembros selectos</p>
+        </div>
+        
+        <div class="grid-3">
+            {% for benefit in benefits %}
+                <div class="benefit-card isometric-card hover-lift {% if benefit.featured %}fluorescent-border{% endif %}">
+                    <div style="text-align: center;">
+                        <div style="margin-bottom: 1.5rem;" class="floating-animation">
+                            <div class="{% if benefit.featured %}premium-avatar glossy-surface{% else %}regular-avatar clay-surface{% endif %}">
+                                <i class="{{ benefit.icon }}" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--cream);" class="text-3d">{{ benefit.title }}</h3>
+                        <p style="color: rgba(255, 248, 220, 0.8); margin-bottom: 1rem;">{{ benefit.description }}</p>
+                        {% if benefit.featured %}
+                            <div class="premium-chip-small glossy-surface fluorescent-chip">
+                                <span class="chip-text-small">PREMIUM</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Productos VIP -->
+<section class="section clay-surface">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2 class="section-title-dark text-3d contour-light">Colección VIP</h2>
+            <p class="section-subtitle-dark soft-glow">Habanos exclusivos solo para miembros</p>
+        </div>
+
+        <div class="grid-3">
+            {% for product in vipProducts %}
+                <div class="product-card isometric-card hover-lift">
+                    <div class="clay-image edge-light" style="height: 200px; background: url('{{ app.request.basePath }}/images/{{ product.image }}'); background-size: cover; background-position: center; margin-bottom: 1.5rem; position: relative;">
+                        {% if product.limited %}
+                            <div class="fluorescent-chip" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.75rem;">
+                                <span class="chip-text-dark" style="color: white;">EDICIÓN LIMITADA</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-3d" style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--cream);">{{ product.name }}</h3>
+                    <p style="color: rgba(255, 248, 220, 0.8); margin-bottom: 1rem; font-size: 0.9rem;">{{ product.description }}</p>
+                    
+                    <div class="glass-morphism" style="padding: 1rem; margin-bottom: 1rem; font-size: 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Origen:</span>
+                            <span class="glossy-text">{{ product.origin }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Vitola:</span>
+                            <span class="glossy-text">{{ product.vitola }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Disponibles:</span>
+                            <span class="glossy-text">{{ product.stock }} cajas</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <span style="color: rgba(255, 248, 220, 0.6); text-decoration: line-through; margin-right: 10px;">${{ product.originalPrice }}</span>
+                        <span class="glossy-text fluorescent-text" style="font-size: 1.2rem; font-weight: 700;">${{ product.memberPrice }}</span>
+                        <span class="fluorescent-chip" style="background: #10b981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-left: 8px;">
+                            <span class="chip-text-dark" style="color: white;">-{{ ((1 - product.memberPrice / product.originalPrice) * 100)|round }}%</span>
+                        </span>
+                    </div>
+
+                    <button class="premium-button glossy-button clay-button pulse-animation" style="width: 100%;">
+                        <i class="fas fa-cart-plus" style="color: var(--dark-brown);"></i>
+                        <span class="button-text">Agregar al Carrito</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonios -->
+<section class="section clay-surface">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2 class="section-title text-3d contour-light">Testimonios de Miembros</h2>
+            <p class="section-subtitle soft-glow">Lo que dicen nuestros aficionados</p>
+        </div>
+
+        <!-- Simulación de carousel con JavaScript -->
+        <div id="testimonial-carousel" class="testimonial-card" style="max-width: 800px; margin: 0 auto; position: relative;">
+            {% for testimonial in testimonials %}
+                <div class="testimonial-slide {% if loop.first %}active{% endif %}" style="{% if not loop.first %}display: none;{% endif %} text-align: center; padding: 2rem;">
+                    <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                        {% for i in 1..5 %}
+                            <i class="fas fa-star" style="color: var(--gold-primary); margin: 0 2px; filter: drop-shadow(0 0 5px var(--gold-primary));"></i>
+                        {% endfor %}
+                    </div>
+                    <blockquote class="text-3d" style="font-size: 1.3rem; font-style: italic; margin-bottom: 2rem; color: var(--cream);">
+                        "{{ testimonial.quote }}"
+                    </blockquote>
+                    <div>
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--gold-primary); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="color: var(--dark-brown); font-size: 1.5rem;"></i>
+                        </div>
+                        <div class="glossy-text" style="font-weight: 600; margin-bottom: 0.5rem;">{{ testimonial.name }}</div>
+                        <div style="color: rgba(255, 248, 220, 0.7); font-size: 0.9rem;">{{ testimonial.title }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <!-- Controles del carousel -->
+            <button onclick="previousTestimonial()" style="position: absolute; left: -60px; top: 50%; transform: translateY(-50%); background: var(--gold-primary); color: var(--dark-brown); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button onclick="nextTestimonial()" style="position: absolute; right: -60px; top: 50%; transform: translateY(-50%); background: var(--gold-primary); color: var(--dark-brown); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Comunidad y Foro -->
+<section class="section clay-surface">
+    <div class="container">
+        <div class="row" style="align-items: center;">
+            <div class="col-6">
+                <h2 class="section-title-dark text-3d contour-light">Únete a la Conversación</h2>
+                <p class="section-subtitle-dark soft-glow" style="text-align: left;">
+                    Conecta con otros aficionados, comparte experiencias y descubre nuevos sabores 
+                    en nuestra comunidad privada.
+                </p>
+                
+                <div class="glass-morphism clay-depth" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="hover-glow" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <i class="fas fa-comments fluorescent-icon" style="margin-right: 12px; color: var(--gold-primary);"></i>
+                        <span><strong class="glossy-text">{{ forumStats.discussions }}</strong> discusiones activas</span>
+                    </div>
+                    <div class="hover-glow" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <i class="fas fa-envelope fluorescent-icon" style="margin-right: 12px; color: var(--gold-primary);"></i>
+                        <span><strong class="glossy-text">{{ forumStats.messages }}</strong> mensajes este mes</span>
+                    </div>
+                    <div class="hover-glow" style="display: flex; align-items: center;">
+                        <i class="fas fa-users fluorescent-icon" style="margin-right: 12px; color: var(--gold-primary);"></i>
+                        <span><strong class="glossy-text">{{ forumStats.activeMembers }}</strong> miembros activos</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <button class="premium-button glossy-button clay-button pulse-animation" style="margin-right: 1rem; margin-bottom: 1rem;">
+                        <i class="fas fa-comments" style="color: var(--dark-brown);"></i>
+                        <span class="button-text">Acceder al Foro</span>
+                    </button>
+                    <button class="premium-button" style="background: transparent; border: 2px solid var(--gold-primary); color: var(--gold-primary); margin-bottom: 1rem;">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Grupo WhatsApp VIP</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="benefit-card isometric-card" style="padding: 2rem;">
+                    <h3 class="text-3d" style="margin-bottom: 1.5rem; color: var(--cream);">Discusiones Recientes</h3>
+                    {% for post in recentPosts %}
+                        <div class="hover-lift" style="{% if not loop.last %}border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 1rem;{% endif %} margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--gold-primary); margin-right: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user" style="color: var(--dark-brown); font-size: 0.8rem;"></i>
+                                </div>
+                                <div>
+                                    <div class="glossy-text" style="font-weight: 600; font-size: 0.9rem;">{{ post.author }}</div>
+                                    <div style="color: rgba(255, 248, 220, 0.6); font-size: 0.8rem;">{{ post.time }}</div>
+                                </div>
+                            </div>
+                            <div style="color: var(--cream); margin-bottom: 0.5rem; font-size: 0.9rem;">{{ post.title }}</div>
+                            <div style="display: flex; gap: 8px;">
+                                <span style="background: rgba(212, 175, 55, 0.2); color: var(--gold-primary); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">
+                                    <i class="fas fa-reply" style="font-size: 0.7rem; margin-right: 4px;"></i>{{ post.replies }}
+                                </span>
+                                <span style="background: rgba(212, 175, 55, 0.2); color: var(--gold-primary); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">
+                                    <i class="fas fa-heart" style="font-size: 0.7rem; margin-right: 4px;"></i>{{ post.likes }}
+                                </span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <h3 class="footer-title text-3d">Club Privado Mokhuba</h3>
+                <p class="footer-description">
+                    La experiencia más exclusiva en habanos premium. 
+                    Tradición, calidad y excelencia en cada encuentro.
+                </p>
+                <div class="social-links">
+                    {% for social in socialLinks %}
+                        <a href="#" class="social-btn hover-lift">
+                            <i class="{{ social.icon }}"></i>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-4">
+                <h4 class="footer-subtitle text-3d">Acceso Rápido</h4>
+                <div class="footer-links">
+                    <a href="#" class="footer-link hover-glow">Mi Dashboard</a>
+                    <a href="#" class="footer-link hover-glow">Próximos Eventos</a>
+                    <a href="#" class="footer-link hover-glow">Tienda VIP</a>
+                    <a href="#" class="footer-link hover-glow">Foro Privado</a>
+                    <a href="#" class="footer-link hover-glow">Mi Perfil</a>
+                </div>
+            </div>
+            <div class="col-4">
+                <h4 class="footer-subtitle text-3d">Contacto VIP</h4>
+                <div class="contact-info">
+                    <div class="contact-item hover-glow">
+                        <i class="fas fa-phone contact-icon"></i>
+                        <span>+1 (555) 123-4567</span>
+                    </div>
+                    <div class="contact-item hover-glow">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <span>vip@mokhubacigars.com</span>
+                    </div>
+                    <div class="contact-item hover-glow">
+                        <i class="fab fa-whatsapp contact-icon"></i>
+                        <span>WhatsApp VIP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="copyright">
+            © 2024 Club Privado Mokhuba. Todos los derechos reservados. 
+            <span class="gold-text glossy-text">Membresía Exclusiva</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Scroll suave a secciones
+function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+
+// Carousel de testimonios
+let currentTestimonial = 0;
+const testimonials = document.querySelectorAll('.testimonial-slide');
+
+function showTestimonial(index) {
+    testimonials.forEach((slide, i) => {
+        slide.style.display = i === index ? 'block' : 'none';
+    });
+}
+
+function nextTestimonial() {
+    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+    showTestimonial(currentTestimonial);
+}
+
+function previousTestimonial() {
+    currentTestimonial = (currentTestimonial - 1 + testimonials.length) % testimonials.length;
+    showTestimonial(currentTestimonial);
+}
+
+// Auto-play carousel
+setInterval(nextTestimonial, 5000);
+
+// Efectos de hover y animaciones
+document.addEventListener('DOMContentLoaded', function() {
+    // Contador animado para estadísticas
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.textContent);
+                animateCounter(entry.target, target);
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+
+    function animateCounter(element, target) {
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+        }, 50);
+    }
+
+    statNumbers.forEach(stat => {
+        observer.observe(stat);
+    });
+
+    // Efecto parallax suave
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.isometric-card');
+        
+        parallaxElements.forEach((element, index) => {
+            const speed = 0.05 * (index % 3 + 1);
+            element.style.transform = `perspective(600px) rotateY(-5deg) rotateX(5deg) translateY(${scrolled * speed}px)`;
+        });
+    });
+});
+</script>
+{% endblock %}

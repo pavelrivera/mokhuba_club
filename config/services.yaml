@@ -1,0 +1,37 @@
+# config/services.yaml
+# CONFIGURACIÓN COMPLETA Y CORREGIDA - Mokhuba Club
+
+parameters:
+    app.email_sender: 'soporte@soportecnico.org'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # ========================================
+    # CONFIGURACIÓN DE STRIPE SERVICE
+    # ========================================
+    App\Service\StripeService:
+        arguments:
+            $stripeSecretKey: '%env(string:STRIPE_SECRET_KEY)%'
+            $stripePublicKey: '%env(string:STRIPE_PUBLISHABLE_KEY)%'
+            $logger: '@logger'
+            
+    App\Service\EmailService:
+        arguments:
+            $mailerDsn: '%env(MAILER_DSN)%'
+            
+    # ========================================
+    # CONFIGURACIÓN DE INVITATION CONTROLLER
+    # ========================================
+    App\Controller\InvitationController:
+        arguments:
+            $from: '%app.email_sender%'

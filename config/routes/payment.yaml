@@ -1,0 +1,26 @@
+# config/routes/payment.yaml
+# Rutas para el sistema de pagos de Mokhuba Club
+
+# Selección de membresías
+payment_membership_selection:
+    path: /payment/membership-selection
+    controller: App\Controller\PaymentController::membershipSelection
+    methods: [GET]
+
+# Procesar pago
+payment_process:
+    path: /payment/process
+    controller: App\Controller\PaymentController::processPayment
+    methods: [POST]
+
+# Página de éxito
+payment_success:
+    path: /payment/success
+    controller: App\Controller\PaymentController::success
+    methods: [GET]
+
+# Página de cancelación
+payment_cancel:
+    path: /payment/cancel
+    controller: App\Controller\PaymentController::cancel
+    methods: [GET]

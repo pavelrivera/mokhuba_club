@@ -1,0 +1,605 @@
+{# templates/admin/components/modal.html.twig #}
+
+<!-- Modal de Confirmación Premium -->
+<div id="confirmModal" class="modal-overlay hidden" onclick="closeConfirmModal(event)">
+    <div class="premium-modal" onclick="event.stopPropagation()">
+        <div class="modal-header-premium">
+            <div class="modal-icon-container">
+                <i id="modalIcon" class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 id="modalTitle" class="modal-title-premium">Confirmar Acción</h3>
+            <button class="modal-close-btn" onclick="closeConfirmModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-premium">
+            <p id="modalMessage" class="modal-message">¿Está seguro de que desea realizar esta acción?</p>
+        </div>
+        
+        <div class="modal-footer-premium">
+            <button id="modalCancelBtn" class="btn-modal-secondary" onclick="closeConfirmModal()">
+                <i class="fas fa-times"></i>
+                <span>Cancelar</span>
+            </button>
+            <button id="modalConfirmBtn" class="btn-modal-primary" onclick="confirmAction()">
+                <i class="fas fa-check"></i>
+                <span>Confirmar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Carga -->
+<div id="loadingModal" class="modal-overlay hidden">
+    <div class="loading-modal">
+        <div class="loading-content">
+            <div class="premium-spinner"></div>
+            <h3 class="loading-title">Procesando...</h3>
+            <p id="loadingMessage" class="loading-message">Por favor espere mientras procesamos su solicitud.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<style>
+/* =====================================================
+   MODAL PREMIUM STYLES
+===================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay:not(.hidden) {
+    opacity: 1;
+}
+
+.premium-modal {
+    background: linear-gradient(135deg, #2D1817, #3A1F1E);
+    border: 2px solid #D4AF37;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(212, 175, 55, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    max-width: 480px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.modal-overlay:not(.hidden) .premium-modal {
+    transform: scale(1);
+}
+
+.premium-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #D4AF37, #B8941F, #D4AF37);
+}
+
+.modal-header-premium {
+    padding: 32px 32px 24px;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+}
+
+.modal-icon-container {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #D4AF37, #B8941F);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+}
+
+.modal-icon-container i {
+    font-size: 1.8rem;
+    color: #2D1817;
+}
+
+.modal-icon-container.warning {
+    background: linear-gradient(135deg, #f59e0b, #f59e0b);
+}
+
+.modal-icon-container.danger {
+    background: linear-gradient(135deg, #dc2626, #dc2626);
+}
+
+.modal-icon-container.danger i,
+.modal-icon-container.warning i {
+    color: white;
+}
+
+.modal-icon-container.success {
+    background: linear-gradient(135deg, #059669, #059669);
+}
+
+.modal-icon-container.success i {
+    color: white;
+}
+
+.modal-title-premium {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #FFF8DC;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: #D4AF37;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: #D4AF37;
+    color: #2D1817;
+    transform: rotate(90deg);
+}
+
+.modal-body-premium {
+    padding: 0 32px 24px;
+    text-align: center;
+}
+
+.modal-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 248, 220, 0.9);
+    margin: 0;
+}
+
+.modal-footer-premium {
+    padding: 24px 32px 32px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.btn-modal-primary,
+.btn-modal-secondary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-modal-primary {
+    background: linear-gradient(135deg, #D4AF37, #B8941F);
+    color: #2D1817;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.btn-modal-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+}
+
+.btn-modal-secondary {
+    background: transparent;
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    color: #D4AF37;
+}
+
+.btn-modal-secondary:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: #D4AF37;
+}
+
+/* =====================================================
+   LOADING MODAL
+===================================================== */
+
+.loading-modal {
+    background: linear-gradient(135deg, #2D1817, #3A1F1E);
+    border: 2px solid #D4AF37;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(212, 175, 55, 0.3);
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.premium-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(212, 175, 55, 0.3);
+    border-top: 4px solid #D4AF37;
+    border-radius: 50%;
+    animation: premiumSpin 1s linear infinite;
+}
+
+@keyframes premiumSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-title {
+    font-size: 1.3rem;
+    color: #FFF8DC;
+    margin: 0;
+}
+
+.loading-message {
+    color: rgba(255, 248, 220, 0.8);
+    margin: 0;
+}
+
+/* =====================================================
+   TOAST NOTIFICATIONS
+===================================================== */
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+}
+
+.toast-notification {
+    background: linear-gradient(135deg, #2D1817, #3A1F1E);
+    border: 1px solid #D4AF37;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(212, 175, 55, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.toast-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #D4AF37;
+}
+
+.toast-notification.success::before {
+    background: #059669;
+}
+
+.toast-notification.error::before {
+    background: #dc2626;
+}
+
+.toast-notification.warning::before {
+    background: #f59e0b;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.toast-icon.success {
+    background: #059669;
+}
+
+.toast-icon.error {
+    background: #dc2626;
+}
+
+.toast-icon.warning {
+    background: #f59e0b;
+}
+
+.toast-icon.info {
+    background: #D4AF37;
+    color: #2D1817;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    color: #FFF8DC;
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+}
+
+.toast-message {
+    color: rgba(255, 248, 220, 0.8);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: rgba(255, 248, 220, 0.6);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toast-close:hover {
+    background: rgba(255, 248, 220, 0.1);
+    color: #FFF8DC;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+    .premium-modal {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-header-premium,
+    .modal-body-premium,
+    .modal-footer-premium {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .modal-footer-premium {
+        flex-direction: column;
+    }
+    
+    .toast-container {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+}
+</style>
+
+<script>
+// Variables globales para el modal
+let currentAction = null;
+let currentActionData = null;
+
+// =====================================================
+// FUNCIONES PRINCIPALES DEL MODAL
+// =====================================================
+
+function showConfirmModal(options = {}) {
+    const {
+        title = 'Confirmar Acción',
+        message = '¿Está seguro de que desea continuar?',
+        icon = 'fas fa-exclamation-triangle',
+        iconType = 'warning',
+        confirmText = 'Confirmar',
+        cancelText = 'Cancelar',
+        onConfirm = null,
+        data = null
+    } = options;
+
+    // Configurar contenido del modal
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMessage').textContent = message;
+    document.getElementById('modalIcon').className = icon;
+    document.getElementById('modalConfirmBtn').innerHTML = `<i class="fas fa-check"></i><span>${confirmText}</span>`;
+    document.getElementById('modalCancelBtn').innerHTML = `<i class="fas fa-times"></i><span>${cancelText}</span>`;
+
+    // Configurar icono
+    const iconContainer = document.querySelector('.modal-icon-container');
+    iconContainer.className = `modal-icon-container ${iconType}`;
+
+    // Guardar acción y datos
+    currentAction = onConfirm;
+    currentActionData = data;
+
+    // Mostrar modal
+    const modal = document.getElementById('confirmModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Focus en el botón de cancelar por defecto
+    setTimeout(() => {
+        document.getElementById('modalCancelBtn').focus();
+    }, 100);
+}
+
+function closeConfirmModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    
+    const modal = document.getElementById('confirmModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    
+    // Limpiar referencias
+    currentAction = null;
+    currentActionData = null;
+}
+
+function confirmAction() {
+    if (currentAction && typeof currentAction === 'function') {
+        currentAction(currentActionData);
+    }
+    closeConfirmModal();
+}
+
+// =====================================================
+// FUNCIONES DE LOADING
+// =====================================================
+
+function showLoadingModal(message = 'Procesando...') {
+    document.getElementById('loadingMessage').textContent = message;
+    document.getElementById('loadingModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function hideLoadingModal() {
+    document.getElementById('loadingModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// =====================================================
+// FUNCIONES DE TOAST
+// =====================================================
+
+function showToast(options = {}) {
+    const {
+        title = '',
+        message = '',
+        type = 'info',
+        duration = 4000
+    } = options;
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    
+    const iconClass = {
+        success: 'fas fa-check',
+        error: 'fas fa-exclamation-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    }[type] || 'fas fa-info-circle';
+
+    toast.innerHTML = `
+        <div class="toast-icon ${type}">
+            <i class="${iconClass}"></i>
+        </div>
+        <div class="toast-content">
+            ${title ? `<div class="toast-title">${title}</div>` : ''}
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="removeToast(this)">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+
+    const container = document.getElementById('toastContainer');
+    container.appendChild(toast);
+
+    // Mostrar con animación
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+
+    // Auto-remove después del duration
+    setTimeout(() => {
+        removeToast(toast.querySelector('.toast-close'));
+    }, duration);
+
+    return toast;
+}
+
+function removeToast(closeButton) {
+    const toast = closeButton.closest('.toast-notification');
+    toast.classList.remove('show');
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 300);
+}
+
+// =====================================================
+// EVENT LISTENERS
+// =====================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeConfirmModal();
+            hideLoadingModal();
+        }
+    });
+
+    // Prevenir el logout directo y mostrar confirmación
+    document.querySelectorAll('a[href*="logout"], .logout-btn').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Llamar showConfirmModal directamente
+            showConfirmModal({
+                title: 'Cerrar Sesión',
+                message: '¿Está seguro de que desea cerrar su sesión de administrador?',
+                icon: 'fas fa-sign-out-alt',
+                iconType: 'warning',
+                confirmText: 'Cerrar Sesión',
+                cancelText: 'Cancelar',
+                onConfirm: () => {
+                    window.location.href = '{{ path("auth_logout") }}';
+                }
+            });
+        });
+    });
+});
+</script>

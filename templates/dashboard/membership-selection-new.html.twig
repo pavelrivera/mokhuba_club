@@ -1,0 +1,503 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Selecciona tu Membresía | Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --black-premium: #1a0f0f;
+            --dark-brown: #2d1818;
+            --brown-medium: #5c1a1a;
+            --gold-primary: #d4af37;
+            --gold-light: #f4e5c2;
+            --cream: #fff8dc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, var(--black-premium) 0%, var(--dark-brown) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        .membership-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background-image: url('/images/fondoLogin.png.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .membership-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(45, 24, 24, 0.9) 100%);
+        }
+
+        .membership-container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header con bienvenida */
+        .welcome-header {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9));
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: visible;
+        }
+
+        .welcome-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .welcome-text h1 {
+            font-size: 2.5rem;
+            color: var(--gold-primary);
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-text .user-email {
+            font-size: 1rem;
+            color: var(--gold-light);
+            opacity: 0.85;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Avatar con dropdown */
+        .user-avatar-dropdown {
+            position: relative;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            cursor: pointer;
+            border: 3px solid var(--gold-primary);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 90px;
+            right: 0;
+            background: rgba(45, 24, 23, 0.98);
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 10px 0;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--gold-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold-primary);
+            padding-left: 25px;
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* Status actual */
+        .membership-status {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .status-icon {
+            font-size: 3rem;
+            color: var(--gold-primary);
+            margin-bottom: 15px;
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        .status-subtitle {
+            font-size: 2.2rem;
+            color: var(--gold-primary);
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .status-description {
+            font-size: 1rem;
+            color: var(--cream);
+            opacity: 0.8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Título "SELECCIONA TU MEMBRESÍA" */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--gold-light);
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Grid de membresías */
+        .memberships-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .membership-card {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9));
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .membership-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .membership-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        .membership-card:hover::before {
+            opacity: 0.3;
+        }
+
+        .membership-card.popular {
+            transform: scale(1.02);
+            border-color: var(--gold-light);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--gold-primary);
+            color: var(--dark-brown);
+            padding: 8px 40px;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .membership-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .membership-icon.ruby {
+            color: #e0115f;
+        }
+
+        .membership-icon.gold {
+            color: var(--gold-primary);
+        }
+
+        .membership-icon.platinum {
+            color: #e5e4e2;
+        }
+
+        .membership-name {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .membership-price {
+            font-size: 2.5rem;
+            color: var(--cream);
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .membership-price small {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+        }
+
+        .membership-button {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            color: var(--dark-brown);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .membership-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .status-subtitle {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .memberships-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .membership-card.popular {
+                transform: scale(1);
+            }
+
+            .avatar-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .dropdown-menu {
+                top: 70px;
+                right: -10px;
+                min-width: 180px;
+            }
+
+            .welcome-content {
+                position: relative;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="membership-page">
+    <div class="membership-container">
+        <!-- Header de Bienvenida -->
+        <div class="welcome-header">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h1>¡Bienvenido, {{ user.firstName }}</h1>
+                    <p class="user-email">{{ user.email }}</p>
+                </div>
+                <div class="user-avatar-dropdown">
+                    <div class="avatar-circle" onclick="toggleDropdown()">
+                        {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                    </div>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="{{ path('profile_edit') }}" class="dropdown-item">
+                            <i class="fas fa-user-edit"></i> Editar Perfil
+                        </a>
+                        <a href="{{ path('auth_logout') }}" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado Actual de Membresía -->
+        <div class="membership-status">
+            <div class="status-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h2 class="status-title">Tu Membresía Actual</h2>
+            <h3 class="status-subtitle">Sin Membresía Activa</h3>
+            <p class="status-description">Seleccione su nivel para empezar</p>
+        </div>
+
+        <!-- Título de sección -->
+        <h2 class="section-title">Selecciona tu Membresía</h2>
+
+        <!-- Grid de Membresías -->
+        <div class="memberships-grid">
+            <!-- Rubí -->
+            <div class="membership-card" onclick="selectMembership('ruby')">
+                <div class="membership-icon ruby">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h3 class="membership-name">Rubí</h3>
+                <p class="membership-price">$299<small>/mes</small></p>
+                <button class="membership-button" type="button">Seleccionar</button>
+            </div>
+
+            <!-- Oro (Popular) -->
+            <div class="membership-card popular" onclick="selectMembership('gold')">
+                <div class="popular-badge">¡POPULAR!</div>
+                <div class="membership-icon gold">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <h3 class="membership-name">Oro</h3>
+                <p class="membership-price">$599<small>/mes</small></p>
+                <button class="membership-button" type="button">Seleccionar</button>
+            </div>
+
+            <!-- Platino -->
+            <div class="membership-card" onclick="selectMembership('platinum')">
+                <div class="membership-icon platinum">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3 class="membership-name">Platino</h3>
+                <p class="membership-price">$999<small>/mes</small></p>
+                <button class="membership-button" type="button">Seleccionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form oculto para enviar el pago -->
+<form id="paymentForm" method="POST" action="{{ path('payment_create_checkout') }}" style="display: none;">
+    <input type="hidden" name="membershipType" id="membershipType">
+</form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Toggle dropdown
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar dropdown al hacer click fuera
+        window.addEventListener('click', function(e) {
+            if (!e.target.matches('.avatar-circle')) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // Seleccionar membresía con confirmación
+        function selectMembership(type) {
+            const levelNames = {
+                'ruby': 'Rubí ($299/mes)',
+                'gold': 'Oro ($599/mes)',
+                'platinum': 'Platino ($999/mes)'
+            };
+            
+            // Confirmación
+            const confirmed = confirm('¿Confirmas que deseas la membresía ' + levelNames[type] + '?\n\nSerás redirigido al sistema de pago.');
+            
+            if (confirmed) {
+                document.getElementById('membershipType').value = type;
+                document.getElementById('paymentForm').submit();
+            }
+        }
+    </script>
+{% endblock %}

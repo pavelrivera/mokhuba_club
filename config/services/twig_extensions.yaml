@@ -1,0 +1,4 @@
+# If your project already autowires src/Twig/* as services, you can skip this file.
+services:
+    App\Twig\JsonDecodeExtension:
+        tags: ['twig.extension']

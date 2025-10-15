@@ -1,0 +1,270 @@
+{# templates/emails/invitation.html.twig #}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación a Mokhuba Club</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a0f0f;
+            color: #f8f2e7;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #2d1817 0%, #5c1a1a 100%);
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #D4AF37, #F4E5C2);
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #D4AF37, #F4E5C2, #D4AF37);
+        }
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #2a1a12;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 1.3rem;
+            color: #D4AF37;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .message-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .sender-info {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #D4AF37;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .sender-name {
+            color: #D4AF37;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .club-features {
+            margin: 30px 0;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 10px;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: #D4AF37;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #D4AF37, #F4E5C2);
+            color: #2a1a12;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        .expiry-notice {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #fbbf24;
+            text-align: center;
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .footer-links {
+            margin: 20px 0;
+        }
+        .footer-link {
+            color: #D4AF37;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🚬</div>
+            <h1>MOKHUBA CLUB</h1>
+            <p style="margin: 10px 0 0 0; color: #2a1a12; font-style: italic;">Experiencia Premium en Tabaco</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="greeting">
+                ¡Hola {{ invitee_name }}!
+            </div>
+
+            <p style="font-size: 1.1rem; line-height: 1.6;">
+                Tienes una invitación especial para unirte a <strong>Mokhuba Club</strong>, 
+                la comunidad exclusiva de aficionados al tabaco premium.
+            </p>
+
+            <!-- Sender Info -->
+            <div class="sender-info">
+                <div style="font-size: 0.9rem; margin-bottom: 5px; opacity: 0.8;">Te invita</div>
+                <div class="sender-name">{{ sender_name }}</div>
+            </div>
+
+            <!-- Personal Message (if exists) -->
+            {% if invitation.message %}
+            <div class="message-box">
+                <div style="font-size: 0.9rem; color: #D4AF37; margin-bottom: 10px;">
+                    <strong>Mensaje personal:</strong>
+                </div>
+                <p style="font-style: italic; line-height: 1.6;">
+                    "{{ invitation.message }}"
+                </p>
+            </div>
+            {% endif %}
+
+            <div class="divider"></div>
+
+            <!-- Club Features -->
+            <div class="club-features">
+                <h2 style="color: #D4AF37; font-size: 1.5rem; margin-bottom: 20px;">
+                    ¿Qué es Mokhuba Club?
+                </h2>
+                
+                <div class="feature">
+                    <span class="feature-icon">💎</span>
+                    <div>
+                        <strong>Membresías Exclusivas:</strong> Ruby, Gold y Platinum con beneficios únicos
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🎫</span>
+                    <div>
+                        <strong>Eventos Privados:</strong> Acceso a degustaciones y eventos exclusivos
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🎁</span>
+                    <div>
+                        <strong>Regalos Personalizados:</strong> Obsequios premium en fechas especiales
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🌟</span>
+                    <div>
+                        <strong>Productos Únicos:</strong> Acceso anticipado a ediciones limitadas
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🤝</span>
+                    <div>
+                        <strong>Comunidad Elite:</strong> Conecta con otros aficionados al tabaco
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- CTA -->
+            <div style="text-align: center;">
+                <p style="font-size: 1.1rem; margin-bottom: 20px;">
+                    <strong>¡Únete ahora y comienza tu experiencia premium!</strong>
+                </p>
+                
+                <a href="{{ invitation_url }}" class="cta-button">
+                    🚀 Aceptar Invitación
+                </a>
+            </div>
+
+            <!-- Expiry Notice -->
+            <div class="expiry-notice">
+                ⏰ <strong>Importante:</strong> Esta invitación expira el 
+                {{ expires_at|date('d/m/Y') }} a las {{ expires_at|date('H:i') }}
+            </div>
+
+            <!-- Alternative Link -->
+            <div style="margin-top: 30px; padding: 20px; background: rgba(0, 0, 0, 0.2); border-radius: 10px;">
+                <p style="font-size: 0.9rem; margin-bottom: 10px; opacity: 0.8;">
+                    Si el botón no funciona, copia y pega este enlace en tu navegador:
+                </p>
+                <div style="word-break: break-all; color: #D4AF37; font-family: monospace; font-size: 0.85rem;">
+                    {{ invitation_url }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div style="font-size: 1.2rem; margin-bottom: 10px;">🚬</div>
+            <p style="margin: 10px 0; font-weight: 600;">MOKHUBA CLUB</p>
+            <p style="margin: 5px 0; font-size: 0.9rem; opacity: 0.7;">
+                La experiencia premium que mereces
+            </p>
+            
+            <div class="divider"></div>
+
+            <p style="font-size: 0.85rem; opacity: 0.6; margin-top: 20px;">
+                Este correo fue enviado porque {{ sender_name }} te invitó a unirte a Mokhuba Club.<br>
+                Si no esperabas esta invitación, puedes ignorar este mensaje.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mock Checkout - Mokhuba Club{% endblock %}
+{% block body %}
+<div class="container mt-5">
+  <h1>Mock Checkout</h1>
+  <p>Estás en modo <strong>MOCK</strong>. No se realizarán cargos reales.</p>
+  <form method="get" action="{{ path('payment_success') }}">
+    <input type="hidden" name="session_id" value="mock_session_{{ random() }}">
+    <button class="btn btn-success">Confirmar pago simulado</button>
+  </form>
+  <a href="{{ path('payment_cancel') }}" class="btn btn-outline-secondary mt-2">Cancelar</a>
+</div>
+{% endblock %}

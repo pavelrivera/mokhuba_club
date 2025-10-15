@@ -1,0 +1,3095 @@
+{# templates/admin/users/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestión de Usuarios - Mokhuba Club{% endblock %}
+
+{% block body_class %}admin-dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       ESTILOS ESPECÍFICOS ADMIN DASHBOARD (COMPARTIDOS)
+    ===================================================== */
+    
+    .admin-layout {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 50%, #2a1a19 100%);
+    }
+
+    /* =====================================================
+       SIDEBAR NAVIGATION (COMPARTIDO)
+    ===================================================== */
+    .admin-sidebar {
+        width: 280px;
+        background: rgba(26, 15, 14, 0.95);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(212, 175, 55, 0.3);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        transition: var(--transition-smooth);
+    }
+
+    .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(184, 148, 31, 0.05));
+    }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--cream);
+        text-decoration: none;
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .sidebar-logo:hover {
+        color: var(--gold-primary);
+    }
+
+    .sidebar-logo .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-size: 1.2rem;
+    }
+
+    .sidebar-nav {
+        padding: 20px 0;
+    }
+
+    .nav-section {
+        margin-bottom: 32px;
+    }
+
+    .nav-section-title {
+        padding: 0 20px 8px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(212, 175, 55, 0.7);
+        font-weight: 600;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: rgba(255, 248, 220, 0.8);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+
+    .nav-link:hover {
+        background: rgba(212, 175, 55, 0.1);
+        color: var(--gold-primary);
+        padding-left: 28px;
+    }
+
+    .nav-link.active {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 148, 31, 0.1));
+        color: var(--gold-primary);
+        border-right: 3px solid var(--gold-primary);
+    }
+
+    .nav-link.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--gold-primary);
+    }
+
+    .nav-icon {
+        width: 20px;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .nav-badge {
+        margin-left: auto;
+        background: var(--error);
+        color: white;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    /* =====================================================
+       MAIN CONTENT AREA (COMPARTIDO)
+    ===================================================== */
+    .admin-main {
+        flex: 1;
+        margin-left: 280px;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 50%, #2a1a19 100%);
+    }
+
+    .admin-header {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        padding: 16px 32px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--cream);
+    }
+
+    .page-subtitle {
+        margin: 4px 0 0 0;
+        font-size: 0.875rem;
+        color: rgba(255, 248, 220, 0.7);
+        font-weight: 400;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .admin-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: rgba(212, 175, 55, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-weight: 600;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: var(--cream);
+        font-size: 0.875rem;
+    }
+
+    .user-role {
+        font-size: 0.75rem;
+        color: var(--gold-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .logout-btn {
+        background: transparent;
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: var(--error);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        text-decoration: none;
+    }
+
+    .logout-btn:hover {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+    }
+
+    /* =====================================================
+       CONTENT AREA ESPECÍFICO PARA USUARIOS
+    ===================================================== */
+    .admin-content {
+        padding: 32px;
+    }
+
+    .users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--cream);
+        font-family: var(--font-heading);
+    }
+
+    .users-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        border: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        color: var(--dark-brown);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--gold-primary);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .filters-section {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        align-items: end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .filter-label {
+        color: var(--gold-primary);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-input, .filter-select {
+        padding: 10px 12px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        background: rgba(45, 24, 23, 0.6);
+        color: var(--cream);
+        font-size: 0.875rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .filter-input:focus, .filter-select:focus {
+        outline: none;
+        border-color: var(--gold-primary);
+    }
+
+    .content-card {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .users-table th {
+        background: rgba(212, 175, 55, 0.1);
+        padding: 16px 20px;
+        text-align: left;
+        color: var(--gold-primary);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        position: sticky;
+        top: 0;
+    }
+
+    .users-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        color: var(--cream);
+        vertical-align: middle;
+    }
+
+    .users-table tr:hover {
+        background: rgba(212, 175, 55, 0.05);
+    }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-cell .avatar {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-details .name {
+        font-weight: 600;
+        color: var(--cream);
+        margin-bottom: 2px;
+    }
+
+    .user-details .email {
+        font-size: 0.875rem;
+        color: rgba(255, 248, 220, 0.7);
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-primary {
+        background: rgba(212, 175, 55, 0.2);
+        color: var(--gold-primary);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .badge-success {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-warning {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .actions-cell {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .btn-sm {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+
+    /* =====================================================
+       MODAL PREMIUM STYLES
+    ===================================================== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay:not(.hidden) {
+        opacity: 1;
+    }
+
+    .premium-modal {
+        background: linear-gradient(135deg, #2D1817, #3A1F1E);
+        border: 2px solid #D4AF37;
+        border-radius: 20px;
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.5),
+            0 0 40px rgba(212, 175, 55, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        max-width: 480px;
+        width: 90%;
+        max-height: 90vh;
+        overflow: hidden;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        position: relative;
+    }
+
+    .modal-overlay:not(.hidden) .premium-modal {
+        transform: scale(1);
+    }
+
+    .premium-modal::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #D4AF37, #B8941F, #D4AF37);
+    }
+
+    .modal-header-premium {
+        padding: 32px 32px 24px;
+        text-align: center;
+        position: relative;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+    }
+
+    .modal-icon-container {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+    }
+
+    .modal-icon-container i {
+        font-size: 1.8rem;
+        color: #2D1817;
+    }
+
+    .modal-icon-container.warning {
+        background: linear-gradient(135deg, #f59e0b, #f59e0b);
+    }
+
+    .modal-icon-container.warning i {
+        color: white;
+    }
+
+    .modal-icon-container.error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .modal-icon-container.error i {
+        color: white;
+    }
+
+    .modal-icon-container.success {
+        background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .modal-icon-container.success i {
+        color: white;
+    }
+
+    .modal-title-premium {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #FFF8DC;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-close-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(212, 175, 55, 0.2);
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        color: #D4AF37;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close-btn:hover {
+        background: #D4AF37;
+        color: #2D1817;
+        transform: rotate(90deg);
+    }
+
+    .modal-body-premium {
+        padding: 0 32px 24px;
+        text-align: center;
+    }
+
+    .modal-message {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: rgba(255, 248, 220, 0.9);
+        margin: 0;
+    }
+
+    .modal-footer-premium {
+        padding: 24px 32px 32px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+    }
+
+    .btn-modal-primary,
+    .btn-modal-secondary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .btn-modal-primary {
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        color: #2D1817;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-modal-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-modal-secondary {
+        background: transparent;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        color: #D4AF37;
+    }
+
+    .btn-modal-secondary:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: #D4AF37;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* =====================================================
+       ESTILOS ESPECÍFICOS PARA FORMULARIOS DE MODALES
+    ===================================================== */
+
+    /* Form Groups */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-label {
+        color: var(--gold-primary);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-input, .form-select {
+        padding: 12px 16px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        background: rgba(45, 24, 23, 0.6);
+        color: var(--cream);
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--gold-primary);
+        background: rgba(45, 24, 23, 0.8);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 248, 220, 0.5);
+    }
+
+    .form-select option {
+        background: var(--dark-brown);
+        color: var(--cream);
+        padding: 8px;
+    }
+
+    /* Field Errors */
+    .field-error {
+        color: #ef4444;
+        font-size: 0.75rem;
+        min-height: 18px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+    }
+
+    .field-error.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .field-error::before {
+        content: '⚠ ';
+    }
+
+    /* Checkboxes */
+    .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 6px;
+        transition: background 0.3s ease;
+    }
+
+    .form-checkbox:hover {
+        background: rgba(212, 175, 55, 0.05);
+    }
+
+    .form-checkbox input[type="checkbox"] {
+        display: none;
+    }
+
+    .checkmark {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 4px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .form-checkbox input[type="checkbox"]:checked + .checkmark {
+        background: var(--gold-primary);
+        border-color: var(--gold-primary);
+    }
+
+    .form-checkbox input[type="checkbox"]:checked + .checkmark::after {
+        content: '✓';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--dark-brown);
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+
+    .checkbox-label {
+        color: rgba(255, 248, 220, 0.9);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* User Preview */
+    .user-preview {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .user-preview:not(.hidden) {
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .preview-header {
+        color: var(--gold-primary);
+        font-weight: 600;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .preview-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .preview-avatar {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .preview-details {
+        flex: 1;
+    }
+
+    .preview-name {
+        font-weight: 600;
+        color: var(--cream);
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .preview-email {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.875rem;
+        margin-bottom: 4px;
+    }
+
+    .preview-membership {
+        color: var(--gold-primary);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .preview-codes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .preview-code {
+        font-size: 0.75rem;
+        color: rgba(255, 248, 220, 0.8);
+    }
+
+    .preview-code code {
+        background: rgba(45, 24, 23, 0.8);
+        padding: 4px 8px;
+        border-radius: 4px;
+        color: var(--gold-primary);
+        font-family: monospace;
+        display: inline-block;
+        margin-left: 4px;
+    }
+
+    /* =====================================================
+       RESPONSIVE MODAL ADJUSTMENTS
+    ===================================================== */
+    
+    /* Ajustes para modales en diferentes resoluciones */
+    .premium-modal[style*="max-width: 600px"] {
+        max-width: min(600px, 90vw);
+        width: 100%;
+    }
+    
+    /* Ajustes específicos para diferentes tamaños de pantalla */
+    @media (min-width: 1920px) {
+        .premium-modal[style*="max-width: 600px"] {
+            max-width: 650px;
+        }
+        
+        .modal-body-premium {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+    }
+    
+    @media (min-width: 1440px) and (max-width: 1919px) {
+        .premium-modal[style*="max-width: 600px"] {
+            max-width: 600px;
+        }
+    }
+    
+    @media (min-width: 1200px) and (max-width: 1439px) {
+        .premium-modal[style*="max-width: 600px"] {
+            max-width: 550px;
+        }
+        
+        .modal-header-premium,
+        .modal-body-premium,
+        .modal-footer-premium {
+            padding-left: 28px;
+            padding-right: 28px;
+        }
+    }
+
+    /* =====================================================
+       MOBILE RESPONSIVE
+    ===================================================== */
+    @media (max-width: 1024px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .admin-main {
+            margin-left: 0;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+        
+        .premium-modal[style*="max-width: 600px"] {
+            max-width: 95vw;
+            margin: 10px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-content {
+            padding: 20px;
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .users-header {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .users-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .premium-modal[style*="max-width: 600px"] {
+            width: 95vw;
+            max-width: none;
+            margin: 10px;
+        }
+        
+        .modal-header-premium,
+        .modal-body-premium,
+        .modal-footer-premium {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        
+        /* Forzar diseño de una columna en mobile */
+        #createUserFormContainer div[style*="grid-template-columns: 1fr 1fr"],
+        #editUserFormContainer div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+            gap: 16px;
+        }
+        
+        .preview-codes {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .preview-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 12px;
+        }
+        
+        /* Ajustar altura del modal en mobile */
+        .premium-modal {
+            max-height: 95vh;
+        }
+        
+        .modal-body-premium {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .premium-modal[style*="max-width: 600px"] {
+            width: 98vw;
+            margin: 5px;
+        }
+        
+        .modal-header-premium,
+        .modal-body-premium,
+        .modal-footer-premium {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        
+        .modal-header-premium {
+            padding-top: 24px;
+            padding-bottom: 16px;
+        }
+        
+        .modal-footer-premium {
+            padding-top: 16px;
+            padding-bottom: 24px;
+        }
+        
+        .form-input, .form-select {
+            padding: 10px 12px;
+            font-size: 16px; /* Evitar zoom en iOS */
+        }
+        
+        .btn-modal-primary,
+        .btn-modal-secondary {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Ajustes especiales para landscape en tablets */
+    @media (max-width: 1024px) and (orientation: landscape) {
+        .premium-modal {
+            max-height: 90vh;
+        }
+        
+        .modal-body-premium {
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+        
+        .premium-modal[style*="max-width: 600px"] {
+            max-width: 80vw;
+        }
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--gold-primary);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+
+    .mobile-menu-btn:hover {
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <!-- Sidebar Navigation (COMPARTIDO) -->
+    <nav class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="{{ path('admin_dashboard') }}" class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <span>Mokhuba Admin</span>
+            </a>
+        </div>
+
+        <div class="sidebar-nav">
+            <!-- Dashboard Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Panel Principal</div>
+                <a href="{{ path('admin_dashboard') }}" class="nav-link">
+                    <i class="nav-icon fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-chart-pie"></i>
+                    <span>Analíticas</span>
+                </a>
+            </div>
+
+            <!-- Gestión Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Gestión de Miembros</div>
+                <a href="{{ path('admin_users') }}" class="nav-link active">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span>Usuarios</span>
+                    {% if stats.total_users is defined and stats.total_users > 0 %}
+                        <span class="nav-badge">{{ stats.total_users }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ path('admin_memberships') }}" class="nav-link">
+                    <i class="nav-icon fas fa-crown"></i>
+                    <span>Membresías</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-envelope"></i>
+                    <span>Invitaciones</span>
+                    <span class="nav-badge">3</span>
+                </a>
+            </div>
+
+            <!-- Contenido Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Contenido</div>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-calendar-alt"></i>
+                    <span>Eventos</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-shopping-cart"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-newspaper"></i>
+                    <span>Noticias</span>
+                </a>
+            </div>
+
+            <!-- Sistema Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <a href="{{ path('admin_settings') }}" class="nav-link">
+                    <i class="nav-icon fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-shield-alt"></i>
+                    <span>Seguridad</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-file-alt"></i>
+                    <span>Logs</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header (COMPARTIDO) -->
+        <header class="admin-header">
+            <div class="header-content">
+                <div>
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Gestión de Usuarios</h1>
+                    <p class="page-subtitle">Administra todos los miembros del club</p>
+                </div>
+
+                <div class="header-actions">
+                    <div class="admin-user">
+                        <div class="user-avatar">
+                            {% if app.user %}
+                                {{ app.user.firstName|first|upper }}{{ app.user.lastName|first|upper }}
+                            {% else %}
+                                AD
+                            {% endif %}
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">
+                                {% if app.user %}
+                                    {{ app.user.firstName }} {{ app.user.lastName }}
+                                {% else %}
+                                    Administrador
+                                {% endif %}
+                            </div>
+                            <div class="user-role">Administrador</div>
+                        </div>
+                    </div>
+
+                    <a href="{{ path('auth_logout') }}" class="logout-btn" onclick="handleLogout(event)">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Salir</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content ESPECÍFICO PARA USUARIOS -->
+        <div class="admin-content">
+            <!-- Header de usuarios -->
+            <div class="users-header">
+                <div>
+                    <h2 class="section-title">
+                        <i class="fas fa-users" style="margin-right: 8px; color: var(--gold-primary);"></i>
+                        Gestión de Usuarios
+                    </h2>
+                </div>
+                <div class="users-actions">
+                    <button class="btn btn-secondary" onclick="exportUsers()">
+                        <i class="fas fa-download"></i>
+                        <span>Exportar</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="openCreateUserModal()">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Crear Usuario</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="openInviteModal()">
+                        <i class="fas fa-envelope"></i>
+                        <span>Invitar Usuario</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Buscar Usuario</label>
+                        <input type="text" class="filter-input" placeholder="Nombre, email..." id="searchInput" onkeyup="filterUsers()">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Membresía</label>
+                        <select class="filter-select" id="membershipFilter" onchange="filterUsers()">
+                            <option value="">Todas</option>
+                            <option value="admin">Admin</option>
+                            <option value="platinum">Platino</option>
+                            <option value="gold">Oro</option>
+                            <option value="ruby">Rubí</option>
+                            <option value="guest">Invitado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Estado</label>
+                        <select class="filter-select" id="statusFilter" onchange="filterUsers()">
+                            <option value="">Todos</option>
+                            <option value="active">Activos</option>
+                            <option value="inactive">Inactivos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-secondary" onclick="clearFilters()" style="width: 100%;">
+                            <i class="fas fa-times"></i>
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <div class="content-card">
+                <div class="table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Código</th>
+                                <th>Membresía</th>
+                                <th>Estado</th>
+                                <th>Teléfono</th>
+                                <th>Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            {% if users is defined and users is not empty %}
+                                {% for user_item in users %}
+                                    <tr class="user-row" 
+                                        data-name="{{ user_item.firstName|lower }} {{ user_item.lastName|lower }}" 
+                                        data-email="{{ user_item.email|lower }}" 
+                                        data-membership="{{ user_item.membershipLevel|default('guest') }}" 
+                                        data-status="{{ user_item.isActive ? 'active' : 'inactive' }}">
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar">
+                                                    {{ user_item.firstName|first|upper }}{{ user_item.lastName|first|upper }}
+                                                </div>
+                                                <div class="user-details">
+                                                    <div class="name">{{ user_item.firstName }} {{ user_item.lastName }}</div>
+                                                    <div class="email">{{ user_item.email }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <code style="background: rgba(212, 175, 55, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--gold-primary); font-size: 0.8rem;">
+                                                {{ user_item.uniqueCode|default('N/A') }}
+                                            </code>
+                                        </td>
+                                        <td>
+                                            {% set membership = user_item.membershipLevel|default('guest') %}
+                                            {% if membership == 'admin' %}
+                                                <span class="badge" style="background: rgba(111, 66, 193, 0.2); color: #6f42c1; border: 1px solid rgba(111, 66, 193, 0.3);">
+                                                    <i class="fas fa-shield-alt"></i> Admin
+                                                </span>
+                                            {% elseif membership == 'ruby' %}
+                                                <span class="badge" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3);">
+                                                    <i class="fas fa-gem"></i> Rubí
+                                                </span>
+                                            {% elseif membership == 'gold' %}
+                                                <span class="badge badge-primary">
+                                                    <i class="fas fa-medal"></i> Oro
+                                                </span>
+                                            {% elseif membership == 'platinum' %}
+                                                <span class="badge" style="background: rgba(149, 165, 166, 0.2); color: #95a5a6; border: 1px solid rgba(149, 165, 166, 0.3);">
+                                                    <i class="fas fa-star"></i> Platino
+                                                </span>
+                                            {% else %}
+                                                <span class="badge" style="background: rgba(108, 117, 125, 0.2); color: #6c757d; border: 1px solid rgba(108, 117, 125, 0.3);">
+                                                    <i class="fas fa-user"></i> Invitado
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user_item.isActive %}
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check-circle"></i> Activo
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-warning">
+                                                    <i class="fas fa-pause-circle"></i> Inactivo
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user_item.phone|default('N/R') }}</td>
+                                        <td>{{ user_item.createdAt ? user_item.createdAt|date('d/m/Y') : 'N/A' }}</td>
+                                        <td>
+                                            <div class="actions-cell">
+                                                <button class="btn btn-secondary btn-sm" onclick="editUser({{ user_item.id }})" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm" onclick="changePassword({{ user_item.id }})" title="Contraseña">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
+                                                {% if user_item.isActive %}
+                                                    <button class="btn btn-danger btn-sm" onclick="toggleStatus({{ user_item.id }})" title="Desactivar">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button class="btn btn-success btn-sm" onclick="toggleStatus({{ user_item.id }})" title="Activar">
+                                                        <i class="fas fa-user-check"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 40px;">
+                                        <div style="color: rgba(255, 248, 220, 0.7);">
+                                            <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                            <h3>No hay usuarios registrados</h3>
+                                            <p>Los nuevos miembros aparecerán aquí una vez que se registren.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Overlay para mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- Modal de confirmación -->
+<div id="confirmModal" class="modal-overlay hidden" onclick="closeConfirmModal(event)">
+    <div class="premium-modal" onclick="event.stopPropagation()">
+        <div class="modal-header-premium">
+            <div class="modal-icon-container">
+                <i id="modalIcon" class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 id="modalTitle" class="modal-title-premium">Confirmar Acción</h3>
+            <button class="modal-close-btn" onclick="closeConfirmModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-premium">
+            <p id="modalMessage" class="modal-message">¿Está seguro de que desea realizar esta acción?</p>
+        </div>
+        
+        <div class="modal-footer-premium">
+            <button id="modalCancelBtn" class="btn-modal-secondary" onclick="closeConfirmModal()">
+                <i class="fas fa-times"></i>
+                <span>Cancelar</span>
+            </button>
+            <button id="modalConfirmBtn" class="btn-modal-primary" onclick="confirmAction()">
+                <i class="fas fa-check"></i>
+                <span>Confirmar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Crear Usuario -->
+<div id="createUserModal" class="modal-overlay hidden" onclick="closeCreateUserModal(event)">
+    <div class="premium-modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+        <div class="modal-header-premium">
+            <div class="modal-icon-container" style="background: linear-gradient(135deg, #059669, #059669);">
+                <i class="fas fa-user-plus" style="color: white;"></i>
+            </div>
+            <h3 class="modal-title-premium">Crear Nuevo Usuario</h3>
+            <button class="modal-close-btn" onclick="closeCreateUserModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-premium" style="padding: 0 32px;">
+            <div id="createUserFormContainer">
+                <!-- Grid de campos principales -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <!-- Nombre -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Nombre *
+                        </label>
+                        <input type="text" 
+                               id="firstName" 
+                               name="firstName" 
+                               class="form-input" 
+                               placeholder="Nombre del usuario" 
+                               required
+                               onkeyup="generatePreview()">
+                        <div class="field-error" id="firstNameError"></div>
+                    </div>
+
+                    <!-- Apellido -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Apellido *
+                        </label>
+                        <input type="text" 
+                               id="lastName" 
+                               name="lastName" 
+                               class="form-input" 
+                               placeholder="Apellido del usuario" 
+                               required
+                               onkeyup="generatePreview()">
+                        <div class="field-error" id="lastNameError"></div>
+                    </div>
+                </div>
+
+                <!-- Email (ancho completo) -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email *
+                    </label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           class="form-input" 
+                           placeholder="correo@ejemplo.com" 
+                           required
+                           onkeyup="generatePreview()"
+                           onblur="validateEmail()">
+                    <div class="field-error" id="emailError"></div>
+                </div>
+
+                <!-- Grid de campos secundarios -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i>
+                            Teléfono
+                        </label>
+                        <input type="tel" 
+                               id="phone" 
+                               name="phone" 
+                               class="form-input" 
+                               placeholder="+240 123 456 789">
+                        <div class="field-error" id="phoneError"></div>
+                    </div>
+
+                    <!-- Membresía -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-crown"></i>
+                            Membresía *
+                        </label>
+                        <select id="membershipLevel" name="membershipLevel" class="form-input" required onchange="generatePreview()">
+                            <option value="">Seleccionar membresía...</option>
+                            <option value="basica">🥉 Rubí </option>
+                            <option value="premium">🥈 Oro</option>
+                            <option value="vip">🥇 Platino</option>
+                            <option value="admin" style="display: none;">👑 Administrador</option>
+                        </select>
+                        <div class="field-error" id="membershipError"></div>
+                    </div>
+                </div>
+
+                <!-- Preview del usuario que se va a crear -->
+                <div id="userPreview" class="user-preview hidden" style="margin-bottom: 20px;">
+                    <div class="preview-header">
+                        <i class="fas fa-eye"></i>
+                        <strong>Vista previa del usuario:</strong>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-avatar" id="previewAvatar">--</div>
+                        <div class="preview-details">
+                            <div class="preview-name" id="previewName">Nombre Apellido</div>
+                            <div class="preview-email" id="previewEmail">correo@ejemplo.com</div>
+                            <div class="preview-membership" id="previewMembership">
+                                <i class="fas fa-crown"></i> Nivel de membresía
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-codes">
+                        <div class="preview-code">
+                            <strong>Código único:</strong> 
+                            <code id="previewUniqueCode">MK-XXXXXXXXX</code>
+                        </div>
+                        <div class="preview-code">
+                            <strong>Contraseña temporal:</strong> 
+                            <code id="previewPassword">Temp123456!</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opciones adicionales -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="sendWelcomeEmail" name="sendWelcomeEmail" checked>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">
+                            <i class="fas fa-envelope"></i>
+                            Enviar email de bienvenida con credenciales
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="generateRandomPassword" name="generateRandomPassword" checked>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">
+                            <i class="fas fa-random"></i>
+                            Generar contraseña segura automáticamente
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer-premium">
+            <button type="button" class="btn-modal-secondary" onclick="closeCreateUserModal()">
+                <i class="fas fa-times"></i>
+                <span>Cancelar</span>
+            </button>
+            <button type="button" class="btn-modal-primary" onclick="handleCreateUser()">
+                <i class="fas fa-user-plus"></i>
+                <span>Crear Usuario</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Editar Usuario -->
+<div id="editUserModal" class="modal-overlay hidden" onclick="closeEditUserModal(event)">
+    <div class="premium-modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+        <div class="modal-header-premium">
+            <div class="modal-icon-container" style="background: linear-gradient(135deg, #f59e0b, #f59e0b);">
+                <i class="fas fa-edit" style="color: white;"></i>
+            </div>
+            <h3 class="modal-title-premium">Editar Usuario</h3>
+            <button class="modal-close-btn" onclick="closeEditUserModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-premium" style="padding: 0 32px;">
+            <div id="editUserFormContainer">
+                <!-- Grid de campos principales -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <!-- Nombre -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Nombre *
+                        </label>
+                        <input type="text" 
+                               id="editFirstName" 
+                               name="firstName" 
+                               class="form-input" 
+                               placeholder="Nombre del usuario" 
+                               required
+                               onkeyup="generateEditPreview()">
+                        <div class="field-error" id="editFirstNameError"></div>
+                    </div>
+
+                    <!-- Apellido -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Apellido *
+                        </label>
+                        <input type="text" 
+                               id="editLastName" 
+                               name="lastName" 
+                               class="form-input" 
+                               placeholder="Apellido del usuario" 
+                               required
+                               onkeyup="generateEditPreview()">
+                        <div class="field-error" id="editLastNameError"></div>
+                    </div>
+                </div>
+
+                <!-- Email (ancho completo) -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email *
+                    </label>
+                    <input type="email" 
+                           id="editEmail" 
+                           name="email" 
+                           class="form-input" 
+                           placeholder="correo@ejemplo.com" 
+                           required
+                           onkeyup="generateEditPreview()"
+                           onblur="validateEditEmail()">
+                    <div class="field-error" id="editEmailError"></div>
+                </div>
+
+                <!-- Grid de campos secundarios -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i>
+                            Teléfono
+                        </label>
+                        <input type="tel" 
+                               id="editPhone" 
+                               name="phone" 
+                               class="form-input" 
+                               placeholder="+240 123 456 789">
+                        <div class="field-error" id="editPhoneError"></div>
+                    </div>
+
+                    <!-- Membresía -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-crown"></i>
+                            Membresía *
+                        </label>
+                        <select id="editMembershipLevel" name="membershipLevel" class="form-input" required onchange="generateEditPreview()">
+                            <option value="">Seleccionar membresía...</option>
+                            <option value="basica">🥉 Rubí </option>
+                            <option value="premium">🥈 Oro</option>
+                            <option value="vip">🥇 Platino</option>
+                            <option value="admin">👑 Administrador</option>
+                        </select>
+                        <div class="field-error" id="editMembershipError"></div>
+                    </div>
+                </div>
+
+                <!-- Preview del usuario editado -->
+                <div id="editUserPreview" class="user-preview hidden" style="margin-bottom: 20px;">
+                    <div class="preview-header">
+                        <i class="fas fa-eye"></i>
+                        <strong>Vista previa de los cambios:</strong>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-avatar" id="editPreviewAvatar">--</div>
+                        <div class="preview-details">
+                            <div class="preview-name" id="editPreviewName">Nombre Apellido</div>
+                            <div class="preview-email" id="editPreviewEmail">correo@ejemplo.com</div>
+                            <div class="preview-membership" id="editPreviewMembership">
+                                <i class="fas fa-crown"></i> Nivel de membresía
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Info adicional para edición -->
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(212, 175, 55, 0.2);">
+                        <div style="font-size: 0.75rem; color: rgba(255, 248, 220, 0.7);">
+                            <strong>Código único:</strong> <code id="editPreviewUniqueCode" style="background: rgba(45, 24, 23, 0.8); padding: 2px 6px; border-radius: 3px; color: var(--gold-primary);">MK-XXXXXXXXX</code>
+                            <span style="margin-left: 12px; font-style: italic;">(No se modifica)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo oculto para el ID del usuario -->
+                <input type="hidden" id="editUserId" value="">
+            </div>
+        </div>
+        
+        <div class="modal-footer-premium">
+            <button type="button" class="btn-modal-secondary" onclick="closeEditUserModal()">
+                <i class="fas fa-times"></i>
+                <span>Cancelar</span>
+            </button>
+            <button type="button" class="btn-modal-primary" onclick="handleEditUser()">
+                <i class="fas fa-save"></i>
+                <span>Guardar Cambios</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{# === RUTAS BACKEND PARA JS (generadas por Symfony, placeholder 0) === #}
+<script>
+  // Symfony exige id numérico; usamos 0 como placeholder y lo reemplazamos en JS.
+  const ROUTES = {
+    get:    "{{ path('admin_users_get',            { id: 0 }) }}",
+    toggle: "{{ path('admin_users_toggle_status',  { id: 0 }) }}",
+    reset:  "{{ path('admin_users_reset_password', { id: 0 }) }}",
+    edit:   "{{ path('admin_users_edit',           { id: 0 }) }}",
+    create: "{{ path('admin_users_create') }}"
+  };
+  function userUrl(tpl, id) {
+    // Reemplaza la primera ocurrencia de "/0" por "/<id>"
+    return (tpl || '').replace(/\/0(\/|$)/, '/' + String(id) + '$1');
+  }
+</script>
+
+{{ parent() }}
+<script>
+// Variables para el modal
+let currentAction = null;
+
+// Variables globales para crear usuario
+let generatedUniqueCode = '';
+let generatedPassword = '';
+
+// Variables globales para editar usuario
+let currentEditingUserId = null;
+let originalUserData = null;
+let pendingEditData = null;  // NUEVA VARIABLE: Almacena datos de edición temporalmente
+
+// =====================================================
+// FUNCIONES BÁSICAS Y HELPERS
+// =====================================================
+
+// Limpiar todos los errores de campo
+function clearAllErrors() {
+    console.log('🧹 Limpiando todos los errores...');
+    
+    const errorElements = document.querySelectorAll('.field-error');
+    errorElements.forEach(error => {
+        error.classList.remove('active');
+        error.textContent = '';
+    });
+    
+    console.log('✅ Errores limpiados');
+}
+
+// Mostrar error en campo específico
+function showFieldError(fieldId, message) {
+    console.log(`⚠️ Mostrando error en ${fieldId}: ${message}`);
+    
+    let errorElement;
+    
+    if (fieldId.endsWith('Error')) {
+        errorElement = document.getElementById(fieldId);
+    } else {
+        errorElement = document.getElementById(fieldId + 'Error');
+    }
+    
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add('active');
+        console.log(`✅ Error mostrado en ${fieldId}`);
+    } else {
+        console.error(`❌ No se encontró elemento de error para: ${fieldId}`);
+    }
+}
+
+// Función auxiliar para validar email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Mobile sidebar functionality
+function toggleSidebar() {
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+}
+
+// =====================================================
+// FUNCIONES DE FILTROS DE USUARIOS
+// =====================================================
+
+function filterUsers() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const membershipFilter = document.getElementById('membershipFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    const rows = document.querySelectorAll('.user-row');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const name = row.dataset.name || '';
+        const email = row.dataset.email || '';
+        const membership = row.dataset.membership || '';
+        const status = row.dataset.status || '';
+        
+        const matchesSearch = searchTerm === '' || 
+                             name.includes(searchTerm) || 
+                             email.includes(searchTerm);
+        const matchesMembership = membershipFilter === '' || membership === membershipFilter;
+        const matchesStatus = statusFilter === '' || status === statusFilter;
+        
+        if (matchesSearch && matchesMembership && matchesStatus) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    console.log(`Mostrando ${visibleCount} usuarios`);
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('membershipFilter').value = '';
+    document.getElementById('statusFilter').value = '';
+    filterUsers();
+}
+
+// =====================================================
+// MODALES BÁSICOS DE CONFIRMACIÓN
+// =====================================================
+
+function showConfirmModal(options = {}) {
+    const {
+        title = 'Confirmar Acción',
+        message = '¿Está seguro de que desea continuar?',
+        icon = 'fas fa-exclamation-triangle',
+        confirmText = 'Confirmar',
+        cancelText = 'Cancelar',
+        onConfirm = null
+    } = options;
+
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMessage').textContent = message;
+    document.getElementById('modalIcon').className = icon;
+    document.getElementById('modalConfirmBtn').innerHTML = `<i class="fas fa-check"></i><span>${confirmText}</span>`;
+    document.getElementById('modalCancelBtn').innerHTML = `<i class="fas fa-times"></i><span>${cancelText}</span>`;
+
+    const iconContainer = document.querySelector('.modal-icon-container');
+    iconContainer.className = 'modal-icon-container warning';
+
+    currentAction = onConfirm;
+
+    const modal = document.getElementById('confirmModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeConfirmModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    
+    const modal = document.getElementById('confirmModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    currentAction = null;
+}
+
+function confirmAction() {
+    if (currentAction && typeof currentAction === 'function') {
+        currentAction();
+    }
+    closeConfirmModal();
+}
+
+// =====================================================
+// MODALES DE ÉXITO Y ERROR
+// =====================================================
+
+function showSuccessMessage(data) {
+    console.log('🎉 Mostrando mensaje de éxito:', data);
+    
+    const user = data.user;
+    const credentials = data.credentials;
+    
+    const successModal = document.createElement('div');
+    successModal.id = 'successModal';
+    successModal.className = 'modal-overlay';
+    successModal.innerHTML = `
+        <div class="premium-modal" style="max-width: 500px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container success">
+                    <i class="fas fa-check" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">${credentials ? '¡Usuario Creado Exitosamente!' : '¡Usuario Actualizado!'}</h3>
+            </div>
+            
+            <div class="modal-body-premium" style="text-align: left; padding: 0 32px 24px;">
+                <div class="success-details">
+                    <div class="user-created-info">
+                        <h4>
+                            <i class="fas fa-user"></i> ${user.fullName || user.firstName + ' ' + user.lastName}
+                        </h4>
+                        <div class="created-details">
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Código único:</strong> <code>${user.uniqueCode}</code></p>
+                            <p><strong>Membresía:</strong> ${user.membershipDisplay || user.membershipLevel}</p>
+                            <p><strong>Estado:</strong> <span style="color: #10b981;">✓ Activo</span></p>
+                        </div>
+                    </div>
+                    
+                    ${credentials ? `
+                    <div class="credentials-info" style="background: rgba(212, 175, 55, 0.1); padding: 16px; border-radius: 8px; margin-top: 16px;">
+                        <h5 style="color: var(--gold-primary); margin-bottom: 8px;">
+                            <i class="fas fa-key"></i> Credenciales de acceso:
+                        </h5>
+                        <p style="margin: 4px 0;"><strong>Usuario:</strong> ${credentials.email}</p>
+                        <p style="margin: 4px 0;"><strong>Contraseña temporal:</strong> <code>${credentials.password}</code></p>
+                        <small style="color: rgba(255, 248, 220, 0.7); display: block; margin-top: 8px;">
+                            <i class="fas fa-info-circle"></i> 
+                            Guarde estas credenciales. La página se recargará automáticamente.
+                        </small>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button class="btn-modal-primary" onclick="closeSuccessModal()" style="width: 100%;">
+                    <i class="fas fa-check"></i>
+                    <span>Perfecto, Entendido</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(successModal);
+    successModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        closeSuccessModal();
+        setTimeout(() => location.reload(), 500);
+    }, 8000);
+}
+
+function closeSuccessModal() {
+    console.log('🔄 Cerrando modal de éxito');
+    
+    const successModal = document.getElementById('successModal');
+    if (successModal) {
+        successModal.remove();
+        document.body.style.overflow = '';
+    }
+    
+    setTimeout(() => location.reload(), 300);
+}
+
+function showErrorMessage(errorMessage, details = '') {
+    console.log('❌ Mostrando modal de error:', errorMessage);
+    
+    const errorModal = document.createElement('div');
+    errorModal.id = 'errorModal';
+    errorModal.className = 'modal-overlay';
+    errorModal.innerHTML = `
+        <div class="premium-modal" style="max-width: 450px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container error">
+                    <i class="fas fa-exclamation-triangle" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">Error</h3>
+                <button class="modal-close-btn" onclick="closeErrorModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body-premium">
+                <p class="modal-message">${errorMessage}</p>
+                ${details ? `<div style="margin-top: 16px; padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; font-size: 0.875rem; color: rgba(255, 248, 220, 0.8);">${details}</div>` : ''}
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button class="btn-modal-primary" onclick="closeErrorModal()" style="width: 100%;">
+                    <i class="fas fa-times"></i>
+                    <span>Entendido</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(errorModal);
+    errorModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeErrorModal() {
+    console.log('🔄 Cerrando modal de error');
+    
+    const errorModal = document.getElementById('errorModal');
+    if (errorModal) {
+        errorModal.remove();
+        document.body.style.overflow = '';
+    }
+}
+
+// =====================================================
+// FUNCIONES DE GESTIÓN DE USUARIOS - ACCIONES
+// =====================================================
+
+function handleLogout(event) {
+    event.preventDefault();
+    
+    showConfirmModal({
+        title: 'Cerrar Sesión',
+        message: '¿Está seguro de que desea cerrar sesión?',
+        icon: 'fas fa-sign-out-alt',
+        confirmText: 'Cerrar Sesión',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+            window.location.href = '{{ path("auth_logout") }}';
+        }
+    });
+}
+
+function changePassword(userId) {
+    console.log('🔑 Iniciando cambio de contraseña para usuario:', userId);
+    
+    showConfirmModal({
+        title: 'Generar Nueva Contraseña',
+        message: '¿Desea generar una nueva contraseña temporal para este usuario?',
+        icon: 'fas fa-key',
+        confirmText: 'Generar Contraseña',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+            console.log('🚀 Enviando solicitud de reset de contraseña...');
+            
+            fetch(userUrl(ROUTES.reset, userId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                console.log('📡 Respuesta recibida, status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Respuesta de contraseña:', data);
+                
+                if (data.success) {
+                    showPasswordResetSuccess(data);
+                } else {
+                    showErrorMessage('Error al generar contraseña', data.error || 'No se pudo generar la nueva contraseña');
+                }
+            })
+            .catch(error => {
+                console.error('💥 Error al generar contraseña:', error);
+                
+                let errorMessage = 'Error de conexión';
+                let details = 'No se pudo conectar con el servidor';
+                
+                if (error.message.includes('404')) {
+                    errorMessage = 'Función no disponible';
+                    details = 'La funcionalidad de cambio de contraseña no está configurada correctamente.';
+                } else if (error.message.includes('403')) {
+                    errorMessage = 'Acceso denegado';
+                    details = 'No tiene permisos para cambiar contraseñas.';
+                }
+                
+                showErrorMessage(errorMessage, details);
+            });
+        }
+    });
+}
+
+function toggleStatus(userId) {
+    console.log('🔄 Iniciando cambio de estado para usuario:', userId);
+    
+    const allRows = document.querySelectorAll('tr.user-row');
+    let targetRow = null;
+    let currentStatus = true;
+    let userName = 'este usuario';
+    
+    allRows.forEach(row => {
+        const buttons = row.querySelectorAll('button[onclick*="toggleStatus(' + userId + ')"]');
+        if (buttons.length > 0) {
+            targetRow = row;
+            return;
+        }
+    });
+    
+    if (targetRow) {
+        const statusBadge = targetRow.querySelector('.badge-success, .badge-warning');
+        currentStatus = statusBadge && statusBadge.classList.contains('badge-success');
+        
+        const nameElement = targetRow.querySelector('.user-details .name');
+        if (nameElement) {
+            userName = nameElement.textContent.trim();
+        }
+    }
+    
+    const action = currentStatus ? 'desactivar' : 'activar';
+    const actionTitle = currentStatus ? 'Desactivar Usuario' : 'Activar Usuario';
+    const actionIcon = currentStatus ? 'fas fa-user-slash' : 'fas fa-user-check';
+    
+    showConfirmModal({
+        title: actionTitle,
+        message: `¿Está seguro de que desea ${action} a ${userName}?`,
+        icon: actionIcon,
+        confirmText: currentStatus ? 'Desactivar' : 'Activar',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+            console.log(`🚀 Enviando solicitud para ${action} usuario:`, userId);
+            
+            fetch(userUrl(ROUTES.toggle, userId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                console.log('📡 Respuesta recibida, status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Respuesta de cambio de estado:', data);
+                
+                if (data.success) {
+                    showStatusChangeSuccess(data, userName, action);
+                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showErrorMessage('Error al cambiar estado', data.error || 'No se pudo cambiar el estado del usuario');
+                }
+            })
+            .catch(error => {
+                console.error('💥 Error al cambiar estado:', error);
+                
+                let errorMessage = 'Error de conexión';
+                let details = 'No se pudo conectar con el servidor';
+                
+                if (error.message.includes('404')) {
+                    errorMessage = 'Usuario no encontrado';
+                    details = 'El usuario especificado no existe en el sistema.';
+                } else if (error.message.includes('403')) {
+                    errorMessage = 'Acceso denegado';
+                    details = 'No tiene permisos para cambiar el estado de usuarios.';
+                } else if (error.message.includes('400')) {
+                    errorMessage = 'Operación no permitida';
+                    details = 'No puede cambiar su propio estado.';
+                }
+                
+                showErrorMessage(errorMessage, details);
+            });
+        }
+    });
+}
+
+function exportUsers() {
+    showConfirmModal({
+        title: 'Exportar Usuarios',
+        message: '¿Desea exportar la lista de usuarios?',
+        icon: 'fas fa-download',
+        confirmText: 'Exportar',
+        cancelText: 'Cancelar',
+        onConfirm: () => {
+            showErrorMessage('Función en desarrollo', 'La exportación de usuarios estará disponible pronto.');
+        }
+    });
+}
+
+function openInviteModal() {
+    const modal = new bootstrap.Modal(document.getElementById('invitationModal'));
+    modal.show();
+}
+
+// =====================================================
+// MODALES DE ÉXITO ESPECÍFICAS PREMIUM
+// =====================================================
+
+function showPasswordResetSuccess(data) {
+    console.log('🎉 Mostrando éxito de cambio de contraseña:', data);
+    
+    const successModal = document.createElement('div');
+    successModal.id = 'passwordResetSuccessModal';
+    successModal.className = 'modal-overlay';
+    successModal.innerHTML = `
+        <div class="premium-modal" style="max-width: 500px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container success">
+                    <i class="fas fa-key" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">¡Contraseña Generada!</h3>
+            </div>
+            
+            <div class="modal-body-premium" style="text-align: left; padding: 0 32px 24px;">
+                <div class="success-details">
+                    <p style="color: rgba(255, 248, 220, 0.9); margin-bottom: 16px; text-align: center;">
+                        Se ha generado una nueva contraseña temporal para:
+                    </p>
+                    
+                    <div class="user-info-box" style="background: rgba(212, 175, 55, 0.1); padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+                        <h4 style="color: var(--gold-primary); margin-bottom: 8px;">
+                            <i class="fas fa-user"></i> ${data.user ? data.user.fullName : 'Usuario'}
+                        </h4>
+                        <p style="margin: 4px 0; color: rgba(255, 248, 220, 0.8);"><strong>Email:</strong> ${data.user ? data.user.email : 'N/A'}</p>
+                    </div>
+                    
+                    <div class="credentials-info" style="background: rgba(34, 197, 94, 0.1); padding: 16px; border-radius: 8px; text-align: center;">
+                        <h5 style="color: #22c55e; margin-bottom: 12px;">
+                            <i class="fas fa-key"></i> Nueva Contraseña Temporal:
+                        </h5>
+                        <div style="background: rgba(45, 24, 23, 0.8); padding: 16px; border-radius: 6px; margin: 8px 0;">
+                            <code style="font-size: 1.2rem; font-weight: bold; color: var(--gold-primary); font-family: monospace; letter-spacing: 2px;">
+                                ${data.newPassword || 'Temp123456!'}
+                            </code>
+                        </div>
+                        <small style="color: rgba(255, 248, 220, 0.7); display: block; margin-top: 12px; font-style: italic;">
+                            <i class="fas fa-info-circle"></i> 
+                            Guarde esta contraseña en un lugar seguro. El usuario deberá cambiarla en su primer acceso.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button class="btn-modal-primary" onclick="closePasswordResetSuccessModal()" style="width: 100%;">
+                    <i class="fas fa-check"></i>
+                    <span>Perfecto, Entendido</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(successModal);
+    successModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        closePasswordResetSuccessModal();
+    }, 15000);
+}
+
+function closePasswordResetSuccessModal() {
+    console.log('🔄 Cerrando modal de cambio de contraseña');
+    
+    const modal = document.getElementById('passwordResetSuccessModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+}
+
+function showStatusChangeSuccess(data, userName, action) {
+    console.log('🎉 Mostrando éxito de cambio de estado:', data);
+    
+    const isActivated = action === 'activar';
+    const statusColor = isActivated ? '#22c55e' : '#ef4444';
+    const statusText = isActivated ? 'Activado' : 'Desactivado';
+    const statusIcon = isActivated ? 'fas fa-user-check' : 'fas fa-user-slash';
+    
+    const successModal = document.createElement('div');
+    successModal.id = 'statusChangeSuccessModal';
+    successModal.className = 'modal-overlay';
+    successModal.innerHTML = `
+        <div class="premium-modal" style="max-width: 450px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container success">
+                    <i class="${statusIcon}" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">¡Estado Actualizado!</h3>
+            </div>
+            
+            <div class="modal-body-premium" style="text-align: center;">
+                <p class="modal-message" style="margin-bottom: 16px;">
+                    ${data.message || `El usuario ha sido ${action} exitosamente.`}
+                </p>
+                
+                <div style="background: rgba(212, 175, 55, 0.1); padding: 16px; border-radius: 8px; margin: 16px 0;">
+                    <h4 style="color: var(--gold-primary); margin-bottom: 8px;">
+                        <i class="fas fa-user"></i> ${userName}
+                    </h4>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span style="color: rgba(255, 248, 220, 0.8);">Estado:</span>
+                        <span style="color: ${statusColor}; font-weight: bold;">
+                            <i class="${statusIcon}"></i> ${statusText}
+                        </span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 16px; font-size: 0.875rem; color: rgba(255, 248, 220, 0.7);">
+                    <i class="fas fa-info-circle"></i> 
+                    La página se actualizará automáticamente en 2 segundos.
+                </div>
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button class="btn-modal-primary" onclick="closeStatusChangeSuccessModal()" style="width: 100%;">
+                    <i class="fas fa-check"></i>
+                    <span>Perfecto</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(successModal);
+    successModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        closeStatusChangeSuccessModal();
+        location.reload();
+    }, 8000);
+}
+
+function closeStatusChangeSuccessModal() {
+    console.log('🔄 Cerrando modal de cambio de estado');
+    
+    const modal = document.getElementById('statusChangeSuccessModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+}
+
+// =====================================================
+// FUNCIONES DEL MODAL CREAR USUARIO
+// =====================================================
+
+function openCreateUserModal() {
+    const modal = document.getElementById('createUserModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    generateUniqueCode();
+    generatePassword();
+    
+    setTimeout(() => {
+        document.getElementById('firstName').focus();
+    }, 100);
+}
+
+function closeCreateUserModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    
+    const modal = document.getElementById('createUserModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    
+    resetCreateUserForm();
+}
+
+function resetCreateUserForm() {
+    console.log('🧹 Limpiando formulario de crear usuario...');
+    
+    const fieldsToReset = ['firstName', 'lastName', 'email', 'phone'];
+    fieldsToReset.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+        }
+    });
+    
+    const membershipLevel = document.getElementById('membershipLevel');
+    if (membershipLevel) {
+        membershipLevel.value = '';
+    }
+    
+    const sendWelcomeEmail = document.getElementById('sendWelcomeEmail');
+    if (sendWelcomeEmail) sendWelcomeEmail.checked = true;
+    
+    const generateRandomPassword = document.getElementById('generateRandomPassword');
+    if (generateRandomPassword) generateRandomPassword.checked = true;
+    
+    const userPreview = document.getElementById('userPreview');
+    if (userPreview) userPreview.classList.add('hidden');
+    
+    clearAllErrors();
+    
+    generatedUniqueCode = '';
+    generatedPassword = '';
+    
+    console.log('✅ Formulario completamente limpio');
+}
+
+function generateUniqueCode() {
+    const timestamp = Date.now().toString().slice(-4);
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    generatedUniqueCode = `MK-${timestamp}${random}`;
+    
+    const previewElement = document.getElementById('previewUniqueCode');
+    if (previewElement) {
+        previewElement.textContent = generatedUniqueCode;
+    }
+    
+    console.log('🔒 Código único generado:', generatedUniqueCode);
+    return generatedUniqueCode;
+}
+
+function generatePassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    generatedPassword = password;
+    
+    const previewElement = document.getElementById('previewPassword');
+    if (previewElement) {
+        previewElement.textContent = generatedPassword;
+    }
+    
+    console.log('🔐 Contraseña generada:', generatedPassword);
+    return generatedPassword;
+}
+
+function generatePreview() {
+    const firstName = document.getElementById('firstName')?.value.trim() || '';
+    const lastName = document.getElementById('lastName')?.value.trim() || '';
+    const email = document.getElementById('email')?.value.trim() || '';
+    const membershipLevel = document.getElementById('membershipLevel')?.value || '';
+    
+    const userPreview = document.getElementById('userPreview');
+    if (firstName || lastName || email) {
+        if (userPreview) userPreview.classList.remove('hidden');
+        
+        const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+        const previewAvatar = document.getElementById('previewAvatar');
+        if (previewAvatar) previewAvatar.textContent = initials || '--';
+        
+        const fullName = `${firstName} ${lastName}`.trim() || 'Nombre Apellido';
+        const previewName = document.getElementById('previewName');
+        if (previewName) previewName.textContent = fullName;
+        
+        const previewEmail = document.getElementById('previewEmail');
+        if (previewEmail) previewEmail.textContent = email || 'correo@ejemplo.com';
+        
+        updateMembershipPreview();
+        
+    } else {
+        if (userPreview) userPreview.classList.add('hidden');
+    }
+}
+
+function updateMembershipPreview() {
+    const membershipLevel = document.getElementById('membershipLevel').value;
+    const membershipSelect = document.getElementById('membershipLevel');
+    const selectedOption = membershipSelect.options[membershipSelect.selectedIndex];
+    const membershipText = selectedOption ? selectedOption.text : 'Nivel de membresía';
+    
+    const previewMembership = document.getElementById('previewMembership');
+    if (previewMembership) {
+        previewMembership.innerHTML = `<i class="fas fa-crown"></i> ${membershipText}`;
+    }
+}
+
+function validateEmail() {
+    const email = document.getElementById('email').value.trim();
+    const emailError = document.getElementById('emailError');
+    
+    if (email && !isValidEmail(email)) {
+        showFieldError('emailError', 'Formato de email inválido');
+        return false;
+    } else {
+        if (emailError) emailError.classList.remove('active');
+        return true;
+    }
+}
+
+function handleCreateUser() {
+    console.log('Iniciando creación de usuario...');
+    
+    if (!validateCreateUserForm()) {
+        console.log('Validación fallida');
+        return false;
+    }
+    
+    console.log('Formulario válido, recopilando datos...');
+    
+    const formData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        membershipLevel: document.getElementById('membershipLevel').value,
+        uniqueCode: generatedUniqueCode,
+        password: generatedPassword,
+        sendWelcomeEmail: document.getElementById('sendWelcomeEmail').checked,
+        generateRandomPassword: document.getElementById('generateRandomPassword').checked
+    };
+    
+    console.log('Datos recopilados:', formData);
+    
+    closeCreateUserModal();
+    
+    setTimeout(() => {
+        showConfirmModal({
+            title: 'Confirmar Creación',
+            message: `¿Crear usuario ${formData.firstName} ${formData.lastName} con membresía ${document.getElementById('membershipLevel').selectedOptions[0]?.text}?`,
+            icon: 'fas fa-user-plus',
+            confirmText: 'Crear Usuario',
+            cancelText: 'Cancelar',
+            onConfirm: () => {
+                console.log('Usuario confirmó creación, enviando al backend...');
+                submitCreateUser(formData);
+            }
+        });
+    }, 300);
+    
+    return false;
+}
+
+function validateCreateUserForm() {
+    console.log('🔍 Validando formulario de crear usuario...');
+    
+    let isValid = true;
+    
+    clearAllErrors();
+    
+    const firstName = document.getElementById('firstName')?.value.trim();
+    if (!firstName) {
+        showFieldError('firstNameError', 'El nombre es obligatorio');
+        isValid = false;
+    }
+    
+    const lastName = document.getElementById('lastName')?.value.trim();
+    if (!lastName) {
+        showFieldError('lastNameError', 'El apellido es obligatorio');
+        isValid = false;
+    }
+    
+    const email = document.getElementById('email')?.value.trim();
+    if (!email) {
+        showFieldError('emailError', 'El email es obligatorio');
+        isValid = false;
+    } else if (!isValidEmail(email)) {
+        showFieldError('emailError', 'El formato del email no es válido');
+        isValid = false;
+    }
+    
+    const membershipLevel = document.getElementById('membershipLevel')?.value;
+    if (!membershipLevel) {
+        showFieldError('membershipError', 'Debe seleccionar una membresía');
+        isValid = false;
+    }
+    
+    if (!generatedUniqueCode) {
+        console.log('⚠️ Generando código único...');
+        generateUniqueCode();
+    }
+    
+    if (!generatedPassword) {
+        console.log('⚠️ Generando contraseña...');
+        generatePassword();
+    }
+    
+    console.log(isValid ? '✅ Formulario válido' : '❌ Formulario inválido');
+    return isValid;
+}
+
+function submitCreateUser(userData) {
+    console.log('🚀 Enviando datos del usuario al backend:', userData);
+    
+    fetch(ROUTES.create, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    })
+    .then(response => {
+        console.log('📡 Respuesta recibida, status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        console.log('✅ Datos parseados exitosamente:', data);
+        
+        if (data.success) {
+            showSuccessMessage(data);
+        } else {
+            showErrorMessage(
+                data.error || 'No se pudo crear el usuario',
+                data.validation_errors ? 'Errores de validación: ' + data.validation_errors.join(', ') : ''
+            );
+        }
+    })
+    .catch(error => {
+        console.error('💥 Error completo:', error);
+        
+        let errorMessage = 'Error de conexión al servidor';
+        let details = '';
+        
+        if (error.message.includes('404')) {
+            errorMessage = 'Ruta no encontrada';
+            details = 'La ruta no está configurada correctamente. Verifique las rutas en routes.yaml';
+        } else if (error.message.includes('500')) {
+            errorMessage = 'Error interno del servidor';
+            details = 'Revise los logs de Symfony para más detalles.';
+        } else {
+            details = 'Verifique su conexión a internet e intente nuevamente.';
+        }
+        
+        showErrorMessage(errorMessage, details);
+    });
+}
+
+// =====================================================
+// FUNCIONES DEL MODAL EDITAR USUARIO - VERSIÓN CORREGIDA
+// =====================================================
+
+function editUser(userId) {
+    console.log('✏️ Iniciando edición de usuario:', userId);
+    
+    currentEditingUserId = userId;
+    
+    // Primero obtener los datos del usuario
+    fetch(userUrl(ROUTES.get, userId), {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        console.log('📡 Respuesta de obtener usuario, status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('✅ Datos del usuario obtenidos:', data);
+        
+        if (data.success) {
+            originalUserData = data.user;
+            openEditUserModal(data.user);
+        } else {
+            showErrorMessage('Error al cargar usuario', data.error || 'No se pudieron obtener los datos del usuario');
+        }
+    })
+    .catch(error => {
+        console.error('💥 Error al obtener usuario:', error);
+        
+        let errorMessage = 'Error al cargar datos';
+        let details = 'No se pudieron cargar los datos del usuario para editar';
+        
+        if (error.message.includes('404')) {
+            errorMessage = 'Usuario no encontrado';
+            details = 'El usuario especificado no existe en el sistema.';
+        } else if (error.message.includes('403')) {
+            errorMessage = 'Acceso denegado';
+            details = 'No tiene permisos para editar usuarios.';
+        }
+        
+        showErrorMessage(errorMessage, details);
+    });
+}
+
+function openEditUserModal(userData) {
+    console.log('🔧 Abriendo modal de editar usuario:', userData);
+    
+    // Llenar los campos del formulario con los datos actuales
+    document.getElementById('editUserId').value = userData.id;
+    document.getElementById('editFirstName').value = userData.firstName || '';
+    document.getElementById('editLastName').value = userData.lastName || '';
+    document.getElementById('editEmail').value = userData.email || '';
+    document.getElementById('editPhone').value = userData.phone || '';
+    document.getElementById('editMembershipLevel').value = userData.membershipLevel || '';
+    
+    // Generar preview inicial
+    generateEditPreview();
+    
+    // Mostrar modal
+    const modal = document.getElementById('editUserModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus en el primer campo
+    setTimeout(() => {
+        document.getElementById('editFirstName').focus();
+    }, 100);
+}
+
+function closeEditUserModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    
+    const modal = document.getElementById('editUserModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    
+    // NO llamamos resetEditUserForm() aquí para preservar currentEditingUserId
+    console.log('🔄 Modal de editar cerrado, manteniendo currentEditingUserId:', currentEditingUserId);
+}
+
+function resetEditUserForm() {
+    console.log('🧹 Limpiando formulario de editar usuario...');
+    
+    // Limpiar campos
+    const fieldsToReset = ['editUserId', 'editFirstName', 'editLastName', 'editEmail', 'editPhone'];
+    fieldsToReset.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+        }
+    });
+    
+    const membershipLevel = document.getElementById('editMembershipLevel');
+    if (membershipLevel) {
+        membershipLevel.value = '';
+    }
+    
+    // Ocultar preview
+    const userPreview = document.getElementById('editUserPreview');
+    if (userPreview) userPreview.classList.add('hidden');
+    
+    // Limpiar errores
+    clearAllErrors();
+    
+    // Reset variables SOLO después de que se complete la operación
+    currentEditingUserId = null;
+    originalUserData = null;
+    pendingEditData = null;
+    
+    console.log('✅ Formulario de edición limpio');
+}
+
+function generateEditPreview() {
+    const firstName = document.getElementById('editFirstName')?.value.trim() || '';
+    const lastName = document.getElementById('editLastName')?.value.trim() || '';
+    const email = document.getElementById('editEmail')?.value.trim() || '';
+    const membershipLevel = document.getElementById('editMembershipLevel')?.value || '';
+    
+    const userPreview = document.getElementById('editUserPreview');
+    if (firstName || lastName || email) {
+        if (userPreview) userPreview.classList.remove('hidden');
+        
+        // Actualizar avatar
+        const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+        const previewAvatar = document.getElementById('editPreviewAvatar');
+        if (previewAvatar) previewAvatar.textContent = initials || '--';
+        
+        // Actualizar nombre
+        const fullName = `${firstName} ${lastName}`.trim() || 'Nombre Apellido';
+        const previewName = document.getElementById('editPreviewName');
+        if (previewName) previewName.textContent = fullName;
+        
+        // Actualizar email
+        const previewEmail = document.getElementById('editPreviewEmail');
+        if (previewEmail) previewEmail.textContent = email || 'correo@ejemplo.com';
+        
+        // Actualizar membresía
+        updateEditMembershipPreview();
+        
+        // Mostrar código único (no se modifica)
+        if (originalUserData) {
+            const previewUniqueCode = document.getElementById('editPreviewUniqueCode');
+            if (previewUniqueCode) {
+                previewUniqueCode.textContent = originalUserData.uniqueCode || 'MK-XXXXXXXXX';
+            }
+        }
+        
+    } else {
+        if (userPreview) userPreview.classList.add('hidden');
+    }
+}
+
+function updateEditMembershipPreview() {
+    const membershipLevel = document.getElementById('editMembershipLevel').value;
+    const membershipSelect = document.getElementById('editMembershipLevel');
+    const selectedOption = membershipSelect.options[membershipSelect.selectedIndex];
+    const membershipText = selectedOption ? selectedOption.text : 'Nivel de membresía';
+    
+    const previewMembership = document.getElementById('editPreviewMembership');
+    if (previewMembership) {
+        previewMembership.innerHTML = `<i class="fas fa-crown"></i> ${membershipText}`;
+    }
+}
+
+function validateEditEmail() {
+    const email = document.getElementById('editEmail').value.trim();
+    const emailError = document.getElementById('editEmailError');
+    
+    if (email && !isValidEmail(email)) {
+        showFieldError('editEmailError', 'Formato de email inválido');
+        return false;
+    } else {
+        if (emailError) emailError.classList.remove('active');
+        return true;
+    }
+}
+
+function handleEditUser() {
+    console.log('📝 Iniciando actualización de usuario...');
+    console.log('🔍 currentEditingUserId actual:', currentEditingUserId);
+    
+    if (!validateEditUserForm()) {
+        console.log('❌ Validación de edición fallida');
+        return false;
+    }
+    
+    console.log('✅ Formulario de edición válido, recopilando datos...');
+    
+    const formData = {
+        firstName: document.getElementById('editFirstName').value.trim(),
+        lastName: document.getElementById('editLastName').value.trim(),
+        email: document.getElementById('editEmail').value.trim(),
+        phone: document.getElementById('editPhone').value.trim(),
+        membershipLevel: document.getElementById('editMembershipLevel').value
+    };
+    
+    // GUARDAR en pendingEditData antes de cerrar modal
+    pendingEditData = {
+        userId: currentEditingUserId,
+        formData: formData
+    };
+    
+    console.log('📦 Datos de edición guardados temporalmente:', pendingEditData);
+    
+    // Cerrar modal primero
+    closeEditUserModal();
+    
+    // Mostrar confirmación
+    setTimeout(() => {
+        showConfirmModal({
+            title: 'Confirmar Cambios',
+            message: `¿Guardar los cambios para ${formData.firstName} ${formData.lastName}?`,
+            icon: 'fas fa-save',
+            confirmText: 'Guardar Cambios',
+            cancelText: 'Cancelar',
+            onConfirm: () => {
+                console.log('✅ Usuario confirmó cambios, enviando al backend...');
+                console.log('🔍 Usando pendingEditData:', pendingEditData);
+                
+                if (pendingEditData && pendingEditData.userId) {
+                    submitEditUser(pendingEditData.userId, pendingEditData.formData);
+                } else {
+                    showErrorMessage('Error de datos', 'Se perdió la referencia del usuario. Intente nuevamente.');
+                }
+            }
+        });
+    }, 300);
+    
+    return false;
+}
+
+function validateEditUserForm() {
+    console.log('🔍 Validando formulario de editar usuario...');
+    
+    let isValid = true;
+    
+    // Limpiar errores previos
+    clearAllErrors();
+    
+    // Validar nombre
+    const firstName = document.getElementById('editFirstName')?.value.trim();
+    if (!firstName) {
+        showFieldError('editFirstNameError', 'El nombre es obligatorio');
+        isValid = false;
+    }
+    
+    // Validar apellido
+    const lastName = document.getElementById('editLastName')?.value.trim();
+    if (!lastName) {
+        showFieldError('editLastNameError', 'El apellido es obligatorio');
+        isValid = false;
+    }
+    
+    // Validar email
+    const email = document.getElementById('editEmail')?.value.trim();
+    if (!email) {
+        showFieldError('editEmailError', 'El email es obligatorio');
+        isValid = false;
+    } else if (!isValidEmail(email)) {
+        showFieldError('editEmailError', 'El formato del email no es válido');
+        isValid = false;
+    }
+    
+    // Validar membresía
+    const membershipLevel = document.getElementById('editMembershipLevel')?.value;
+    if (!membershipLevel) {
+        showFieldError('editMembershipError', 'Debe seleccionar una membresía');
+        isValid = false;
+    }
+    
+    console.log(isValid ? '✅ Formulario de edición válido' : '❌ Formulario de edición inválido');
+    return isValid;
+}
+
+function submitEditUser(userId, userData) {
+    console.log('🚀 Enviando datos actualizados al backend:', { userId, userData });
+    
+    // Validar que el userId no sea null o undefined
+    if (!userId || userId === 'null' || userId === null || userId === undefined) {
+        console.error('❌ Error: userId es inválido:', userId);
+        showErrorMessage('Error de datos', 'ID de usuario inválido. Intente cerrar y abrir el modal nuevamente.');
+        return;
+    }
+    
+    fetch(userUrl(ROUTES.edit, userId), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    })
+    .then(response => {
+        console.log('📡 Respuesta de actualización recibida, status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        console.log('✅ Respuesta de actualización parseada:', data);
+        
+        if (data.success) {
+            // Mostrar éxito sin credenciales (es una actualización, no creación)
+            showSuccessMessage({
+                user: data.user,
+                credentials: null // No hay credenciales en edición
+            });
+            
+            // Limpiar variables después del éxito
+            setTimeout(() => {
+                resetEditUserForm();
+            }, 500);
+        } else {
+            showErrorMessage(
+                data.error || 'No se pudo actualizar el usuario',
+                data.validation_errors ? 'Errores de validación: ' + data.validation_errors.join(', ') : ''
+            );
+        }
+    })
+    .catch(error => {
+        console.error('💥 Error al actualizar usuario:', error);
+        
+        let errorMessage = 'Error de conexión al servidor';
+        let details = '';
+        
+        if (error.message.includes('404')) {
+            errorMessage = 'Usuario no encontrado';
+            details = 'El usuario especificado no existe en el sistema.';
+        } else if (error.message.includes('403')) {
+            errorMessage = 'Acceso denegado';
+            details = 'No tiene permisos para editar usuarios.';
+        } else if (error.message.includes('400')) {
+            errorMessage = 'Datos inválidos';
+            details = 'Verifique que todos los campos estén correctamente llenados.';
+        } else if (error.message.includes('500')) {
+            errorMessage = 'Error interno del servidor';
+            details = 'Revise los logs de Symfony para más detalles.';
+        } else {
+            details = 'Verifique su conexión a internet e intente nuevamente.';
+        }
+        
+        showErrorMessage(errorMessage, details);
+    });
+}
+
+// =====================================================
+// FUNCIONES PARA CERRAR TODAS LAS MODALES CON ESC
+// =====================================================
+
+function closeAllModalsOnEscape() {
+    closeConfirmModal();
+    closeCreateUserModal();
+    closeEditUserModal();
+    closeSuccessModal();
+    closeErrorModal();
+    closePasswordResetSuccessModal();
+    closeStatusChangeSuccessModal();
+}
+
+// =====================================================
+// EVENT LISTENERS Y INICIALIZACIÓN
+// =====================================================
+
+// Auto-close sidebar when clicking on links (mobile)
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) {
+            closeSidebar();
+        }
+    });
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024) {
+        closeSidebar();
+    }
+});
+
+// Cerrar modales con ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAllModalsOnEscape();
+    }
+});
+
+// Inicialización del documento
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎯 Vista de gestión de usuarios cargada correctamente');
+    
+    // Prevenir envío de formularios por accidente
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.matches('.filter-input')) {
+            e.preventDefault();
+            filterUsers();
+        }
+    });
+    
+    console.log('✅ Sistema completo de gestión de usuarios inicializado');
+    console.log('🔧 Funciones disponibles: crear, editar, cambiar contraseña, activar/desactivar usuarios');
+});
+</script>
+
+<!-- Modal de Invitación -->
+{% include 'admin/_invitation_modal.html.twig' %}
+
+<!-- Script de Invitaciones -->
+<script src="{{ asset('js/admin-invitation-script.js') }}"></script>
+
+{% endblock %}

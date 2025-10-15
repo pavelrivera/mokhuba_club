@@ -1,0 +1,222 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Administración - Mokhuba Club{% endblock %}
+
+{% block body_class %}admin-dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       ESTILOS ESPECÍFICOS ADMIN DASHBOARD
+    ===================================================== */
+    
+    .admin-layout {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 50%, #2a1a19 100%);
+    }
+
+    /* =====================================================
+       SIDEBAR NAVIGATION
+    ===================================================== */
+    .admin-sidebar {
+        width: 280px;
+        background: rgba(26, 15, 14, 0.95);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(212, 175, 55, 0.3);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        transition: var(--transition-smooth);
+    }
+
+    .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(184, 148, 31, 0.05));
+    }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--cream);
+        text-decoration: none;
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .sidebar-logo:hover {
+        color: var(--gold-primary);
+    }
+
+    .sidebar-logo .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-size: 1.2rem;
+    }
+
+    .sidebar-nav {
+        padding: 20px 0;
+    }
+
+    .nav-section {
+        margin-bottom: 32px;
+    }
+
+    .nav-section-title {
+        padding: 0 20px 8px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(212, 175, 55, 0.7);
+        font-weight: 600;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: rgba(255, 248, 220, 0.8);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+
+    .nav-link:hover {
+        background: rgba(212, 175, 55, 0.1);
+        color: var(--gold-primary);
+        padding-left: 28px;
+    }
+
+    .nav-link.active {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 148, 31, 0.1));
+        color: var(--gold-primary);
+        border-right: 3px solid var(--gold-primary);
+    }
+
+    .nav-link.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--gold-primary);
+    }
+
+    .nav-icon {
+        width: 20px;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .nav-badge {
+        margin-left: auto;
+        background: var(--error);
+        color: white;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    
+
+    /* =====================================================
+       RESPONSIVE DESIGN
+    ===================================================== */
+    @media (max-width: 1024px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .admin-sidebar.mobile-open {
+            transform: translateX(0);
+        }
+
+        .admin-main {
+            margin-left: 0;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-header {
+            padding: 16px 20px;
+        }
+
+        .admin-content {
+            padding: 20px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header-content {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+
+    /* =====================================================
+       MOBILE MENU BUTTON
+    ===================================================== */
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--gold-primary);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+
+    .mobile-menu-btn:hover {
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    /* =====================================================
+       OVERLAY PARA MOBILE
+    ===================================================== */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+</style>
+{% endblock %}

@@ -1,0 +1,89 @@
+{# templates/partials/invitation_button.html.twig #}
+{# Botón de invitación - Puede incluirse en cualquier vista #}
+
+<button 
+    class="btn-invitation" 
+    data-bs-toggle="modal" 
+    data-bs-target="#invitationModal"
+    title="Enviar Invitación">
+    <i class="fas fa-user-plus me-2"></i>
+    <span class="btn-text">Enviar Invitación</span>
+</button>
+
+<style>
+    .btn-invitation {
+        background: linear-gradient(135deg, var(--gold-primary, #D4AF37), var(--gold-light, #F4E5C2));
+        border: none;
+        color: var(--dark-brown, #2a1a12);
+        font-weight: 700;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-invitation:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-invitation:active {
+        transform: translateY(0);
+    }
+
+    /* Versión compacta para móvil */
+    @media (max-width: 768px) {
+        .btn-invitation .btn-text {
+            display: none;
+        }
+        
+        .btn-invitation {
+            padding: 12px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .btn-invitation i {
+            margin: 0 !important;
+        }
+    }
+
+    /* Versión flotante (opcional) */
+    .btn-invitation.floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-invitation.floating:hover {
+        box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+    }
+</style>
+
+{# 
+    USO EN LAS VISTAS:
+    
+    1. INCLUIR EL BOTÓN:
+       {% include 'partials/invitation_button.html.twig' %}
+    
+    2. INCLUIR EL MODAL (solo una vez por página):
+       {% include 'partials/invitation_modal.html.twig' %}
+    
+    3. VERSIÓN FLOTANTE:
+       <div class="btn-invitation floating" data-bs-toggle="modal" data-bs-target="#invitationModal">
+           <i class="fas fa-user-plus"></i>
+       </div>
+       
+    4. PERSONALIZAR TEXTO:
+       <button class="btn-invitation" data-bs-toggle="modal" data-bs-target="#invitationModal">
+           <i class="fas fa-envelope me-2"></i>Invitar Amigos
+       </button>
+#}

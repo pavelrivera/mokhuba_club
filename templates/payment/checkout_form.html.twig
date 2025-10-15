@@ -1,0 +1,442 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       CHECKOUT FORM - MOKHUBA CLUB DESIGN
+    ===================================================== */
+    body {
+        background: linear-gradient(135deg, #3d2414 0%, #2a1a12 100%);
+        min-height: 100vh;
+    }
+
+    .checkout-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .checkout-header h1 {
+        color: #f8f2e7;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .checkout-header p {
+        color: rgba(248, 242, 231, 0.7);
+        font-size: 1.1rem;
+    }
+
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .checkout-section {
+        background: rgba(45, 24, 23, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 20px;
+        padding: 30px;
+    }
+
+    .section-title {
+        color: #D4AF37;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #f8f2e7;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 10px;
+        color: #f8f2e7;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #D4AF37;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-group input::placeholder {
+        color: rgba(248, 242, 231, 0.4);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 15px;
+    }
+
+    .order-summary {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: #f8f2e7;
+    }
+
+    .summary-divider {
+        border: none;
+        height: 1px;
+        background: rgba(212, 175, 55, 0.3);
+        margin: 15px 0;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .summary-total .label {
+        color: #f8f2e7;
+    }
+
+    .summary-total .amount {
+        color: #D4AF37;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+    .benefits-list li {
+        color: rgba(248, 242, 231, 0.8);
+        margin-bottom: 10px;
+        padding-left: 25px;
+        position: relative;
+    }
+
+    .benefits-list li:before {
+        content: "✓";
+        color: #D4AF37;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+
+    .security-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .security-badge i {
+        color: #10b981;
+        font-size: 1.5rem;
+    }
+
+    .security-badge span {
+        color: #f8f2e7;
+        font-size: 0.9rem;
+    }
+
+    .payment-button {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        color: #2a1a12;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .payment-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .payment-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .cancel-button {
+        width: 100%;
+        padding: 15px;
+        background: transparent;
+        color: #f8f2e7;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+    .cancel-button:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: #D4AF37;
+    }
+
+    .card-icons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .card-icons i {
+        font-size: 2rem;
+        opacity: 0.5;
+    }
+
+    .mock-mode-badge {
+        background: rgba(251, 191, 36, 0.2);
+        border: 1px solid rgba(251, 191, 36, 0.5);
+        color: #fbbf24;
+        padding: 10px 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .checkout-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="checkout-container">
+    <!-- Header -->
+    <div class="checkout-header">
+        <h1>🚬 Checkout Seguro</h1>
+        <p>Completa tu información para finalizar la suscripción</p>
+    </div>
+
+    {% if mock_mode %}
+    <div class="mock-mode-badge">
+        <i class="fas fa-info-circle"></i>
+        <strong>MODO PRUEBA:</strong> Este es un entorno de prueba. No se realizarán cargos reales.
+    </div>
+    {% endif %}
+
+    <form id="checkoutForm" method="POST" action="{{ path('payment_process_checkout') }}">
+        <div class="checkout-grid">
+            <!-- Left Column: Payment Details -->
+            <div class="checkout-section">
+                <h2 class="section-title">
+                    <i class="fas fa-credit-card"></i>
+                    Información de Pago
+                </h2>
+
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Conexión segura. Tu información está protegida con encriptación SSL.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardholderName">Nombre del Titular *</label>
+                    <input type="text" 
+                           id="cardholderName" 
+                           name="cardholderName" 
+                           placeholder="Como aparece en la tarjeta"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardNumber">Número de Tarjeta *</label>
+                    <input type="text" 
+                           id="cardNumber" 
+                           name="cardNumber" 
+                           placeholder="1234 5678 9012 3456"
+                           maxlength="19"
+                           required>
+                    <div class="card-icons">
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fab fa-cc-amex"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiryDate">Fecha de Expiración *</label>
+                        <input type="text" 
+                               id="expiryDate" 
+                               name="expiryDate" 
+                               placeholder="MM/AA"
+                               maxlength="5"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV *</label>
+                        <input type="text" 
+                               id="cvv" 
+                               name="cvv" 
+                               placeholder="123"
+                               maxlength="4"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email de Confirmación *</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           value="{{ app.user.email }}"
+                           placeholder="tu@email.com"
+                           required>
+                </div>
+
+                <input type="hidden" name="membershipType" value="{{ membership_type }}">
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            <div class="checkout-section">
+                <h2 class="section-title">
+                    <i class="fas fa-receipt"></i>
+                    Resumen del Pedido
+                </h2>
+
+                <div class="order-summary">
+                    <div class="summary-item">
+                        <span>Membresía {{ membership_name }}</span>
+                        <span>${{ membership_price }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Período</span>
+                        <span>Anual</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-total">
+                        <span class="label">Total</span>
+                        <span class="amount">${{ membership_price }} USD</span>
+                    </div>
+                </div>
+
+                <h3 style="color: #D4AF37; font-size: 1.2rem; margin-bottom: 15px;">
+                    Beneficios Incluidos:
+                </h3>
+                <ul class="benefits-list">
+                    {% for benefit in membership_benefits %}
+                        <li>{{ benefit }}</li>
+                    {% endfor %}
+                </ul>
+
+                <button type="submit" class="payment-button" id="submitButton">
+                    <i class="fas fa-lock"></i>
+                    Confirmar Pago de ${{ membership_price }}
+                </button>
+
+                <button type="button" class="cancel-button" onclick="window.location.href='{{ path('dashboard') }}'">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('checkoutForm');
+    const submitButton = document.getElementById('submitButton');
+    const cardNumberInput = document.getElementById('cardNumber');
+    const expiryDateInput = document.getElementById('expiryDate');
+    const cvvInput = document.getElementById('cvv');
+
+    // Format card number
+    cardNumberInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+    });
+
+    // Format expiry date
+    expiryDateInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // Only numbers for CVV
+    cvvInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Validate form
+        if (!form.checkValidity()) {
+            alert('Por favor, completa todos los campos requeridos.');
+            return;
+        }
+
+        // Disable button
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+
+        // Submit form
+        form.submit();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,379 @@
+<v-app>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <v-container fluid class="pa-0">
+        <div class="hero-overlay">
+          <v-container>
+            <v-row align="center" justify="center" class="min-height-100vh">
+              <v-col cols="12" md="8" class="text-center">
+                <div class="hero-badge mb-6">
+                  <v-chip color="gold" text-color="black" size="large" class="px-6 py-2">
+                    <v-icon start>mdi-crown</v-icon>
+                    MIEMBRO EXCLUSIVO
+                  </v-chip>
+                </div>
+                <h1 class="hero-title mb-6">
+                  Bienvenido al <br>
+                  <span class="gold-text">Club Privado Mokhuba</span>
+                </h1>
+                <p class="hero-subtitle mb-8">
+                  Tu acceso exclusivo a los habanos más selectos del mundo. 
+                  Donde la tradición cubana se encuentra con la excelencia.
+                </p>
+                <div class="hero-stats mb-8">
+                  <v-row justify="center">
+                    <v-col cols="4" sm="2">
+                      <div class="stat-item">
+                        <div class="stat-number">{{ memberCount }}</div>
+                        <div class="stat-label">Miembros</div>
+                      </div>
+                    </v-col>
+                    <v-col cols="4" sm="2">
+                      <div class="stat-item">
+                        <div class="stat-number">{{ exclusiveProducts }}</div>
+                        <div class="stat-label">Productos VIP</div>
+                      </div>
+                    </v-col>
+                    <v-col cols="4" sm="2">
+                      <div class="stat-item">
+                        <div class="stat-number">{{ eventsThisMonth }}</div>
+                        <div class="stat-label">Eventos</div>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
+                <v-btn 
+                  size="x-large" 
+                  color="gold" 
+                  class="hero-cta px-8 py-4" data-on-click="scrollToSection('beneficios')"
+                >
+                  <v-icon start>mdi-diamond</v-icon>
+                  Explorar Beneficios
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
+      </v-container>
+    </section>
+
+    <!-- Próximo Evento Destacado -->
+    <section class="next-event-section py-16">
+      <v-container>
+        <v-card class="event-card elevation-8">
+          <v-row no-gutters>
+            <v-col cols="12" md="6">
+              <div class="event-image"></div>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-card-text class="pa-8">
+                <v-chip color="red-accent" size="small" class="mb-4">
+                  PRÓXIMO EVENTO
+                </v-chip>
+                <h2 class="event-title mb-4">{{ nextEvent.title }}</h2>
+                <p class="event-description mb-6">{{ nextEvent.description }}</p>
+                
+                <div class="event-details mb-6">
+                  <div class="detail-item mb-2">
+                    <v-icon color="gold" class="mr-3">mdi-calendar</v-icon>
+                    <span>{{ nextEvent.date }}</span>
+                  </div>
+                  <div class="detail-item mb-2">
+                    <v-icon color="gold" class="mr-3">mdi-clock</v-icon>
+                    <span>{{ nextEvent.time }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <v-icon color="gold" class="mr-3">mdi-account-group</v-icon>
+                    <span>{{ nextEvent.attendees }} confirmados</span>
+                  </div>
+                </div>
+
+                <v-btn color="gold" size="large" block class="mb-4">
+                  <v-icon start>mdi-calendar-plus</v-icon>
+                  Confirmar Asistencia
+                </v-btn>
+                
+                <div class="countdown-timer">
+                  <div class="timer-label">Tiempo restante:</div>
+                  <div class="timer-display">
+                    <span class="timer-unit">{{ countdown.days }}d</span>
+                    <span class="timer-unit">{{ countdown.hours }}h</span>
+                    <span class="timer-unit">{{ countdown.minutes }}m</span>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-container>
+    </section>
+
+    <!-- Beneficios Exclusivos -->
+    <section id="beneficios" class="benefits-section py-16">
+      <v-container>
+        <div class="text-center mb-12">
+          <h2 class="section-title mb-4">Beneficios Exclusivos</h2>
+          <p class="section-subtitle">Privilegios únicos para miembros selectos</p>
+        </div>
+        
+        <v-row>
+          <v-col data-for="(benefit, index) in benefits" data-bind="index" 
+            cols="12" 
+            sm="6" 
+            md="4"
+            class="mb-6"
+          >
+            <v-card 
+              class="benefit-card h-100 pa-6" 
+              elevation="4" data-bind="{ 'featured-benefit': benefit.featured }"
+            >
+              <div class="benefit-icon mb-4">
+                <v-avatar size="64" data-bind="benefit.featured ? 'gold' : 'red-darken-4'">
+                  <v-icon size="32" data-bind="benefit.featured ? 'black' : 'white'">
+                    {{ benefit.icon }}
+                  </v-icon>
+                </v-avatar>
+              </div>
+              <h3 class="benefit-title mb-3">{{ benefit.title }}</h3>
+              <p class="benefit-description mb-4">{{ benefit.description }}</p>
+              <v-chip data-if="benefit.featured" 
+                color="gold" 
+                text-color="black" 
+                size="small"
+              >
+                PREMIUM
+              </v-chip>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
+
+    <!-- Productos VIP -->
+    <section class="vip-products-section py-16">
+      <v-container>
+        <div class="text-center mb-12">
+          <h2 class="section-title mb-4">Colección VIP</h2>
+          <p class="section-subtitle">Habanos exclusivos solo para miembros</p>
+        </div>
+
+        <v-row>
+          <v-col data-for="(product, index) in vipProducts" data-bind="index" 
+            cols="12" 
+            sm="6" 
+            md="4"
+          >
+            <v-card class="product-card elevation-6">
+              <div class="product-image" data-bind="{ backgroundImage: `url(${product.image})` }">
+                <v-chip data-if="product.limited" 
+                  color="red-accent" 
+                  size="small" 
+                  class="product-badge"
+                >
+                  EDICIÓN LIMITADA
+                </v-chip>
+              </div>
+              <v-card-text class="pa-6">
+                <h3 class="product-title mb-2">{{ product.name }}</h3>
+                <p class="product-description mb-4">{{ product.description }}</p>
+                
+                <div class="product-details mb-4">
+                  <div class="detail-row">
+                    <span class="detail-label">Origen:</span>
+                    <span class="detail-value">{{ product.origin }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Vitola:</span>
+                    <span class="detail-value">{{ product.vitola }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Disponibles:</span>
+                    <span class="detail-value">{{ product.stock }} cajas</span>
+                  </div>
+                </div>
+
+                <div class="product-pricing mb-4">
+                  <span class="original-price">${{ product.originalPrice }}</span>
+                  <span class="member-price">${{ product.memberPrice }}</span>
+                  <v-chip color="green" size="small" class="ml-2">
+                    {% set discount = (product.originalPrice is defined and product.originalPrice ? ((1 - (product.memberPrice / product.originalPrice)) * 100) : 0) %}-{{ discount|round(0, 'common') }}%
+                  </v-chip>
+                </div>
+
+                <v-btn color="gold" block size="large">
+                  <v-icon start>mdi-cart-plus</v-icon>
+                  Agregar al Carrito
+                </v-btn>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="testimonials-section py-16">
+      <v-container>
+        <div class="text-center mb-12">
+          <h2 class="section-title mb-4">Testimonios de Miembros</h2>
+          <p class="section-subtitle">Lo que dicen nuestros aficionados</p>
+        </div>
+
+        <v-carousel 
+          height="300" 
+          hide-delimiters 
+          show-arrows="hover"
+          cycle
+          interval="5000"
+        >
+          <v-carousel-item data-for="(testimonial, index) in testimonials" data-bind="index">
+            <v-card class="testimonial-card ma-4 pa-8" elevation="4">
+              <div class="text-center">
+                <v-rating data-bind="5" 
+                  color="gold" 
+                  readonly 
+                  size="small" 
+                  class="mb-4"
+                ></v-rating>
+                <blockquote class="testimonial-quote mb-6">
+                  "{{ testimonial.quote }}"
+                </blockquote>
+                <div class="testimonial-author">
+                  <v-avatar size="48" class="mb-2">
+                    <v-img data-bind="testimonial.avatar"></v-img>
+                  </v-avatar>
+                  <div class="author-name">{{ testimonial.name }}</div>
+                  <div class="author-title">{{ testimonial.title }}</div>
+                </div>
+              </div>
+            </v-card>
+          </v-carousel-item>
+        </v-carousel>
+      </v-container>
+    </section>
+
+    <!-- Comunidad y Foro -->
+    <section class="community-section py-16">
+      <v-container>
+        <v-row align="center">
+          <v-col cols="12" md="6">
+            <h2 class="section-title mb-4">Únete a la Conversación</h2>
+            <p class="section-subtitle mb-6">
+              Conecta con otros aficionados, comparte experiencias y descubre nuevos sabores 
+              en nuestra comunidad privada.
+            </p>
+            
+            <div class="community-stats mb-6">
+              <div class="stat-item-horizontal mb-3">
+                <v-icon color="gold" class="mr-3">mdi-forum</v-icon>
+                <span><strong>{{ forumStats.discussions }}</strong> discusiones activas</span>
+              </div>
+              <div class="stat-item-horizontal mb-3">
+                <v-icon color="gold" class="mr-3">mdi-message</v-icon>
+                <span><strong>{{ forumStats.messages }}</strong> mensajes este mes</span>
+              </div>
+              <div class="stat-item-horizontal">
+                <v-icon color="gold" class="mr-3">mdi-account-group</v-icon>
+                <span><strong>{{ forumStats.activeMembers }}</strong> miembros activos</span>
+              </div>
+            </div>
+
+            <v-btn color="gold" size="large" class="mr-4 mb-4">
+              <v-icon start>mdi-forum</v-icon>
+              Acceder al Foro
+            </v-btn>
+            <v-btn variant="outlined" color="gold" size="large" class="mb-4">
+              <v-icon start>mdi-whatsapp</v-icon>
+              Grupo WhatsApp VIP
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-card class="recent-posts-card pa-6" elevation="4">
+              <h3 class="mb-4">Discusiones Recientes</h3>
+              <div data-for="(post, index) in recentPosts" data-bind="index" 
+                class="post-item mb-4 pb-4" data-bind="{ 'border-bottom': index < recentPosts.length - 1 }"
+              >
+                <div class="post-header mb-2">
+                  <v-avatar size="32" class="mr-3">
+                    <v-img data-bind="post.avatar"></v-img>
+                  </v-avatar>
+                  <div>
+                    <div class="post-author">{{ post.author }}</div>
+                    <div class="post-time">{{ post.time }}</div>
+                  </div>
+                </div>
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-stats">
+                  <v-chip size="x-small" color="grey-lighten-2" class="mr-2">
+                    <v-icon start size="12">mdi-message</v-icon>
+                    {{ post.replies }}
+                  </v-chip>
+                  <v-chip size="x-small" color="grey-lighten-2">
+                    <v-icon start size="12">mdi-heart</v-icon>
+                    {{ post.likes }}
+                  </v-chip>
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section py-12">
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="4" class="mb-6">
+            <h3 class="footer-title mb-4">Club Privado Mokhuba</h3>
+            <p class="footer-description mb-4">
+              La experiencia más exclusiva en habanos premium. 
+              Tradición, calidad y excelencia en cada encuentro.
+            </p>
+            <div class="social-links">
+              <v-btn data-for="social in socialLinks" data-bind="social.name" data-bind="social.icon" 
+                variant="text" 
+                color="gold"
+                size="large"
+                class="mr-2"
+              ></v-btn>
+            </div>
+          </v-col>
+          <v-col cols="12" md="4" class="mb-6">
+            <h4 class="footer-subtitle mb-4">Acceso Rápido</h4>
+            <div class="footer-links">
+              <a href="#" class="footer-link">Mi Dashboard</a>
+              <a href="#" class="footer-link">Próximos Eventos</a>
+              <a href="#" class="footer-link">Tienda VIP</a>
+              <a href="#" class="footer-link">Foro Privado</a>
+              <a href="#" class="footer-link">Mi Perfil</a>
+            </div>
+          </v-col>
+          <v-col cols="12" md="4">
+            <h4 class="footer-subtitle mb-4">Contacto VIP</h4>
+            <div class="contact-info">
+              <div class="contact-item mb-2">
+                <v-icon color="gold" class="mr-3">mdi-phone</v-icon>
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div class="contact-item mb-2">
+                <v-icon color="gold" class="mr-3">mdi-email</v-icon>
+                <span>vip@mokhubacigars.com</span>
+              </div>
+              <div class="contact-item">
+                <v-icon color="gold" class="mr-3">mdi-whatsapp</v-icon>
+                <span>WhatsApp VIP</span>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+        <v-divider class="my-8" color="gold"></v-divider>
+        <div class="text-center">
+          <p class="copyright">
+            © 2024 Club Privado Mokhuba. Todos los derechos reservados. 
+            <span class="gold-text">Membresía Exclusiva</span>
+          </p>
+        </div>
+      </v-container>
+    </footer>
+  </v-app>

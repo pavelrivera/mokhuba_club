@@ -1,0 +1,327 @@
+{# templates/payment/cancel.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Pago Cancelado - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       CANCEL PAGE STYLES
+    ===================================================== */
+    .cancel-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 50%, #2a1a19 100%);
+    }
+
+    .cancel-card {
+        max-width: 650px;
+        width: 100%;
+        background: rgba(45, 24, 23, 0.95);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(231, 76, 60, 0.5);
+        border-radius: 24px;
+        padding: 60px 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(231, 76, 60, 0.2);
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cancel-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        animation: scaleIn 0.5s ease-out 0.3s backwards;
+        box-shadow: 0 10px 40px rgba(231, 76, 60, 0.4);
+    }
+
+    .cancel-icon i {
+        font-size: 3.5rem;
+        color: white;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .cancel-title {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        color: var(--cream);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .cancel-subtitle {
+        color: rgba(255, 248, 220, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .info-box {
+        background: rgba(13, 10, 6, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .info-box h3 {
+        color: var(--gold-primary);
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .info-box p {
+        color: rgba(255, 248, 220, 0.7);
+        margin: 10px 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .info-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 15px 0 0 0;
+    }
+
+    .info-box ul li {
+        padding: 8px 0;
+        color: rgba(255, 248, 220, 0.8);
+        font-size: 0.95rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .info-box ul li::before {
+        content: '•';
+        color: var(--gold-primary);
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-top: -2px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        color: var(--dark-brown);
+        padding: 14px 32px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(212, 175, 55, 0.5);
+        color: var(--dark-brown);
+    }
+
+    .btn-secondary {
+        background: rgba(45, 24, 23, 0.8);
+        color: var(--gold-primary);
+        padding: 14px 32px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: 2px solid var(--gold-primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(212, 175, 55, 0.1);
+        color: var(--gold-light);
+        border-color: var(--gold-light);
+    }
+
+    .help-contact {
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .help-contact p {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+
+    .help-contact a {
+        color: var(--gold-primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .help-contact a:hover {
+        color: var(--gold-light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .cancel-card {
+            padding: 40px 25px;
+        }
+
+        .cancel-title {
+            font-size: 2rem;
+        }
+
+        .cancel-icon {
+            width: 100px;
+            height: 100px;
+        }
+
+        .cancel-icon i {
+            font-size: 3rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="cancel-container">
+    <div class="cancel-card">
+        {# Icono de cancelación #}
+        <div class="cancel-icon">
+            <i class="fas fa-times"></i>
+        </div>
+
+        {# Título principal #}
+        <h1 class="cancel-title">Pago Cancelado</h1>
+        
+        <p class="cancel-subtitle">
+            No se ha realizado ningún cargo. Tu pago ha sido cancelado y puedes intentarlo nuevamente cuando lo desees.
+        </p>
+
+        {# Información de qué pasó #}
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> ¿Qué sucedió?</h3>
+            <p>
+                El proceso de pago fue interrumpido antes de completarse. Esto puede ocurrir por varias razones:
+            </p>
+            <ul>
+                <li>Decidiste cancelar la transacción</li>
+                <li>Se cerró la ventana del navegador durante el proceso</li>
+                <li>Hubo un problema de conectividad</li>
+                <li>Prefieres elegir otro método de pago</li>
+            </ul>
+            <p style="margin-top: 15px;">
+                <strong>Importante:</strong> No se realizó ningún cargo a tu cuenta. Tus datos están seguros.
+            </p>
+        </div>
+
+        {# Próximos pasos #}
+        <div class="info-box">
+            <h3><i class="fas fa-lightbulb"></i> ¿Qué hacer ahora?</h3>
+            <p>
+                Tienes varias opciones para continuar con tu membresía de Mokhuba Club:
+            </p>
+            <ul>
+                <li>Intenta realizar el pago nuevamente</li>
+                <li>Explora las diferentes opciones de membresía</li>
+                <li>Contacta con nuestro equipo si necesitas ayuda</li>
+                <li>Revisa tu dashboard para ver otras opciones disponibles</li>
+            </ul>
+        </div>
+
+        {# Botones de acción #}
+        <div class="action-buttons">
+            <a href="{{ path('payment_membership_selection') }}" class="btn-primary">
+                <i class="fas fa-redo"></i>
+                Intentar Nuevamente
+            </a>
+            <a href="{{ path('dashboard_redirect') }}" class="btn-secondary">
+                <i class="fas fa-home"></i>
+                Volver al Dashboard
+            </a>
+        </div>
+
+        {# Ayuda y contacto #}
+        <div class="help-contact">
+            <p>
+                <i class="fas fa-question-circle"></i>
+                ¿Necesitas ayuda con tu pago?
+            </p>
+            <p>
+                Contáctanos en: 
+                <a href="mailto:pagos@mokhubaclub.com">pagos@mokhubaclub.com</a>
+                <br>
+                o llámanos al: <strong>+1 (555) 123-4567</strong>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('⚠️ Pago cancelado - No se realizó ningún cargo');
+        
+        // Si hay un mensaje flash de error, mostrarlo
+        {% for message in app.flashes('error') %}
+            console.error('Error de pago:', '{{ message }}');
+        {% endfor %}
+    });
+</script>
+{% endblock %}

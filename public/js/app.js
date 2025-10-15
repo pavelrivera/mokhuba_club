@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',()=>{const m=document.querySelector('[data-modal]');if(m){m.style.display='grid';document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';}});

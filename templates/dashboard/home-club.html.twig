@@ -1,0 +1,609 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Club Mokhuba - {{ user.firstName }} {{ user.lastName }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --black-premium: #1a0f0f;
+            --dark-brown: #2d1818;
+            --brown-medium: #5c1a1a;
+            --gold-primary: #d4af37;
+            --gold-light: #f4e5c2;
+            --cream: #fff8dc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, var(--black-premium) 0%, var(--dark-brown) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        .club-page {
+            min-height: 100vh;
+            padding: 20px;
+            background-image: url('/images/fondoLogin.png.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .club-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(45, 24, 24, 0.9) 100%);
+        }
+
+        .club-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header Superior */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-emblem {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            border: 3px solid var(--gold-primary);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .club-title h1 {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 6px;
+            margin: 0;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .icon-button {
+            width: 45px;
+            height: 45px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 2px solid var(--gold-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gold-primary);
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .icon-button:hover {
+            background: var(--gold-primary);
+            color: var(--dark-brown);
+            transform: scale(1.1);
+        }
+
+        .user-avatar-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-brown);
+            border: 2px solid var(--gold-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .user-avatar-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(45, 24, 23, 0.98);
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 10px 0;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--gold-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold-primary);
+            padding-left: 25px;
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* Bienvenida */
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9));
+            border: 2px solid var(--gold-primary);
+            border-radius: 15px;
+            padding: 25px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-banner h2 {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin: 0;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Cards principales (primera fila) */
+        .main-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9));
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.3;
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            color: var(--gold-primary);
+            margin-bottom: 20px;
+        }
+
+        .card-icon i {
+            filter: drop-shadow(0 4px 8px rgba(212, 175, 55, 0.4));
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--gold-primary);
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .card-button {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            color: var(--dark-brown);
+            border: none;
+            padding: 12px 30px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Imagen de humidor */
+        .humidor-image {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin: 20px auto;
+            filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.3));
+        }
+
+        /* Íconos de servicios (segunda fila) */
+        .service-icons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .service-item {
+            background: rgba(45, 24, 23, 0.8);
+            border: 1px solid var(--gold-primary);
+            border-radius: 15px;
+            padding: 25px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-item:hover {
+            background: rgba(92, 26, 26, 0.9);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .service-item i {
+            font-size: 2.5rem;
+            color: var(--gold-primary);
+            margin-bottom: 10px;
+        }
+
+        .service-item span {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Botones de navegación (tercera fila) */
+        .navigation-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.9), rgba(92, 26, 26, 0.8));
+            border: 2px solid var(--gold-primary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-button:hover {
+            background: linear-gradient(135deg, rgba(92, 26, 26, 0.95), rgba(45, 24, 23, 0.9));
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .nav-button span {
+            display: block;
+            font-size: 1rem;
+            color: var(--gold-primary);
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Decoración de estrella */
+        .star-decoration {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 3rem;
+            color: var(--gold-primary);
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-emblem {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .club-title h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 1.5rem;
+            }
+
+            .main-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .service-icons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navigation-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .header-icons {
+                gap: 10px;
+            }
+
+            .icon-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="club-page">
+    <div class="club-container">
+        <!-- Header Superior -->
+        <div class="top-header">
+            <div class="logo-section">
+                <div class="logo-emblem">M</div>
+                <div class="club-title">
+                    <h1>CLUB MOKHUBA</h1>
+                </div>
+            </div>
+            <div class="header-icons">
+                <a href="#" class="icon-button" title="Notificaciones">
+                    <i class="fas fa-flag"></i>
+                </a>
+                <a href="#" class="icon-button" title="Mensajes">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="#" class="icon-button" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <div class="user-avatar-icon" onclick="toggleDropdown()">
+                    {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="{{ path('profile_edit') }}" class="dropdown-item">
+                            <i class="fas fa-user-edit"></i> Editar Perfil
+                        </a>
+                        <a href="{{ path('auth_logout') }}" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner de Bienvenida -->
+        <div class="welcome-banner">
+            <h2>BIENVENIDO, {{ user.firstName|upper }} {{ user.lastName|upper }}</h2>
+        </div>
+
+        <!-- Cards Principales -->
+        <div class="main-cards">
+            <!-- Mi Marca -->
+            <div class="feature-card" onclick="handleCardClick('marca')">
+                <div class="card-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="card-title">MI MARCA</h3>
+                <p class="card-description">Registra tu Colección personal<br>con la Vitola Blend Distinto</p>
+                <button class="card-button" type="button">CREAR MARCA</button>
+            </div>
+
+            <!-- Mi Humidor -->
+            <div class="feature-card" onclick="handleCardClick('humidor')">
+                <div class="card-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <h3 class="card-title">MI HUMIDOR</h3>
+                <svg class="humidor-image" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="20" y="20" width="160" height="80" rx="10" fill="var(--brown-medium)" stroke="var(--gold-primary)" stroke-width="2"/>
+                    <rect x="25" y="25" width="150" height="70" rx="8" fill="var(--dark-brown)"/>
+                    <line x1="30" y1="40" x2="170" y2="40" stroke="var(--gold-primary)" stroke-width="1"/>
+                    <line x1="30" y1="60" x2="170" y2="60" stroke="var(--gold-primary)" stroke-width="1"/>
+                    <line x1="30" y1="80" x2="170" y2="80" stroke="var(--gold-primary)" stroke-width="1"/>
+                    <circle cx="90" cy="60" r="8" fill="var(--gold-primary)"/>
+                </svg>
+            </div>
+
+            <!-- Club -->
+            <div class="feature-card" onclick="handleCardClick('club')">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="card-title">CLUB</h3>
+                <p class="card-description">Descubre eventos este año<br>en el especial Directa Blend<br>Cocktail</p>
+            </div>
+        </div>
+
+        <!-- Íconos de Servicios -->
+        <div class="service-icons">
+            <div class="service-item" onclick="handleServiceClick('esencia')">
+                <i class="fas fa-leaf"></i>
+                <span>Nuestra Esencia</span>
+            </div>
+            <div class="service-item" onclick="handleServiceClick('compra')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Compra</span>
+            </div>
+            <div class="service-item" onclick="handleServiceClick('eventos')">
+                <i class="fas fa-glass-cheers"></i>
+                <span>Eventos</span>
+            </div>
+            <div class="service-item" onclick="handleServiceClick('envio')">
+                <i class="fas fa-truck"></i>
+                <span>Envío</span>
+            </div>
+        </div>
+
+        <!-- Botones de Navegación -->
+        <div class="navigation-buttons">
+            <a href="#" class="nav-button" onclick="handleNavClick('novedades'); return false;">
+                <span>Novedades</span>
+            </a>
+            <a href="#" class="nav-button" onclick="handleNavClick('cosecha'); return false;">
+                <span>Cosecha</span>
+            </a>
+            <a href="#" class="nav-button" onclick="handleNavClick('galeria'); return false;">
+                <span>Galería de Procesos</span>
+            </a>
+            <a href="#" class="nav-button" onclick="handleNavClick('consejos'); return false;">
+                <span>Consejos</span>
+            </a>
+        </div>
+
+        <!-- Decoración -->
+        <div class="star-decoration">
+            <i class="fas fa-star"></i>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Toggle dropdown
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar dropdown al hacer click fuera
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-avatar-icon')) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // Handlers para las cards principales
+        function handleCardClick(card) {
+            console.log('Card clicked:', card);
+            // TODO: Implementar navegación o funcionalidad para cada card
+            alert('Funcionalidad "' + card + '" en desarrollo');
+        }
+
+        // Handlers para los servicios
+        function handleServiceClick(service) {
+            console.log('Service clicked:', service);
+            // TODO: Implementar navegación o funcionalidad para cada servicio
+            alert('Funcionalidad "' + service + '" en desarrollo');
+        }
+
+        // Handlers para navegación
+        function handleNavClick(section) {
+            console.log('Navigation clicked:', section);
+            // TODO: Implementar navegación a cada sección
+            alert('Sección "' + section + '" en desarrollo');
+        }
+    </script>
+{% endblock %}

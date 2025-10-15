@@ -1,0 +1,197 @@
+
+{# templates/partials/logout_and_confirm.html.twig #}
+{# Non-intrusive: confirm/logout + WIP + override alert,
+   and CLOSE any open modals BEFORE showing the "En desarrollo" modal. #}
+{% if _bridge_confirm_partial_loaded is not defined %}
+{% set _bridge_confirm_partial_loaded = true %}
+
+{% if app.user %}
+<a href="#" id="globalLogoutBtn" class="logout-button"
+   style="position:fixed; right:18px; top:16px; z-index:1200; text-decoration:none;
+          background: rgba(19,6,6,0.6); border:1px solid var(--gold-primary, #D4AF37);
+          padding:8px 12px; border-radius:10px; color:var(--cream, #f8f2e7);
+          backdrop-filter: blur(4px);">
+    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+</a>
+{% endif %}
+
+<style>
+.admin-like-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000; backdrop-filter: blur(2px);
+}
+.admin-like-modal {
+  width: min(520px, 92vw);
+  background: radial-gradient(120% 100% at 50% 0, #2a231a, #16120e);
+  border: 1px solid var(--gold-primary, #D4AF37);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  color: var(--cream, #f6eadf);
+  padding: 22px;
+  transform: translateY(-6px);
+  animation: adminLikePop .15s ease-out;
+}
+@keyframes adminLikePop { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: translateY(-6px) scale(1); } }
+.admin-like-title { font-size: 20px; letter-spacing: .6px; margin: 0 0 8px; color: var(--cream, #f6eadf); }
+.admin-like-msg { opacity: .9; margin-bottom: 18px; }
+.admin-like-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.admin-like-btn {
+  padding: 10px 14px; border-radius: 12px; border: 1px solid transparent; cursor: pointer;
+  background: rgba(255,255,255,0.06); color: var(--cream, #f6eadf);
+}
+.admin-like-btn.main {
+  background: linear-gradient(180deg, #f0cc7a, #d6a84f);
+  color: #2a1d0a; border-color: #e2b64f; font-weight: 600;
+}
+.admin-like-btn:hover { filter: brightness(1.02); }
+</style>
+
+<script>
+(function() {
+  // --- Close any open modal/overlay generically ---
+  function closeAnyOpenModals(originEl) {
+    try {
+      // 1) Our mimic overlay(s)
+      document.querySelectorAll('.admin-like-overlay').forEach(el => el.remove());
+      // 2) Admin modal if present
+      var ov = document.getElementById('modalOverlay');
+      var md = document.getElementById('confirmModal');
+      if (ov) { ov.style.display='none'; ov.classList.remove('active','open','visible','show'); }
+      if (md) { md.style.display='none'; md.classList.remove('active','open','visible','show'); }
+
+      // 3) Bootstrap-like / custom modals
+      document.querySelectorAll('[role="dialog"], .modal, .dialog, .overlay, .backdrop').forEach(el => {
+        if (el === md || el === ov) return;
+        // Look for close buttons
+        const closeBtn = el.querySelector('[data-dismiss], [data-bs-dismiss], .modal-close, .close, .btn-close');
+        if (closeBtn) closeBtn.click();
+        // Hide forcibly if still visible
+        el.style.display = 'none';
+        el.classList.remove('show','open','active','visible');
+      });
+
+      // 4) If origin button is inside a modal container, hide that container
+      if (originEl) {
+        const container = originEl.closest('[role="dialog"], .modal, .dialog');
+        if (container) {
+          container.style.display='none';
+          container.classList.remove('show','open','active','visible');
+        }
+      }
+
+      // 5) Unlock body scroll
+      document.body.classList.remove('modal-open','no-scroll','overflow-hidden');
+      document.body.style.overflow = '';
+    } catch(e) {}
+  }
+
+  function createAdminLikeModal(opts) {
+    const overlay = document.createElement('div');
+    overlay.className = 'admin-like-overlay';
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    const modal = document.createElement('div');
+    modal.className = 'admin-like-modal';
+    const hasCancel = !!opts.cancelText;
+    modal.innerHTML = `
+      <h3 class="admin-like-title">${opts.title || 'Confirmar acción'}</h3>
+      <div class="admin-like-msg">${opts.message || ''}</div>
+      <div class="admin-like-actions">
+        ${hasCancel ? `<button class="admin-like-btn btn-cancel">${opts.cancelText}</button>` : ''}
+        <button class="admin-like-btn main btn-confirm">${opts.confirmText || 'Aceptar'}</button>
+      </div>
+    `;
+    overlay.appendChild(modal);
+    function close(){ try { document.body.removeChild(overlay); } catch(e){} document.body.style.overflow=''; }
+    const cancelBtn = modal.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.addEventListener('click', close);
+    modal.querySelector('.btn-confirm').addEventListener('click', function(){
+      close(); if (typeof opts.onConfirm === 'function') opts.onConfirm();
+    });
+    document.body.appendChild(overlay);
+    document.body.style.overflow='hidden';
+  }
+
+  function openConfirm(opts, originEl) {
+    // Always close any existing modal stack before opening the WIP/confirm modal
+    closeAnyOpenModals(originEl);
+    if (typeof showConfirmModal === 'function') return showConfirmModal(opts);
+    createAdminLikeModal(opts || {});
+  }
+
+  // Override window.alert → show "En desarrollo" modal (and close current)
+  if (!window.__adminStyleAlertPatched) {
+    window.__adminStyleAlertPatched = true;
+    const nativeAlert = window.alert.bind(window);
+    window.alert = function(msg) {
+      try {
+        openConfirm({
+          title: 'En desarrollo',
+          message: (msg && String(msg)) || 'Esta funcionalidad está en desarrollo.',
+          confirmText: 'Entendido',
+          cancelText: null
+        });
+      } catch (e) {
+        nativeAlert(msg);
+      }
+    };
+  }
+
+  // Logout flow (GET)
+  const glb = document.getElementById('globalLogoutBtn');
+  if (glb) {
+    glb.addEventListener('click', function(e) {
+      e.preventDefault();
+      openConfirm({
+        title: 'Confirmar cierre de sesión',
+        message: '¿Deseas cerrar tu sesión ahora?',
+        confirmText: 'Cerrar sesión',
+        cancelText: 'Cancelar',
+        onConfirm: function () { window.location.href = '{{ path("auth_logout") }}'; }
+      }, glb);
+    });
+  }
+
+  // Delegate confirm for any element with [data-confirm]
+  document.body.addEventListener('click', function(e) {
+    const el = e.target.closest('[data-confirm]');
+    if (!el) return;
+    e.preventDefault();
+    const msg = el.getAttribute('data-confirm') || '¿Confirmar acción?';
+    const href = el.getAttribute('href');
+    const method = (el.getAttribute('data-method') || 'GET').toUpperCase();
+    const action = el.getAttribute('data-action') || href;
+    openConfirm({
+      title: 'Confirmar acción',
+      message: msg,
+      confirmText: el.getAttribute('data-confirm-text') || 'Confirmar',
+      cancelText: el.getAttribute('data-cancel-text') || 'Cancelar',
+      onConfirm: function () {
+        if (method === 'POST') {
+          fetch(action || window.location.href, { method: 'POST', headers: {'X-Requested-With':'XMLHttpRequest'} })
+            .then(function(){ if (href && !action) window.location.href = href; else window.location.reload(); })
+            .catch(function(){ window.location.reload(); });
+        } else if (href) {
+          window.location.href = href;
+        }
+      }
+    }, el);
+  }, { passive: false });
+
+  // "En desarrollo" handler — any element with [data-wip]
+  document.body.addEventListener('click', function(e) {
+    const wip = e.target.closest('[data-wip]');
+    if (!wip) return;
+    e.preventDefault();
+    const msg = wip.getAttribute('data-wip') || 'Esta funcionalidad está en desarrollo.';
+    openConfirm({
+      title: 'En desarrollo',
+      message: msg,
+      confirmText: 'Entendido',
+      cancelText: null
+    }, wip);
+  }, { passive: false });
+})();
+</script>
+
+{% endif %}

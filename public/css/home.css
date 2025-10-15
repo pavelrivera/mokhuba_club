@@ -1,0 +1,108 @@
+:root{
+  /* existentes */
+  --dark-red: #8B0000;
+  --rich-brown: #8a3a19;
+  --gold-1: #e6c98a;
+  --gold-2: #b07b2a;
+  --cream: #FFF8DC;
+
+  /* paleta de fondo estilo Vue (nueva) */
+  --bg-deep: #130606;     /* fondo general */
+  --bg-section: #1a0707;  /* secciones bajo hero */
+  --bg-panel: #201313;    /* paneles/footers */
+  --gold-ink: #e6c98a;    /* títulos dorados suaves */
+}
+
+/* ------------------ HERO ------------------ */
+/* Hero con imagen exacta y a pantalla completa (como en Vue) */
+body.home .hero-section{
+  background-image: url('../images/logomain.webp') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+
+  /* ocupa toda la altura visible */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;   /* centra verticalmente el contenido del hero */
+  /* puedes añadir padding si lo necesitas */
+}
+
+/* Apaga cualquier pseudo-capa sobre el hero (no toca la modal) */
+body.home .hero-section::before,
+body.home .hero-section::after{
+  content: none !important;
+  display: none !important;
+}
+
+/* ------------------ BLOQUES DEL HERO ------------------ */
+.hero-badge{ display:flex; justify-content:center; margin-bottom: 16px; }
+.premium-chip.gold{
+  background: linear-gradient(90deg, var(--gold-1) 0%, var(--gold-2) 100%);
+  color:#1f1a12; font-weight:700; border-radius:999px; padding:8px 16px;
+}
+.hero-title{ text-align:center; font-size:56px; margin:12px 0 8px 0; }
+.hero-subtitle{ text-align:center; opacity:.9; margin-bottom: 18px; }
+
+.hero-stats .stat-item{ text-align:center; padding: 12px 0; }
+.stat-number{ font-size:56px; font-weight: 700; color:#e7d6ad; line-height:1; }
+.stat-label{ color:#c7b68d; }
+
+.cta-wrap{ display:flex; gap:16px; justify-content:center; margin-top: 14px; }
+.button.gold{
+  background: linear-gradient(90deg, var(--gold-1) 0%, var(--gold-2) 100%);
+  color: #1f1a12;
+  border-radius: 999px; padding: 12px 18px; font-weight:700; border:none;
+  box-shadow: 0 0 22px rgba(239,200,118,0.55);
+}
+.button.outline.gold{ background: transparent; color:var(--gold-1); border:1px solid rgba(230,201,138,.6); }
+
+/* ------------------ MODAL (se mantiene tu look) ------------------ */
+/* revisar la modal
+.modal-overlay{
+  position: fixed; inset:0; display:grid; place-items:center;
+  background: rgba(0,0,0,.45); backdrop-filter: blur(4px);
+  z-index:9999; padding:24px;
+}
+*/ 
+/* deja ver más rojo */
+.modal-overlay{
+  background: rgba(0,0,0,0.25);   /* 0.25–0.35 es un buen rango */
+  -webkit-backdrop-filter: none;  /* quitar blur */
+  backdrop-filter: none;
+}
+
+.modal-card{
+  background: #1c1c1c; color:#e7d6ad; max-width:720px; width:100%;
+  border-radius: 14px; border:1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 40px rgba(0,0,0,.35), 0 0 60px rgba(239,200,118,.25) inset;
+  padding: 28px 32px;
+}
+.modal-header .logo{ font-weight:700; letter-spacing:.18em; color:#e7d6ad; margin-bottom:8px; }
+.modal-body p{ color:#c7b68d; margin:0 0 18px 0; }
+
+/* ------------------ FONDOS DEL RESTO DE LA PÁGINA ------------------ */
+body.home{ background-color: var(--bg-deep); }
+
+body.home .section,
+body.home section{
+  background-color: var(--bg-section);
+  color: #e7d6ad;
+}
+
+body.home footer,
+body.home .footer,
+body.home .panel,
+body.home .strip-dark{
+  background-color: var(--bg-panel);
+}
+
+body.home .section-title,
+body.home h2{
+  color: var(--gold-ink);
+}
+
+/* ------------------ RESPONSIVE ------------------ */
+@media (max-width: 768px){
+  .hero-title{ font-size: 40px; }
+}

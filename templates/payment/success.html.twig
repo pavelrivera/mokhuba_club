@@ -1,0 +1,345 @@
+{# templates/payment/success.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}¡Pago Exitoso! - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       SUCCESS PAGE STYLES
+    ===================================================== */
+    .success-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--deep-brown) 0%, var(--dark-brown) 50%, #2a1a19 100%);
+    }
+
+    .success-card {
+        max-width: 700px;
+        width: 100%;
+        background: rgba(45, 24, 23, 0.95);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--gold-primary);
+        border-radius: 24px;
+        padding: 60px 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.3);
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #27ae60, #229954);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        animation: scaleIn 0.5s ease-out 0.3s backwards;
+        box-shadow: 0 10px 40px rgba(39, 174, 96, 0.4);
+    }
+
+    .success-icon i {
+        font-size: 3.5rem;
+        color: white;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .success-title {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        color: var(--cream);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .success-subtitle {
+        color: rgba(255, 248, 220, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .membership-badge-large {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        color: var(--dark-brown);
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 40px;
+        box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+    }
+
+    .info-box {
+        background: rgba(13, 10, 6, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .info-box h3 {
+        color: var(--gold-primary);
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .info-box p {
+        color: rgba(255, 248, 220, 0.7);
+        margin: 10px 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .info-box strong {
+        color: var(--cream);
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0 0;
+    }
+
+    .benefits-list li {
+        padding: 10px 0;
+        color: rgba(255, 248, 220, 0.8);
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .benefits-list li::before {
+        content: '✓';
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        color: var(--dark-brown);
+        padding: 14px 32px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(212, 175, 55, 0.5);
+        color: var(--dark-brown);
+    }
+
+    .btn-secondary {
+        background: rgba(45, 24, 23, 0.8);
+        color: var(--gold-primary);
+        padding: 14px 32px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: 2px solid var(--gold-primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(212, 175, 55, 0.1);
+        color: var(--gold-light);
+        border-color: var(--gold-light);
+    }
+
+    .confetti-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .success-card {
+            padding: 40px 25px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+        }
+
+        .success-icon i {
+            font-size: 3rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="success-container">
+    <div class="success-card">
+        {# Icono de éxito #}
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+
+        {# Título principal #}
+        <h1 class="success-title">¡Pago Exitoso!</h1>
+        
+        <p class="success-subtitle">
+            Tu membresía ha sido activada correctamente. Bienvenido a la experiencia premium de Mokhuba Cigar Club.
+        </p>
+
+        {# Badge de membresía #}
+        <div class="membership-badge-large">
+            {% if membership == 'ruby' %}
+                <i class="fas fa-gem"></i> Membresía Rubí
+            {% elseif membership == 'gold' %}
+                <i class="fas fa-medal"></i> Membresía Oro
+            {% elseif membership == 'platinum' %}
+                <i class="fas fa-star"></i> Membresía Platino
+            {% else %}
+                Membresía Activada
+            {% endif %}
+        </div>
+
+        {# Información del pago #}
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> Detalles de tu Membresía</h3>
+            <p><strong>Estado:</strong> Activa</p>
+            <p><strong>Fecha de inicio:</strong> {{ "now"|date("d/m/Y") }}</p>
+            <p><strong>Válida hasta:</strong> {{ "now"|date_modify("+1 year")|date("d/m/Y") }}</p>
+            {% if session_id %}
+                <p><strong>ID de Transacción:</strong> <code>{{ session_id }}</code></p>
+            {% endif %}
+            <p style="margin-top: 15px; font-style: italic; font-size: 0.9rem;">
+                Recibirás un correo electrónico de confirmación en breve con todos los detalles de tu membresía.
+            </p>
+        </div>
+
+        {# Beneficios #}
+        <div class="info-box">
+            <h3><i class="fas fa-gift"></i> Tus Beneficios Incluyen</h3>
+            <ul class="benefits-list">
+                {% if membership == 'ruby' %}
+                    <li>Acceso a eventos mensuales exclusivos</li>
+                    <li>Compras prioritarias de ediciones limitadas</li>
+                    <li>Regalo personalizado de cumpleaños</li>
+                    <li>Acceso anticipado a nuevas vitolas</li>
+                {% elseif membership == 'gold' %}
+                    <li>Todos los beneficios de Rubí</li>
+                    <li>1 marca personalizada exclusiva</li>
+                    <li>Hasta 2 líneas por marca</li>
+                    <li>1 regalo premium adicional por año</li>
+                    <li>Asesoría personalizada de productos</li>
+                {% elseif membership == 'platinum' %}
+                    <li>Todos los beneficios de Oro</li>
+                    <li>Hasta 3 marcas personalizadas</li>
+                    <li>Hasta 6 líneas por marca</li>
+                    <li>2 acompañantes VIP a eventos</li>
+                    <li>Regalo especial de aniversario</li>
+                    <li>Concierge personal 24/7</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        {# Botones de acción #}
+        <div class="action-buttons">
+            <a href="{{ path('dashboard_redirect') }}" class="btn-primary">
+                <i class="fas fa-home"></i>
+                Ir a Mi Dashboard
+            </a>
+            <a href="{{ path('profile_view') }}" class="btn-secondary">
+                <i class="fas fa-user"></i>
+                Ver Mi Perfil
+            </a>
+        </div>
+    </div>
+</div>
+
+<canvas class="confetti-animation" id="confetti"></canvas>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Confetti animation (opcional)
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ Pago exitoso - Membresía activada');
+        
+        // Aquí puedes agregar animación de confeti si lo deseas
+        // Por ahora solo mostramos un log de éxito
+        
+        // Auto-redirigir después de 10 segundos (opcional)
+        // setTimeout(function() {
+        //     window.location.href = "{{ path('dashboard_redirect') }}";
+        // }, 10000);
+    });
+</script>
+{% endblock %}

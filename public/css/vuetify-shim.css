@@ -1,0 +1,90 @@
+/* public/css/vuetify-shim.css */
+
+/* Contenedores tipo fila/columna */
+v-row, .v-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -12px;
+  margin-right: -12px;
+}
+
+v-col, .v-col {
+  display: block;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* Soporte rápido para atributos responsivos (sm, md, lg) con fracciones comunes) */
+v-col[cols="12"], .v-col[cols="12"] { flex-basis:100%; max-width:100%; }
+v-col[cols="6"],  .v-col[cols="6"]  { flex-basis:50%;  max-width:50%; }
+v-col[cols="4"],  .v-col[cols="4"]  { flex-basis:33.3333%; max-width:33.3333%; }
+v-col[cols="3"],  .v-col[cols="3"]  { flex-basis:25%;  max-width:25%; }
+
+@media (min-width: 600px) {
+  v-col[sm="12"], .v-col[sm="12"] { flex-basis:100%; max-width:100%; }
+  v-col[sm="6"],  .v-col[sm="6"]  { flex-basis:50%;  max-width:50%; }
+  v-col[sm="4"],  .v-col[sm="4"]  { flex-basis:33.3333%; max-width:33.3333%; }
+  v-col[sm="3"],  .v-col[sm="3"]  { flex-basis:25%;  max-width:25%; }
+}
+
+@media (min-width: 960px) {
+  v-col[md="12"], .v-col[md="12"] { flex-basis:100%; max-width:100%; }
+  v-col[md="6"],  .v-col[md="6"]  { flex-basis:50%;  max-width:50%; }
+  v-col[md="4"],  .v-col[md="4"]  { flex-basis:33.3333%; max-width:33.3333%; }
+  v-col[md="3"],  .v-col[md="3"]  { flex-basis:25%;  max-width:25%; }
+}
+
+@media (min-width: 1264px) {
+  v-col[lg="12"], .v-col[lg="12"] { flex-basis:100%; max-width:100%; }
+  v-col[lg="6"],  .v-col[lg="6"]  { flex-basis:50%;  max-width:50%; }
+  v-col[lg="4"],  .v-col[lg="4"]  { flex-basis:33.3333%; max-width:33.3333%; }
+  v-col[lg="3"],  .v-col[lg="3"]  { flex-basis:25%;  max-width:25%; }
+}
+
+/* Botón básico estilo Vuetify (ajusta a tu tema dorado) */
+v-btn, .v-btn, [data-v-btn] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform .08s ease, box-shadow .2s ease;
+  background: #d2a24c;
+  color: #1c1c1c;
+  box-shadow: 0 6px 24px rgba(210,162,76,0.35);
+}
+v-btn:hover, .v-btn:hover, [data-v-btn]:hover { transform: translateY(-1px); }
+
+/* Dialog/overlay simple */
+v-dialog, .v-dialog, [data-v-dialog] {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,.55);
+  z-index: 999;
+}
+v-card, .v-card, [data-v-card] {
+  background: #242424;
+  color: #f2f2f2;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+/* Utilidades comunes que suelen venir del tema original */
+.mb-8 { margin-bottom: 2rem; }
+.text-center { text-align: center; }
+
+/* Si usas clases 'hero', 'stat-item', etc., dales un mínimo por si tu CSS principal no cargara */
+.hero-title { font-size: 2.2rem; font-weight: 700; }
+.stat-item { text-align:center; padding: 10px 0; }
+.stat-number { font-size: 2rem; font-weight: 800; }
+.stat-label  { opacity:.9; }

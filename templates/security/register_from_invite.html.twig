@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Crear cuenta - Invitación{% endblock %}
+{% block body %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card" style="background:#111;border:1px solid var(--gold-primary);color:#eee;">
+        <div class="card-header" style="border-bottom:1px solid rgba(212,175,55,.3);">
+          <h4 class="m-0" style="color:var(--gold-primary);">Crear cuenta</h4>
+        </div>
+        <div class="card-body">
+          {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+          <form method="post" action="{{ path('invite_register', { token: token }) }}">
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" name="name" class="form-control" value="{{ name }}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" value="{{ email }}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contraseña</label>
+              <input type="password" name="password" class="form-control" required minlength="8">
+            </div>
+            <div class="d-grid gap-2">
+              <button class="btn btn-lg" style="background:linear-gradient(135deg,var(--gold-primary),var(--gold-light));color:#2d1817;font-weight:700;">Crear cuenta</button>
+              <a href="{{ path('app_login') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

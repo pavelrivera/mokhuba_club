@@ -1,0 +1,161 @@
+{# templates/emails/invitation_accepted.html.twig #}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Tu invitación fue aceptada!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a0f0f;
+            color: #f8f2e7;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #2d1817 0%, #5c1a1a 100%);
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .celebration-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .invitee-name {
+            font-size: 1.8rem;
+            color: #34d399;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        .stat-value {
+            font-size: 2rem;
+            color: #D4AF37;
+            font-weight: 700;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #D4AF37, #F4E5C2);
+            color: #2a1a12;
+            text-decoration: none;
+            padding: 15px 35px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 20px 0;
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="celebration-icon">🎉</div>
+            <h1>¡Invitación Aceptada!</h1>
+        </div>
+
+        <div class="content">
+            <p style="font-size: 1.2rem; line-height: 1.6; text-align: center;">
+                ¡Excelentes noticias, <strong>{{ sender.firstName }}</strong>!
+            </p>
+
+            <div class="success-box">
+                <div style="font-size: 1rem; margin-bottom: 10px; opacity: 0.9;">
+                    <strong>{{ invitee_name }}</strong>
+                </div>
+                <div style="font-size: 1.1rem; color: #34d399; margin-top: 10px;">
+                    ✅ ha aceptado tu invitación y ahora es parte de Mokhuba Club
+                </div>
+            </div>
+
+            <p style="font-size: 1.05rem; line-height: 1.6; text-align: center; margin: 30px 0;">
+                Gracias por ayudarnos a hacer crecer nuestra comunidad exclusiva de aficionados al tabaco premium.
+            </p>
+
+            <div style="background: rgba(212, 175, 55, 0.1); border-radius: 15px; padding: 25px; margin: 30px 0;">
+                <h3 style="color: #D4AF37; text-align: center; margin-bottom: 20px;">
+                    Tus Estadísticas de Invitaciones
+                </h3>
+                <p style="text-align: center; opacity: 0.8; margin-bottom: 20px;">
+                    Sigue invitando y construyendo la comunidad
+                </p>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="{{ app.request.schemeAndHttpHost ~ path('invitation_my_invitations') }}" class="cta-button">
+                        Ver Mis Invitaciones
+                    </a>
+                </div>
+            </div>
+
+            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 20px; margin-top: 30px; text-align: center;">
+                <strong style="color: #93c5fd;">💎 Beneficio Especial</strong><br>
+                <span style="color: #f8f2e7; opacity: 0.9; margin-top: 10px; display: block;">
+                    Por cada 3 invitaciones aceptadas, recibirás un beneficio exclusivo en tu membresía.
+                </span>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-size: 1.1rem; color: #D4AF37; font-weight: 600; margin-bottom: 15px;">
+                    ¿Conoces a más personas que disfrutarían del club?
+                </p>
+                <a href="{{ app.request.schemeAndHttpHost ~ path('dashboard') }}" class="cta-button">
+                    Enviar Más Invitaciones
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div style="font-size: 1.2rem; margin-bottom: 10px;">🚬</div>
+            <p style="margin: 10px 0; font-weight: 600;">MOKHUBA CLUB</p>
+            <p style="margin: 5px 0; font-size: 0.9rem; opacity: 0.7;">
+                Creciendo juntos, disfrutando mejor
+            </p>
+        </div>
+    </div>
+</body>
+</html>

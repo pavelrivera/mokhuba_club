@@ -1,0 +1,490 @@
+{# templates/dashboard/beneficios.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Beneficios del Club - Mokhuba VIP{% endblock %}
+
+{% block body %}
+<style>
+/* Variables premium para beneficios */
+:root {
+    --gold-primary: #d4af37;
+    --gold-secondary: #b8941f;
+    --gold-light: #f4e4bc;
+    --dark-brown: #2d1817;
+    --deep-brown: #1a0f0e;
+    --cream: #fff8dc;
+    --bronze: #cd7f32;
+}
+
+body {
+    background: 
+        linear-gradient(135deg, rgba(13, 10, 6, 0.85) 0%, rgba(45, 24, 23, 0.9) 50%, rgba(42, 26, 25, 0.85) 100%),
+        url('{{ app.request.basePath }}/images/logomain.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.benefits-container {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.benefits-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(184, 148, 31, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Header premium */
+.benefits-header {
+    text-align: center;
+    padding: 3rem 2rem 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.benefits-title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.benefits-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+    border-radius: 2px;
+}
+
+.benefits-subtitle {
+    font-size: 1.2rem;
+    color: var(--cream);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+/* Navegación superior */
+.benefits-nav {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    background: rgba(45, 24, 23, 0.9);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 25px;
+    color: var(--cream);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.back-button:hover {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    color: var(--dark-brown);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Selector de membresías */
+.membership-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem auto 3rem;
+    max-width: 700px;
+    padding: 0 2rem;
+    flex-wrap: wrap;
+}
+
+.membership-tab {
+    flex: 1;
+    min-width: 180px;
+    padding: 1rem 1.5rem;
+    background: rgba(45, 24, 23, 0.8);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    color: var(--cream);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.membership-tab.active {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    color: var(--dark-brown);
+    border-color: var(--gold-light);
+    box-shadow: 
+        0 8px 25px rgba(212, 175, 55, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.membership-icon {
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+}
+
+/* Grid de beneficios */
+.benefits-grid {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 2rem 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.benefit-card {
+    background: linear-gradient(145deg, rgba(45, 24, 23, 0.95), rgba(26, 15, 14, 0.95));
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(15px);
+}
+
+.benefit-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.3),
+        0 0 25px rgba(212, 175, 55, 0.15);
+}
+
+.benefit-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--dark-brown);
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: 
+        0 8px 20px rgba(212, 175, 55, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.benefit-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+.benefit-description {
+    color: rgba(255, 248, 220, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.benefit-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.benefit-features li {
+    padding: 0.4rem 0;
+    color: rgba(255, 248, 220, 0.9);
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.benefit-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--gold-primary);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.membership-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-ruby {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.badge-gold {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    color: var(--dark-brown);
+}
+
+.badge-platinum {
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    color: var(--dark-brown);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .benefits-title {
+        font-size: 2.2rem;
+    }
+    
+    .membership-selector {
+        flex-direction: column;
+        max-width: 300px;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem 3rem;
+    }
+    
+    .benefit-card {
+        padding: 1.5rem;
+    }
+
+    .benefits-nav {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+}
+</style>
+
+<div class="benefits-container">
+    <!-- Navegación -->
+    <div class="benefits-nav">
+        <a href="{{ path('home') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Inicio
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="benefits-header">
+        <h1 class="benefits-title">Beneficios Exclusivos</h1>
+        <p class="benefits-subtitle">
+            Descubre los privilegios únicos que definen la experiencia Mokhuba Club. 
+            Cada nivel de membresía ha sido diseñado para ofrecer acceso a un mundo de lujo y exclusividad.
+        </p>
+    </div>
+
+    <!-- Selector de membresías -->
+    <div class="membership-selector">
+        <div class="membership-tab active" data-membership="ruby">
+            <i class="membership-icon fas fa-gem"></i>
+            Membresía Rubí
+        </div>
+        <div class="membership-tab" data-membership="gold">
+            <i class="membership-icon fas fa-crown"></i>
+            Membresía Oro
+        </div>
+        <div class="membership-tab" data-membership="platinum">
+            <i class="membership-icon fas fa-star"></i>
+            Membresía Platino
+        </div>
+    </div>
+
+    <!-- Grid de beneficios -->
+    <div class="benefits-grid">
+        <!-- Beneficio 1: Catálogo Exclusivo -->
+        <div class="benefit-card" data-membership="ruby gold platinum">
+            <div class="membership-badge badge-ruby">Desde Rubí</div>
+            <div class="benefit-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3 class="benefit-title">Catálogo Exclusivo</h3>
+            <p class="benefit-description">
+                Acceso privilegiado a nuestra colección de cigarros premium seleccionados de las mejores cosechas mundiales.
+            </p>
+            <ul class="benefit-features">
+                <li>Cigarros de edición limitada</li>
+                <li>Productos pre-lanzamiento</li>
+                <li>Colecciones vintage exclusivas</li>
+                <li>Envío prioritario gratuito</li>
+            </ul>
+        </div>
+
+        <!-- Beneficio 2: Marca Personalizada -->
+        <div class="benefit-card" data-membership="gold platinum">
+            <div class="membership-badge badge-gold">Desde Oro</div>
+            <div class="benefit-icon">
+                <i class="fas fa-palette"></i>
+            </div>
+            <h3 class="benefit-title">Marca Personalizada</h3>
+            <p class="benefit-description">
+                Crea tu propia línea de cigarros con diseño personalizado, blend exclusivo y presentación única.
+            </p>
+            <ul class="benefit-features">
+                <li>Diseño de vitola personalizada</li>
+                <li>Blend exclusivo desarrollado contigo</li>
+                <li>Packaging personalizado</li>
+                <li>Mínimo 100 unidades</li>
+            </ul>
+        </div>
+
+        <!-- Beneficio 3: Eventos Exclusivos -->
+        <div class="benefit-card" data-membership="ruby gold platinum">
+            <div class="membership-badge badge-ruby">Desde Rubí</div>
+            <div class="benefit-icon">
+                <i class="fas fa-calendar-star"></i>
+            </div>
+            <h3 class="benefit-title">Eventos Exclusivos</h3>
+            <p class="benefit-description">
+                Invitaciones a cenas de maridaje, catas privadas y encuentros con maestros tabaqueros reconocidos mundialmente.
+            </p>
+            <ul class="benefit-features">
+                <li>Catas privadas mensuales</li>
+                <li>Cenas de maridaje premium</li>
+                <li>Encuentros con maestros tabaqueros</li>
+                <li>Acceso prioritario a eventos</li>
+            </ul>
+        </div>
+
+        <!-- Beneficio 4: Concierge Personal -->
+        <div class="benefit-card" data-membership="platinum">
+            <div class="membership-badge badge-platinum">Solo Platino</div>
+            <div class="benefit-icon">
+                <i class="fas fa-concierge-bell"></i>
+            </div>
+            <h3 class="benefit-title">Concierge Personal</h3>
+            <p class="benefit-description">
+                Servicio de conserjería dedicado 24/7 para atender todas tus necesidades relacionadas con cigarros y más.
+            </p>
+            <ul class="benefit-features">
+                <li>Asesor personal dedicado</li>
+                <li>Servicio 24/7</li>
+                <li>Recomendaciones personalizadas</li>
+                <li>Gestión de colección personal</li>
+            </ul>
+        </div>
+
+        <!-- Beneficio 5: Humidor Personalizado -->
+        <div class="benefit-card" data-membership="gold platinum">
+            <div class="membership-badge badge-gold">Desde Oro</div>
+            <div class="benefit-icon">
+                <i class="fas fa-archive"></i>
+            </div>
+            <h3 class="benefit-title">Humidor Personalizado</h3>
+            <p class="benefit-description">
+                Humidor de alta gama con tu nombre grabado y mantenimiento profesional incluido.
+            </p>
+            <ul class="benefit-features">
+                <li>Humidor de cedro español</li>
+                <li>Grabado personalizado</li>
+                <li>Mantenimiento incluido</li>
+                <li>Capacidad 50-200 cigarros</li>
+            </ul>
+        </div>
+
+        <!-- Beneficio 6: Red Global -->
+        <div class="benefit-card" data-membership="platinum">
+            <div class="membership-badge badge-platinum">Solo Platino</div>
+            <div class="benefit-icon">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <h3 class="benefit-title">Red Global Mokhuba</h3>
+            <p class="benefit-description">
+                Acceso a clubes afiliados en más de 25 países y descuentos en hoteles de lujo seleccionados.
+            </p>
+            <ul class="benefit-features">
+                <li>Clubes en 25+ países</li>
+                <li>Descuentos hoteles 5 estrellas</li>
+                <li>Concierge internacional</li>
+                <li>Eventos globales exclusivos</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Selector de membresías
+    const membershipTabs = document.querySelectorAll('.membership-tab');
+    const benefitCards = document.querySelectorAll('.benefit-card');
+    
+    membershipTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const selectedMembership = this.dataset.membership;
+            
+            // Actualizar tabs activos
+            membershipTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filtrar tarjetas con animación
+            benefitCards.forEach(card => {
+                const cardMemberships = card.dataset.membership.split(' ');
+                if (cardMemberships.includes(selectedMembership)) {
+                    card.style.display = 'block';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+});
+</script>
+
+
+{% include 'partials/logout_and_confirm.html.twig' %}
+{% endblock %}

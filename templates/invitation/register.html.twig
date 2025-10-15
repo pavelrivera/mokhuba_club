@@ -1,0 +1,319 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Completar Registro - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #2d1817 0%, #5c1a1a 100%);
+        --gold-primary: #d4af37;
+        --gold-secondary: #b8941f;
+        --text-cream: #fff8dc;
+    }
+
+    body {
+        background: var(--primary-gradient);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .registration-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--gold-primary);
+        border-radius: 15px;
+        padding: 40px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .registration-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .registration-header h1 {
+        color: var(--gold-primary);
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .registration-header p {
+        color: var(--text-cream);
+        opacity: 0.9;
+    }
+
+    .invitation-info {
+        background: rgba(212, 175, 55, 0.1);
+        border-left: 3px solid var(--gold-primary);
+        padding: 15px;
+        margin-bottom: 25px;
+        border-radius: 5px;
+    }
+
+    .invitation-info p {
+        margin: 5px 0;
+        color: var(--text-cream);
+    }
+
+    .invitation-info strong {
+        color: var(--gold-primary);
+    }
+
+    .form-label {
+        color: var(--text-cream);
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-cream);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        color: var(--text-cream);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 248, 220, 0.5);
+    }
+
+    .btn-register {
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border: none;
+        color: #2d1817;
+        font-weight: bold;
+        padding: 14px;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .alert {
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .password-strength {
+        margin-top: 10px;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .strength-weak {
+        background: rgba(220, 53, 69, 0.2);
+        color: #ff6b6b;
+    }
+
+    .strength-medium {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+    }
+
+    .strength-strong {
+        background: rgba(40, 167, 69, 0.2);
+        color: #51cf66;
+    }
+
+    .form-text {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="registration-container">
+    <div class="registration-header">
+        <h1>✨ Completar Registro</h1>
+        <p>Mokhuba Club</p>
+    </div>
+
+    <div class="invitation-info">
+        <p><strong>Invitado por:</strong> {{ sender_name }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        {% if message %}
+        <p style="margin-top: 10px; font-style: italic;">"{{ message }}"</p>
+        {% endif %}
+    </div>
+
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ flash_error }}
+        </div>
+    {% endfor %}
+
+    <form method="POST" action="{{ path('invitation_process', { token: token }) }}" id="registrationForm">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label">
+                    <i class="fas fa-user me-2"></i>Nombre *
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="firstName" 
+                    name="firstName" 
+                    required
+                    value="{{ name|split(' ')|first|default('') }}"
+                    placeholder="Tu nombre">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label">
+                    <i class="fas fa-user me-2"></i>Apellido *
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="lastName" 
+                    name="lastName" 
+                    required
+                    value="{{ name|split(' ')|slice(1)|join(' ')|default('') }}"
+                    placeholder="Tu apellido">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">
+                <i class="fas fa-phone me-2"></i>Teléfono
+            </label>
+            <input 
+                type="tel" 
+                class="form-control" 
+                id="phone" 
+                name="phone"
+                value="{{ phone|default('') }}"
+                placeholder="+240 XXX XXX XXX">
+            <small class="form-text">Formato: +240 XXX XXX XXX</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">
+                <i class="fas fa-lock me-2"></i>Contraseña *
+            </label>
+            <input 
+                type="password" 
+                class="form-control" 
+                id="password" 
+                name="password" 
+                required
+                minlength="6"
+                placeholder="Mínimo 6 caracteres">
+            <div id="passwordStrength" class="password-strength" style="display: none;"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">
+                <i class="fas fa-lock me-2"></i>Confirmar Contraseña *
+            </label>
+            <input 
+                type="password" 
+                class="form-control" 
+                id="confirmPassword" 
+                name="confirmPassword" 
+                required
+                minlength="6"
+                placeholder="Repite tu contraseña">
+        </div>
+
+        <div class="form-text text-center mb-3">
+            * Campos obligatorios
+        </div>
+
+        <button type="submit" class="btn btn-register">
+            <i class="fas fa-user-plus me-2"></i>Completar Registro
+        </button>
+    </form>
+
+    <div class="text-center mt-3">
+        <small class="form-text">
+            ¿Ya tienes cuenta? <a href="{{ path('auth_login') }}" style="color: var(--gold-primary);">Inicia sesión</a>
+        </small>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const strengthIndicator = document.getElementById('passwordStrength');
+    const form = document.getElementById('registrationForm');
+
+    // Verificar fortaleza de contraseña
+    password.addEventListener('input', function() {
+        const value = password.value;
+        
+        if (value.length === 0) {
+            strengthIndicator.style.display = 'none';
+            return;
+        }
+
+        strengthIndicator.style.display = 'block';
+        
+        let strength = 0;
+        if (value.length >= 6) strength++;
+        if (value.length >= 8) strength++;
+        if (/[a-z]/.test(value) && /[A-Z]/.test(value)) strength++;
+        if (/[0-9]/.test(value)) strength++;
+        if (/[^a-zA-Z0-9]/.test(value)) strength++;
+
+        if (strength <= 2) {
+            strengthIndicator.className = 'password-strength strength-weak';
+            strengthIndicator.textContent = '⚠️ Contraseña débil';
+        } else if (strength <= 4) {
+            strengthIndicator.className = 'password-strength strength-medium';
+            strengthIndicator.textContent = '✓ Contraseña aceptable';
+        } else {
+            strengthIndicator.className = 'password-strength strength-strong';
+            strengthIndicator.textContent = '✓✓ Contraseña fuerte';
+        }
+    });
+
+    // Validar que las contraseñas coincidan al enviar
+    form.addEventListener('submit', function(e) {
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('❌ Las contraseñas no coinciden');
+            confirmPassword.focus();
+            return false;
+        }
+
+        if (password.value.length < 6) {
+            e.preventDefault();
+            alert('❌ La contraseña debe tener al menos 6 caracteres');
+            password.focus();
+            return false;
+        }
+    });
+
+    // Validar en tiempo real si las contraseñas coinciden
+    confirmPassword.addEventListener('input', function() {
+        if (confirmPassword.value === password.value) {
+            confirmPassword.style.borderColor = 'rgba(40, 167, 69, 0.5)';
+        } else {
+            confirmPassword.style.borderColor = 'rgba(220, 53, 69, 0.5)';
+        }
+    });
+});
+</script>
+{% endblock %}

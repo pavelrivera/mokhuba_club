@@ -1,0 +1,7 @@
+# config/services/stripe.yaml
+services:
+    # --- Stripe DI FIX (positional arguments: secret, publishable) ---
+    App\Service\StripeService:
+        arguments:
+            - '%env(resolve:STRIPE_SECRET_KEY)%'
+            - '%env(resolve:STRIPE_PUBLISHABLE_KEY)%'

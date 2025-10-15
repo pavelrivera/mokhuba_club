@@ -1,0 +1,6 @@
+# config/services/zzz_stripe_override.yaml
+services:
+    App\Service\StripeService:
+        arguments:
+            - '%env(resolve:STRIPE_SECRET_KEY)%'
+            - '%env(resolve:STRIPE_PUBLISHABLE_KEY)%'

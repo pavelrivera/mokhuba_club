@@ -1,0 +1,19 @@
+# config/routes/invitations.yaml
+invitations_send:
+  path: /admin/invitations/send
+  controller: App\Controller\InvitationController::send
+  methods: [POST]
+
+invitation_accept:
+  path: /invitations/accept/{token}
+  controller: App\Controller\InvitationController::accept
+  methods: [GET]
+  requirements:
+    token: '[a-f0-9]{64}'
+
+invitation_process:
+  path: /invitations/process/{token}
+  controller: App\Controller\InvitationController::process
+  methods: [POST]
+  requirements:
+    token: '[a-f0-9]{64}'

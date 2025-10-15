@@ -1,0 +1,442 @@
+{# templates/profile/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Mi Perfil - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* =====================================================
+       ESTILOS ESPECÍFICOS DEL PERFIL
+    ===================================================== */
+    
+    .profile-container {
+        min-height: 100vh;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, var(--black-premium) 0%, var(--dark-brown) 50%, var(--rich-brown) 100%);
+    }
+
+    .profile-card {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(45, 24, 23, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .profile-header h1 {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-light), var(--gold-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+    }
+
+    .profile-header p {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 1rem;
+    }
+
+    .profile-avatar-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid var(--gold-primary);
+        object-fit: cover;
+        margin: 0 auto 20px;
+        display: block;
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+    }
+
+    .profile-code-display {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(184, 148, 31, 0.05));
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .profile-code-display .label {
+        color: rgba(255, 248, 220, 0.7);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .profile-code-display .code {
+        font-family: 'Courier New', monospace;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--gold-primary);
+        letter-spacing: 3px;
+    }
+
+    .profile-code-display .lock-icon {
+        color: var(--gold-secondary);
+        margin-left: 10px;
+    }
+
+    .form-section {
+        margin-bottom: 35px;
+    }
+
+    .form-label {
+        display: block;
+        color: var(--cream);
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(13, 10, 6, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 12px;
+        color: var(--cream);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--gold-primary);
+        background: rgba(13, 10, 6, 0.8);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 248, 220, 0.4);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-help {
+        display: block;
+        color: rgba(255, 248, 220, 0.6);
+        font-size: 0.85rem;
+        margin-top: 6px;
+        font-style: italic;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-bottom: 25px;
+    }
+
+    .premium-button {
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        color: var(--dark-brown);
+        border: none;
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+        font-size: 1rem;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .premium-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(212, 175, 55, 0.5);
+        background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+    }
+
+    .premium-button:active {
+        transform: translateY(-1px);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gold-primary);
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        color: var(--gold-light);
+        gap: 12px;
+    }
+
+    .membership-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-left: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-card {
+            padding: 30px 20px;
+        }
+
+        .profile-header h1 {
+            font-size: 2rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+        }
+    }
+
+    /* Loading spinner */
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loading-overlay.active {
+        display: flex;
+    }
+
+    .spinner {
+        border: 4px solid rgba(212, 175, 55, 0.2);
+        border-top: 4px solid var(--gold-primary);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-container">
+    <div class="container">
+        <a href="{{ path('dashboard_redirect') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Dashboard
+        </a>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1>
+                    <i class="fas fa-user-edit"></i>
+                    Editar Mi Perfil
+                </h1>
+                <p>Actualiza tu información personal y preferencias</p>
+                {% if user.membershipLevel %}
+                    <span class="membership-badge" style="background: {{ user.membershipColor }};">
+                        <i class="{{ user.membershipIcon }}"></i>
+                        {{ user.membershipDisplayName }}
+                    </span>
+                {% endif %}
+            </div>
+
+            {# Foto de perfil actual #}
+            <div class="profile-avatar-section">
+                {% if user.photoPath %}
+                    <img src="{{ asset(user.photoPath) }}" alt="Foto de perfil" class="profile-avatar" id="profileAvatarPreview">
+                {% else %}
+                    <img src="{{ asset('/images/default-avatar.png') }}" alt="Foto de perfil" class="profile-avatar" id="profileAvatarPreview">
+                {% endif %}
+            </div>
+
+            {# Código único (NO EDITABLE) #}
+            <div class="profile-code-display">
+                <div class="label">
+                    <i class="fas fa-lock"></i>
+                    Tu Código Único (No Editable)
+                </div>
+                <div class="code">
+                    {{ user.uniqueCode }}
+                    <i class="fas fa-shield-alt lock-icon"></i>
+                </div>
+                <small class="form-help">Este código es único y no puede ser modificado</small>
+            </div>
+
+            {# Formulario #}
+            {{ form_start(form, {'attr': {'id': 'profileEditForm'}}) }}
+                
+                {# Nombre y Apellido #}
+                <div class="form-grid">
+                    <div class="form-section">
+                        {{ form_label(form.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.firstName) }}
+                        {{ form_errors(form.firstName) }}
+                    </div>
+
+                    <div class="form-section">
+                        {{ form_label(form.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.lastName) }}
+                        {{ form_errors(form.lastName) }}
+                    </div>
+                </div>
+
+                {# Email y Teléfono #}
+                <div class="form-grid">
+                    <div class="form-section">
+                        {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.email) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div class="form-section">
+                        {{ form_label(form.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.phone) }}
+                        {{ form_errors(form.phone) }}
+                    </div>
+                </div>
+
+                {# Foto de perfil #}
+                <div class="form-section">
+                    {{ form_label(form.photoFile, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.photoFile, {'attr': {'id': 'photoFileInput'}}) }}
+                    {{ form_help(form.photoFile) }}
+                    {{ form_errors(form.photoFile) }}
+                </div>
+
+                {# Preferencias de tabaco #}
+                <div class="form-section">
+                    {{ form_label(form.tobaccoPreferencesText, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.tobaccoPreferencesText) }}
+                    {{ form_help(form.tobaccoPreferencesText) }}
+                    {{ form_errors(form.tobaccoPreferencesText) }}
+                </div>
+
+                {# Cambiar contraseña (opcional) #}
+                {% if form.plainPassword is defined %}
+                <div class="form-section">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Cambiar Contraseña (Opcional)
+                    </label>
+                    {{ form_row(form.plainPassword, {
+                        'label': false,
+                        'attr': {
+                            'placeholder': 'Dejar en blanco si no desea cambiar',
+                            'class': 'form-control',
+                            'autocomplete': 'new-password'
+                        }
+                    }) }}
+                    <small class="form-help">
+                        <i class="fas fa-info-circle"></i>
+                        Deje los campos vacíos si no desea cambiar su contraseña actual.
+                    </small>
+                    {{ form_errors(form.plainPassword) }}
+                </div>
+                {% endif %}
+
+                {# Botón de envío #}
+                {{ form_widget(form.submit) }}
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+{# Loading overlay #}
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ Profile edit page loaded');
+
+        // Preview de foto de perfil
+        const photoInput = document.getElementById('photoFileInput');
+        const avatarPreview = document.getElementById('profileAvatarPreview');
+
+        if (photoInput && avatarPreview) {
+            photoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                        console.log('📸 Vista previa de foto actualizada');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Loading overlay al enviar formulario
+        const form = document.getElementById('profileEditForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        if (form && loadingOverlay) {
+            form.addEventListener('submit', function(e) {
+                loadingOverlay.classList.add('active');
+                console.log('⏳ Enviando formulario...');
+            });
+        }
+
+        // Auto-hide flash messages después de 5 segundos
+        const flashMessages = document.querySelectorAll('.flash-message');
+        if (flashMessages.length > 0) {
+            setTimeout(() => {
+                flashMessages.forEach(msg => {
+                    msg.style.transition = 'opacity 0.3s, transform 0.3s';
+                    msg.style.opacity = '0';
+                    msg.style.transform = 'translateX(100%)';
+                    setTimeout(() => msg.remove(), 300);
+                });
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

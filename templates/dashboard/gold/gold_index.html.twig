@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Gold - {{ user.fullName }} | Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .gold-dashboard {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1202 0%, #5c4d1a 100%);
+            padding: 40px 0;
+        }
+
+        .gold-header {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(224, 168, 0, 0.1));
+            border: 2px solid #ffc107;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .gold-icon {
+            font-size: 5rem;
+            color: #ffc107;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.5));
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #1a1202;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 800;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="gold-dashboard">
+    <div class="container">
+        <!-- Header Gold -->
+        <div class="gold-header">
+            <div class="gold-icon">
+                <i class="fas fa-medal"></i>
+            </div>
+            <h1 style="color: #ffc107; font-size: 3rem; margin-bottom: 15px;">Membresía Gold</h1>
+            <span class="premium-badge"><i class="fas fa-star"></i> PREMIUM</span>
+            <p style="color: var(--cream); font-size: 1.3rem; margin: 20px 0 10px;">
+                Bienvenido, <strong>{{ user.fullName }}</strong>
+            </p>
+            <div class="user-code" style="background: rgba(0, 0, 0, 0.3); border: 1px solid #ffc107; border-radius: 12px; padding: 8px 16px; display: inline-block; margin-top: 10px;">
+                <strong style="color: #ffc107;">Código:</strong> <span style="color: var(--cream);">{{ user.userCode }}</span>
+            </div>
+            <p style="color: rgba(255, 248, 220, 0.7); margin-top: 20px;">
+                Estado: <strong style="color: #10b981;">Activa</strong> | Renovación: <strong>{{ "now"|date_modify('+1 year')|date('d/m/Y') }}</strong>
+            </p>
+        </div>
+
+        <!-- Características de Gold -->
+        <div class="features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px;">
+            <div class="feature-card" style="background: rgba(45, 24, 23, 0.8); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 16px; padding: 30px; text-align: center; transition: all 0.3s ease;">
+                <i class="fas fa-gem" style="font-size: 3rem; color: #e11d48; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Todo de Ruby</h3>
+                <p style="color: var(--cream);">Acceso a todas las funciones y beneficios de membresía Ruby</p>
+            </div>
+
+            <div class="feature-card" style="background: rgba(45, 24, 23, 0.8); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 16px; padding: 30px; text-align: center;">
+                <i class="fas fa-crown" style="font-size: 3rem; color: #ffc107; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Dashboard Premium</h3>
+                <p style="color: var(--cream);">Panel de control avanzado con funciones premium exclusivas</p>
+            </div>
+
+            <div class="feature-card" style="background: rgba(45, 24, 23, 0.8); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 16px; padding: 30px; text-align: center;">
+                <i class="fas fa-video" style="font-size: 3rem; color: #ffc107; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Contenido Premium</h3>
+                <p style="color: var(--cream);">Acceso diario a contenido premium y recursos avanzados</p>
+            </div>
+
+            <div class="feature-card" style="background: rgba(45, 24, 23, 0.8); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 16px; padding: 30px; text-align: center;">
+                <i class="fas fa-bolt" style="font-size: 3rem; color: #ffc107; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Soporte Prioritario</h3>
+                <p style="color: var(--cream);">Atención prioritaria 24/7 con tiempo de respuesta reducido</p>
+            </div>
+
+            <div class="feature-card" style="background: rgba(45, 24, 23, 0.8); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 16px; padding: 30px; text-align: center;">
+                <i class="fas fa-star" style="font-size: 3rem; color: #ffc107; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Eventos VIP</h3>
+                <p style="color: var(--cream);">Invitaciones semanales a eventos VIP exclusivos para Gold</p>
+            </div>
+
+            <div class="feature-card" style="background: rgba(45, 24, 23, 0.8); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 16px; padding: 30px; text-align: center;">
+                <i class="fas fa-chalkboard-teacher" style="font-size: 3rem; color: #ffc107; margin-bottom: 15px;"></i>
+                <h3 style="color: var(--gold-primary); margin-bottom: 10px;">Coaching</h3>
+                <p style="color: var(--cream);">Sesiones de coaching mensuales personalizadas</p>
+            </div>
+        </div>
+
+        <!-- Upgrade a Platinum Section -->
+        <div class="upgrade-section" style="background: rgba(45, 24, 23, 0.9); border: 2px solid #17a2b8; border-radius: 20px; padding: 40px; text-align: center;">
+            <h2 style="color: #17a2b8; font-size: 2.5rem; margin-bottom: 15px;">
+                <i class="fas fa-arrow-up"></i> Lleva tu membresía al siguiente nivel
+            </h2>
+            <p style="color: var(--cream); font-size: 1.2rem; margin-bottom: 30px;">
+                Upgrade a <strong style="color: #17a2b8;">Platinum Club</strong> para acceder al nivel más alto de beneficios y servicio VIP completo
+            </p>
+
+            <div style="max-width: 600px; margin: 0 auto; background: rgba(23, 162, 184, 0.1); border: 2px solid #17a2b8; border-radius: 16px; padding: 40px;">
+                <i class="fas fa-crown" style="font-size: 4rem; color: #17a2b8; margin-bottom: 20px;"></i>
+                <h3 style="color: #17a2b8; margin-bottom: 15px; font-size: 2rem;">Platinum Club</h3>
+                <p style="font-size: 2.5rem; color: var(--gold-primary); font-weight: 800; margin-bottom: 25px;">$999/año</p>
+                <ul style="list-style: none; padding: 0; text-align: left; margin-bottom: 30px;">
+                    <li style="color: var(--cream); margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Todo de Gold +</li>
+                    <li style="color: var(--cream); margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Dashboard Platinum exclusivo</li>
+                    <li style="color: var(--cream); margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Conserje personal 24/7</li>
+                    <li style="color: var(--cream); margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Networking elite ilimitado</li>
+                    <li style="color: var(--cream); margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Eventos ilimitados + 2 acompañantes</li>
+                    <li style="color: var(--cream); margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 10px;"></i>Asesoría personalizada mensual</li>
+                </ul>
+                <button class="upgrade-button" onclick="openPaymentModal('platinum')" style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; border: none; padding: 15px 40px; border-radius: 10px; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease;">
+                    <i class="fas fa-arrow-up"></i> Upgrade a Platinum
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Incluir el modal de pago #}
+{% include 'payment/_payment_modal.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/payment-modal.js') }}"></script>
+{% endblock %}

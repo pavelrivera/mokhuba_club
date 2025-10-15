@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}Invitación inválida{% endblock %}
+{% block body %}
+<div class="container py-5">
+  <div class="alert alert-warning">
+    Lo sentimos, este enlace de invitación es inválido, ha expirado o ya fue utilizado.
+  </div>
+  <a class="btn btn-primary" href="{{ path('app_login') }}">Ir al inicio de sesión</a>
+</div>
+{% endblock %}

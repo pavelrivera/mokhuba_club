@@ -1,0 +1,665 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro - Mokhuba Club{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Welcome Header -->
+            <div class="text-center mb-4">
+                <h1 class="h2 text-gold">
+                    <i class="fas fa-smoking me-2"></i>Bienvenido a Mokhuba Club
+                </h1>
+                <p class="lead text-muted">Complete su registro para acceder al club más exclusivo</p>
+                
+                {% if token %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Su invitación ha sido validada exitosamente.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Registration Steps -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user-plus me-2"></i>Proceso de Registro
+                            </h5>
+                        </div>
+                        <div class="col-auto">
+                            <div class="progress" style="width: 200px; height: 8px;">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: 33%" id="progressBar"></div>
+                            </div>
+                            <small class="text-muted">Paso <span id="currentStep">1</span> de 3</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Step 1: Personal Information -->
+                    <div id="step1" class="registration-step">
+                        <h6 class="text-gold mb-3">
+                            <i class="fas fa-id-card me-2"></i>Paso 1: Información Personal
+                        </h6>
+                        
+                        <form id="step1Form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="firstName" class="form-label">Nombre *</label>
+                                        <input type="text" class="form-control" id="firstName" required
+                                               placeholder="Su nombre" maxlength="100">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="lastName" class="form-label">Apellido *</label>
+                                        <input type="text" class="form-control" id="lastName" required
+                                               placeholder="Su apellido" maxlength="100">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email" class="form-control" id="email" required
+                                               placeholder="su@email.com" readonly>
+                                        <div class="form-text">Este email proviene de su invitación</div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="phone"
+                                               placeholder="+1 234 567 8900">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="photo" class="form-label">Foto de Perfil *</label>
+                                <input type="file" class="form-control" id="photo" accept="image/jpeg,image/png" required>
+                                <div class="form-text">JPG o PNG, máximo 2MB. Mínimo 200x200 píxeles.</div>
+                                <div class="invalid-feedback"></div>
+                                
+                                <!-- Photo Preview -->
+                                <div id="photoPreview" class="mt-2" style="display: none;">
+                                    <img id="previewImage" class="rounded" style="max-width: 150px; max-height: 150px;">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Contraseña *</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password" required
+                                                   placeholder="Mínimo 8 caracteres">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('password')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-text">
+                                            Debe contener al menos 8 caracteres, 1 mayúscula, 1 minúscula y 1 número.
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirmar Contraseña *</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="confirmPassword" required
+                                                   placeholder="Repita la contraseña">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirmPassword')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="termsAccepted" required>
+                                <label class="form-check-label" for="termsAccepted">
+                                    Acepto los <a href="#" class="text-gold">términos y condiciones</a> y la 
+                                    <a href="#" class="text-gold">política de privacidad</a> *
+                                </label>
+                                <div class="invalid-feedback">Debe aceptar los términos para continuar</div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                                    <i class="fas fa-arrow-right me-1"></i>Continuar a Verificación
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Email Verification -->
+                    <div id="step2" class="registration-step" style="display: none;">
+                        <h6 class="text-gold mb-3">
+                            <i class="fas fa-envelope-open me-2"></i>Paso 2: Verificación de Email
+                        </h6>
+                        
+                        <div class="text-center mb-4">
+                            <i class="fas fa-paper-plane fa-3x text-gold mb-3"></i>
+                            <h6>Código de Verificación Enviado</h6>
+                            <p class="text-muted">
+                                Hemos enviado un código de 6 dígitos a: <span id="emailDisplay" class="text-gold"></span>
+                            </p>
+                        </div>
+                        
+                        <form id="step2Form">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="verificationCode" class="form-label text-center d-block">
+                                            Código de Verificación
+                                        </label>
+                                        <input type="text" class="form-control text-center" id="verificationCode" 
+                                               placeholder="123456" maxlength="6" required
+                                               style="font-size: 1.5rem; letter-spacing: 0.5rem;">
+                                        <div class="invalid-feedback text-center"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mb-3">
+                                <small class="text-muted">
+                                    ¿No recibió el código? 
+                                    <button type="button" class="btn btn-link btn-sm p-0 text-gold" onclick="resendCode()" id="resendBtn">
+                                        Reenviar código
+                                    </button>
+                                </small>
+                                <div id="resendTimer" style="display: none;">
+                                    <small class="text-muted">Puede reenviar en <span id="countdown">60</span> segundos</small>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                                    <i class="fas fa-check me-1"></i>Verificar y Continuar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="prevStep(1)">
+                                    <i class="fas fa-arrow-left me-1"></i>Volver
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Step 3: Tobacco Preferences -->
+                    <div id="step3" class="registration-step" style="display: none;">
+                        <h6 class="text-gold mb-3">
+                            <i class="fas fa-smoking me-2"></i>Paso 3: Preferencias de Tabaco
+                        </h6>
+                        
+                        <form id="step3Form">
+                            <div class="mb-4">
+                                <label class="form-label">Tipos de Tabaco Preferidos</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="cuban" id="cuban">
+                                            <label class="form-check-label" for="cuban">
+                                                <i class="fas fa-flag me-1"></i>Cubano
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="dominican" id="dominican">
+                                            <label class="form-check-label" for="dominican">
+                                                <i class="fas fa-flag me-1"></i>Dominicano
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="nicaraguan" id="nicaraguan">
+                                            <label class="form-check-label" for="nicaraguan">
+                                                <i class="fas fa-flag me-1"></i>Nicaragüense
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="honduran" id="honduran">
+                                            <label class="form-check-label" for="honduran">
+                                                <i class="fas fa-flag me-1"></i>Hondureño
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="ecuadorian" id="ecuadorian">
+                                            <label class="form-check-label" for="ecuadorian">
+                                                <i class="fas fa-flag me-1"></i>Ecuatoriano
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="other" id="other">
+                                            <label class="form-check-label" for="other">
+                                                <i class="fas fa-globe me-1"></i>Otros
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="strength" class="form-label">Fortaleza Preferida *</label>
+                                <select class="form-select" id="strength" required>
+                                    <option value="">Seleccione una fortaleza...</option>
+                                    <option value="suave">Suave</option>
+                                    <option value="medio-fuerte">Medio-Fuerte</option>
+                                    <option value="fuerte">Fuerte</option>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="additionalPreferences" class="form-label">Preferencias Adicionales</label>
+                                <textarea class="form-control" id="additionalPreferences" rows="3"
+                                          placeholder="Cuéntanos sobre tus preferencias específicas: vitolas favoritas, ocasiones especiales, etc."></textarea>
+                                <div class="form-text">Opcional: Esta información nos ayuda a personalizar su experiencia</div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-success" onclick="completeRegistration()">
+                                    <i class="fas fa-check-circle me-1"></i>Completar Registro
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)">
+                                    <i class="fas fa-arrow-left me-1"></i>Volver
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div id="successStep" class="registration-step text-center" style="display: none;">
+                        <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                        <h4 class="text-gold mb-3">¡Registro Completado!</h4>
+                        <p class="text-muted mb-4">
+                            Bienvenido a Mokhuba Cigar Club. Su cuenta ha sido creada exitosamente.
+                        </p>
+                        
+                        <div class="card bg-dark mb-4">
+                            <div class="card-body">
+                                <h6 class="text-gold">Próximos Pasos:</h6>
+                                <ul class="list-unstyled text-start">
+                                    <li class="mb-2"><i class="fas fa-gem text-warning me-2"></i>Seleccione su nivel de membresía</li>
+                                    <li class="mb-2"><i class="fas fa-calendar text-info me-2"></i>Explore eventos exclusivos</li>
+                                    <li class="mb-2"><i class="fas fa-palette text-success me-2"></i>Cree sus marcas personalizadas</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-tachometer-alt me-1"></i>Ir al Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content bg-dark border-0">
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-spinner fa-spin fa-3x text-gold mb-3"></i>
+                <h6 class="text-light">Procesando...</h6>
+                <p class="text-muted mb-0">Por favor espere</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Registration state
+let registrationData = {
+    token: '{{ token|default("") }}',
+    step: 1
+};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Set email from token (simulated)
+    document.getElementById('email').value = 'invited@mokhubaclub.com';
+    
+    // Photo preview handler
+    document.getElementById('photo').addEventListener('change', handlePhotoUpload);
+    
+    // Auto-format verification code
+    document.getElementById('verificationCode').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+    
+    console.log('Registration initialized with token:', registrationData.token);
+});
+
+// Step navigation
+function nextStep(step) {
+    if (validateCurrentStep()) {
+        showStep(step);
+        updateProgress(step);
+        
+        if (step === 2) {
+            sendVerificationCode();
+        }
+    }
+}
+
+function prevStep(step) {
+    showStep(step);
+    updateProgress(step);
+}
+
+function showStep(step) {
+    // Hide all steps
+    document.querySelectorAll('.registration-step').forEach(el => {
+        el.style.display = 'none';
+    });
+    
+    // Show current step
+    if (step === 'success') {
+        document.getElementById('successStep').style.display = 'block';
+        document.getElementById('currentStep').textContent = '✓';
+        document.querySelector('.progress-bar').style.width = '100%';
+        document.querySelector('.progress-bar').classList.remove('bg-warning');
+        document.querySelector('.progress-bar').classList.add('bg-success');
+    } else {
+        document.getElementById(`step${step}`).style.display = 'block';
+        registrationData.step = step;
+        document.getElementById('currentStep').textContent = step;
+    }
+}
+
+function updateProgress(step) {
+    const progressBar = document.querySelector('.progress-bar');
+    const progressPercentage = (step / 3) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
+}
+
+// Validation
+function validateCurrentStep() {
+    const step = registrationData.step;
+    
+    switch(step) {
+        case 1:
+            return validateStep1();
+        case 2:
+            return validateStep2();
+        case 3:
+            return validateStep3();
+        default:
+            return true;
+    }
+}
+
+function validateStep1() {
+    let isValid = true;
+    
+    // Required fields
+    const required = ['firstName', 'lastName', 'email', 'password', 'confirmPassword', 'photo'];
+    required.forEach(field => {
+        const element = document.getElementById(field);
+        if (!element.value.trim()) {
+            showFieldError(element, 'Este campo es obligatorio');
+            isValid = false;
+        } else {
+            clearFieldError(element);
+        }
+    });
+    
+    // Password validation
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (password && password.length < 8) {
+        showFieldError(document.getElementById('password'), 'La contraseña debe tener al menos 8 caracteres');
+        isValid = false;
+    }
+    
+    if (password && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+        showFieldError(document.getElementById('password'), 'La contraseña debe contener al menos una mayúscula, una minúscula y un número');
+        isValid = false;
+    }
+    
+    if (password !== confirmPassword) {
+        showFieldError(document.getElementById('confirmPassword'), 'Las contraseñas no coinciden');
+        isValid = false;
+    }
+    
+    // Terms acceptance
+    if (!document.getElementById('termsAccepted').checked) {
+        showFieldError(document.getElementById('termsAccepted'), 'Debe aceptar los términos y condiciones');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+function validateStep2() {
+    const code = document.getElementById('verificationCode').value;
+    if (!code || code.length !== 6) {
+        showFieldError(document.getElementById('verificationCode'), 'Ingrese el código de 6 dígitos');
+        return false;
+    }
+    
+    // Simulate code validation (in production, this would be an API call)
+    if (code !== '123456') {
+        showFieldError(document.getElementById('verificationCode'), 'Código incorrecto. Use 123456 para la demo.');
+        return false;
+    }
+    
+    clearFieldError(document.getElementById('verificationCode'));
+    return true;
+}
+
+function validateStep3() {
+    const strength = document.getElementById('strength').value;
+    if (!strength) {
+        showFieldError(document.getElementById('strength'), 'Seleccione una fortaleza');
+        return false;
+    }
+    
+    clearFieldError(document.getElementById('strength'));
+    return true;
+}
+
+// Error handling
+function showFieldError(element, message) {
+    element.classList.add('is-invalid');
+    const feedback = element.closest('.mb-3').querySelector('.invalid-feedback');
+    if (feedback) {
+        feedback.textContent = message;
+    }
+}
+
+function clearFieldError(element) {
+    element.classList.remove('is-invalid');
+    const feedback = element.closest('.mb-3').querySelector('.invalid-feedback');
+    if (feedback) {
+        feedback.textContent = '';
+    }
+}
+
+// Photo handling
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('photoPreview');
+    const previewImage = document.getElementById('previewImage');
+    
+    if (file) {
+        // Validate file
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+            showFieldError(event.target, 'Solo se permiten archivos JPG o PNG');
+            return;
+        }
+        
+        if (file.size > 2 * 1024 * 1024) {
+            showFieldError(event.target, 'El archivo no puede superar 2MB');
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        
+        clearFieldError(event.target);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Password visibility toggle
+function togglePasswordVisibility(fieldId) {
+    const field = document.getElementById(fieldId);
+    const button = field.nextElementSibling.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        button.className = 'fas fa-eye-slash';
+    } else {
+        field.type = 'password';
+        button.className = 'fas fa-eye';
+    }
+}
+
+// Email verification
+async function sendVerificationCode() {
+    const email = document.getElementById('email').value;
+    document.getElementById('emailDisplay').textContent = email;
+    
+    // Simulate API call
+    console.log('Sending verification code to:', email);
+    
+    // Start resend timer
+    startResendTimer();
+}
+
+function startResendTimer() {
+    const resendBtn = document.getElementById('resendBtn');
+    const timer = document.getElementById('resendTimer');
+    const countdown = document.getElementById('countdown');
+    
+    resendBtn.style.display = 'none';
+    timer.style.display = 'block';
+    
+    let seconds = 60;
+    const interval = setInterval(() => {
+        seconds--;
+        countdown.textContent = seconds;
+        
+        if (seconds <= 0) {
+            clearInterval(interval);
+            resendBtn.style.display = 'inline';
+            timer.style.display = 'none';
+        }
+    }, 1000);
+}
+
+function resendCode() {
+    sendVerificationCode();
+}
+
+// Complete registration
+async function completeRegistration() {
+    if (!validateStep3()) return;
+    
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    loadingModal.show();
+    
+    // Collect all form data
+    const formData = {
+        registration_token: registrationData.token,
+        first_name: document.getElementById('firstName').value,
+        last_name: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        password: document.getElementById('password').value,
+        password_confirmation: document.getElementById('confirmPassword').value,
+        terms_accepted: document.getElementById('termsAccepted').checked,
+        tobacco_types: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value),
+        strength_preference: document.getElementById('strength').value,
+        additional_preferences: document.getElementById('additionalPreferences').value
+    };
+    
+    try {
+        // Step 1: Register user
+        const registerResponse = await apiCall('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+        
+        const registerData = await registerResponse.json();
+        
+        if (!registerResponse.ok) {
+            throw new Error(registerData.message || 'Error en el registro');
+        }
+        
+        // Step 2: Verify email (simulated)
+        const verifyResponse = await apiCall('/auth/email/verify', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: formData.email,
+                code: document.getElementById('verificationCode').value
+            })
+        });
+        
+        if (!verifyResponse.ok) {
+            throw new Error('Error en la verificación de email');
+        }
+        
+        // Step 3: Set preferences
+        const preferencesResponse = await apiCall('/auth/preferences', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: formData.email,
+                tobacco_types: formData.tobacco_types,
+                strength_preference: formData.strength_preference,
+                additional_preferences: formData.additional_preferences
+            })
+        });
+        
+        if (!preferencesResponse.ok) {
+            throw new Error('Error al guardar preferencias');
+        }
+        
+        // Success
+        loadingModal.hide();
+        showStep('success');
+        
+    } catch (error) {
+        loadingModal.hide();
+        alert('Error en el registro: ' + error.message);
+        console.error('Registration error:', error);
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Actualizar Membresía{% endblock %}
+{% block body %}
+<div class="container mt-5">
+  <h1>Actualizar Membresía</h1>
+  <p>Selecciona el nuevo nivel para continuar. (Prorrateo se aplicará en el checkout.)</p>
+  <form method="post" action="{{ path('payment_create_checkout_session') }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('checkout') }}">
+    <div class="mb-3">
+      <label for="level" class="form-label">Nuevo nivel</label>
+      <select class="form-select" id="level" name="level" required>
+        <option value="ruby">Ruby (€299/año)</option>
+        <option value="gold">Gold (€599/año)</option>
+        <option value="platinum">Platinum (€999/año)</option>
+      </select>
+    </div>
+    <button class="btn btn-primary">Ir a Checkout</button>
+    <a href="{{ path('dashboard') }}" class="btn btn-outline-secondary ms-2">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

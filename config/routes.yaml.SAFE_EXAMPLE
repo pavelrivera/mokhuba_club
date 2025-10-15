@@ -1,0 +1,12 @@
+# Default routes configuration
+# If you saw the error "Make sure there is a loader supporting the 'attribute' type",
+# replace your config/routes.yaml with this version or ensure you are not importing
+# a single file using { type: attribute }.
+
+controllers:
+    resource: '../src/Controller/'
+    type: annotation
+
+kernel:
+    resource: '../src/Kernel.php'
+    type: annotation

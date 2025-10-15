@@ -1,0 +1,602 @@
+{# templates/auth/login.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Iniciar Sesión - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Panel izquierdo - Imagen */
+        .login-image-panel {
+            flex: 1;
+            background-image: url('{{ app.request.basePath }}/images/fondoLogin.png.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(13, 10, 6, 0.7) 0%,
+                rgba(44, 24, 16, 0.8) 50%,
+                rgba(92, 26, 26, 0.6) 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 40px;
+            max-width: 500px;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .logo-subtitle {
+            font-size: 1.2rem;
+            color: var(--cream);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .welcome-message {
+            font-size: 1.5rem;
+            color: var(--cream);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .welcome-description {
+            font-size: 1rem;
+            color: rgba(255, 248, 220, 0.8);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Panel derecho - Formulario */
+        .login-form-panel {
+            flex: 1;
+            background: linear-gradient(
+                135deg,
+                var(--black-premium) 0%,
+                var(--dark-brown) 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .login-form-container {
+            background: rgba(45, 24, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 40px 35px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(212, 175, 55, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 248, 220, 0.7);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        /* Formulario */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--cream);
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            color: var(--cream);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 248, 220, 0.4);
+        }
+
+        .form-input:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gold-primary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--gold-light);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: var(--cream);
+        }
+
+        .remember-me input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: var(--gold-primary);
+        }
+
+        .forgot-password {
+            color: var(--gold-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--gold-light);
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            border: none;
+            border-radius: 10px;
+            color: var(--dark-brown);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .login-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .social-login {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .social-text {
+            color: rgba(255, 248, 220, 0.6);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--cream);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-button:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold-primary);
+            transform: translateY(-1px);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .register-text {
+            color: rgba(255, 248, 220, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .register-text a {
+            color: var(--gold-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-text a:hover {
+            color: var(--gold-light);
+            text-decoration: underline;
+        }
+
+        /* Efectos de fondo */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-10px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Error messages */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fca5a5;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .login-image-panel {
+                display: none;
+            }
+            
+            .login-form-panel {
+                flex: none;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            /* Para pantallas grandes - hacer el contenido más compacto */
+            .login-container {
+                height: 100vh;
+                max-height: 800px;
+                margin: 0 auto;
+            }
+            
+            .login-form-container {
+                max-width: 380px;
+                padding: 35px 30px;
+            }
+            
+            .login-title {
+                font-size: 1.8rem;
+            }
+            
+            .form-input {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            
+            .login-button {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .welcome-content {
+                max-width: 450px;
+                padding: 30px;
+            }
+            
+            .logo-text {
+                font-size: 3rem;
+            }
+            
+            .welcome-message {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-form-container {
+                padding: 25px 20px;
+                margin: 15px;
+            }
+            
+            .login-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <!-- Panel izquierdo - Imagen de bienvenida -->
+    <div class="login-image-panel">
+        <div class="login-image-overlay">
+            <div class="welcome-content">
+                <div class="logo-container">
+                    <div class="logo-text shimmer">MOKHUBA</div>
+                    <div class="logo-subtitle">CIGAR CLUB</div>
+                </div>
+                <h2 class="welcome-message">Bienvenido de Vuelta</h2>
+                <p class="welcome-description">
+                    Accede a tu experiencia premium exclusiva. 
+                    Donde la tradición cubana se encuentra con la excelencia.
+                </p>
+                <div class="floating-elements">
+                    {% for i in 1..20 %}
+                        <div class="floating-element" style="
+                            left: {{ random(100) }}%;
+                            animation-delay: {{ random(6) }}s;
+                            animation-duration: {{ 4 + random(4) }}s;
+                        "></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel derecho - Formulario de login -->
+    <div class="login-form-panel">
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1 class="login-title">Iniciar Sesión</h1>
+                <p class="login-subtitle">Accede a tu cuenta exclusiva</p>
+            </div>
+
+            {% if error is defined and error %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('auth_login') }}">
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="_username" 
+                        class="form-input" 
+                        value="{{ last_username|default('') }}"
+                        placeholder="tu@email.com"
+                        required 
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <div class="password-container">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="_password" 
+                            class="form-input" 
+                            placeholder="••••••••"
+                            required
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="password-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="_remember_me">
+                        Recordarme
+                    </label>
+                    <a href="#" class="forgot-password">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="social-login">
+                <p class="social-text">o continúa con</p>
+                <div class="social-buttons">
+                    <a href="#" class="social-button">
+                        <i class="fab fa-google"></i>
+                        Google
+                    </a>
+                    <a href="#" class="social-button">
+                        <i class="fab fa-facebook"></i>
+                        Facebook
+                    </a>
+                </div>
+            </div>
+
+            <div class="register-link">
+                <p class="register-text">
+                    ¿Nuevo miembro? 
+                    <a href="#">¿Nuevo miembro?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('password-icon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.className = 'fas fa-eye-slash';
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.className = 'fas fa-eye';
+        }
+    }
+
+    // Efecto de escritura en tiempo real
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.form-input');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Prevenir envío múltiple del formulario
+        const form = document.querySelector('form');
+        const submitBtn = document.querySelector('.login-button');
+        
+        form.addEventListener('submit', function() {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
+        });
+    });
+</script>
+{% endblock %}

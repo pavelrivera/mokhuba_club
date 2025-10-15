@@ -1,0 +1,274 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}¡Pago Exitoso! - Mokhuba Club{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    body {
+        background: linear-gradient(135deg, #3d2414 0%, #2a1a12 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .success-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 40px;
+        background: rgba(45, 24, 23, 0.9);
+        border: 2px solid #D4AF37;
+        border-radius: 20px;
+        text-align: center;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        animation: checkmark 0.6s ease-in-out 0.3s both;
+    }
+
+    .success-icon i {
+        color: white;
+        font-size: 3rem;
+    }
+
+    @keyframes checkmark {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .success-title {
+        color: #D4AF37;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .success-subtitle {
+        color: #f8f2e7;
+        font-size: 1.3rem;
+        margin-bottom: 30px;
+        font-weight: 400;
+    }
+
+    .success-message {
+        color: rgba(248, 242, 231, 0.8);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+    }
+
+    .membership-badge {
+        display: inline-block;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        color: #2a1a12;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .next-steps {
+        text-align: left;
+        margin: 30px 0;
+        padding: 25px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        border-left: 4px solid #D4AF37;
+    }
+
+    .next-steps h3 {
+        color: #D4AF37;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+    }
+
+    .next-steps ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .next-steps li {
+        color: rgba(248, 242, 231, 0.8);
+        margin-bottom: 12px;
+        padding-left: 30px;
+        position: relative;
+    }
+
+    .next-steps li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #10b981;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .primary-button {
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        color: #2a1a12;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .primary-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .secondary-button {
+        padding: 15px 30px;
+        background: transparent;
+        color: #f8f2e7;
+        text-decoration: none;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .secondary-button:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: #D4AF37;
+    }
+
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #D4AF37;
+        position: absolute;
+        animation: confetti-fall 3s linear;
+    }
+
+    @keyframes confetti-fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="success-container">
+    <div class="success-icon">
+        <i class="fas fa-check"></i>
+    </div>
+
+    <h1 class="success-title">¡Pago Exitoso!</h1>
+    <h2 class="success-subtitle">Bienvenido al Club</h2>
+
+    <div class="membership-badge">
+        {% if membership == 'ruby' %}
+            💎 Membresía Rubí
+        {% elseif membership == 'gold' %}
+            🥇 Membresía Oro
+        {% elseif membership == 'platinum' %}
+            ⭐ Membresía Platino
+        {% else %}
+            Membresía {{ membership|capitalize }}
+        {% endif %}
+    </div>
+
+    <div class="success-message">
+        <p><strong>Tu suscripción ha sido activada exitosamente.</strong></p>
+        <p>Hemos enviado un email de confirmación con todos los detalles de tu membresía.</p>
+    </div>
+
+    <div class="next-steps">
+        <h3>📋 Próximos Pasos:</h3>
+        <ul>
+            <li>Accede a tu dashboard personalizado</li>
+            <li>Explora todos los beneficios exclusivos</li>
+            <li>Recibe tu kit de bienvenida en los próximos 5-7 días</li>
+            <li>Consulta tu primer evento exclusivo</li>
+            <li>Contacta a tu concierge personal (si aplica)</li>
+        </ul>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ path('app_dashboard') }}" class="primary-button">
+            <i class="fas fa-home"></i>
+            Ir al Dashboard
+        </a>
+        <a href="{{ path('app_home') }}" class="secondary-button">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Inicio
+        </a>
+    </div>
+</div>
+
+<script>
+// Confetti effect
+function createConfetti() {
+    const colors = ['#D4AF37', '#B8941F', '#10b981', '#f8f2e7'];
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 3000);
+        }, i * 30);
+    }
+}
+
+// Trigger confetti on load
+window.addEventListener('load', createConfetti);
+</script>
+{% endblock %}

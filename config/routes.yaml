@@ -1,0 +1,243 @@
+# config/routes.yaml
+
+# Controllers con anotaciones (incluye todos los controladores)
+controllers:
+    resource: '../src/Controller/'
+    type: annotation
+
+# =====================================================
+# RUTAS PRINCIPALES Y REDIRECCIONES
+# =====================================================
+
+# Página principal
+home:
+    path: /
+    controller: App\Controller\HomeController::index
+
+# Redirección principal del dashboard
+dashboard_redirect:
+    path: /dashboard
+    controller: App\Controller\DashboardRedirectController::redirectToDashboard
+
+# Ruta alternativa para home que también redirige
+home_dashboard:
+    path: /home
+    controller: App\Controller\DashboardRedirectController::homeDashboard
+
+# =====================================================
+# RUTAS DE DASHBOARDS POR MEMBRESÍA
+# =====================================================
+
+# Dashboard Rubí
+ruby_dashboard:
+    path: /dashboard/ruby
+    controller: App\Controller\MembershipDashboardController::rubyDashboard
+
+# Dashboard Oro/Gold
+gold_dashboard:
+    path: /dashboard/gold
+    controller: App\Controller\MembershipDashboardController::goldDashboard
+
+# Dashboard Platino/Platinum
+platinum_dashboard:
+    path: /dashboard/platinum
+    controller: App\Controller\MembershipDashboardController::platinumDashboard
+
+# Página de selección de membresía
+membership_selection:
+    path: /dashboard/membership-selection
+    controller: App\Controller\MembershipDashboardController::membershipSelection
+
+# =====================================================
+# RUTAS DE ADMIN
+# =====================================================
+
+# Dashboard de administración
+admin_dashboard:
+    path: /admin/dashboard
+    controller: App\Controller\AdminDashboardController::index
+
+# Gestión de usuarios
+admin_users:
+    path: /admin/users
+    controller: App\Controller\AdminDashboardController::users
+
+# API Admin - Crear usuario
+admin_users_create:
+    path: /admin/users/create
+    controller: App\Controller\AdminDashboardController::createUser
+    methods: [POST]
+
+# API Admin - Obtener usuario
+admin_users_get:
+    path: /admin/users/{id}/get
+    controller: App\Controller\AdminDashboardController::fetchUserById
+    methods: [GET]
+    requirements:
+        id: '\d+'
+
+# API Admin - Editar usuario
+admin_users_edit:
+    path: /admin/users/{id}/edit
+    controller: App\Controller\AdminDashboardController::editUser
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+# API Admin - Cambiar estado usuario
+admin_users_toggle_status:
+    path: /admin/users/{id}/toggle-status
+    controller: App\Controller\AdminDashboardController::toggleUserStatus
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+# API Admin - Reset contraseña
+admin_users_reset_password:
+    path: /admin/users/{id}/reset-password
+    controller: App\Controller\AdminDashboardController::resetUserPassword
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+# Gestión de membresías
+admin_memberships:
+    path: /admin/memberships
+    controller: App\Controller\AdminDashboardController::memberships
+
+# Configuración de admin
+admin_settings:
+    path: /admin/settings
+    controller: App\Controller\AdminDashboardController::settings
+
+# =====================================================
+# RUTAS DE AUTENTICACIÓN
+# =====================================================
+
+# Login
+auth_login:
+    path: /login
+    controller: App\Controller\AuthController::login
+
+# Logout
+auth_logout:
+    path: /logout
+    controller: App\Controller\AuthController::logout
+
+# Registro
+auth_register:
+    path: /register
+    controller: App\Controller\AuthController::register
+
+# =====================================================
+# RUTAS DE CONTENIDO ESTÁTICO
+# =====================================================
+
+# Página de beneficios
+beneficios:
+    path: /beneficios
+    controller: App\Controller\HomeController::beneficios
+
+# Página "Acerca de"
+about:
+    path: /about
+    controller: App\Controller\Web\HomeController::about
+
+# =====================================================
+# RUTAS DE API Y UTILIDADES
+# =====================================================
+
+# API Status (para monitoring)
+api_status:
+    path: /api/status
+    controller: App\Controller\Web\HomeController::apiStatus
+
+# Debug de membresía (solo desarrollo - puede removerse en producción)
+debug_membership:
+    path: /debug/membership
+    controller: App\Controller\MembershipDashboardController::debugMembership
+
+# =====================================================
+# RUTAS DE INVITACIÓN
+# =====================================================
+
+# Enviar invitación (Admin)
+invitation_send:
+    path: /admin/invitations/send
+    controller: App\Controller\InvitationController::send
+    methods: [POST]
+
+# Aceptar invitación (mostrar formulario de registro)
+invitation_accept:
+    path: /invitations/accept/{token}
+    controller: App\Controller\InvitationController::accept
+    methods: [GET]
+    requirements:
+        token: '[a-zA-Z0-9]+'
+
+# Procesar registro desde invitación
+invitation_process:
+    path: /invitations/process/{token}
+    controller: App\Controller\InvitationController::process
+    methods: [POST]
+    requirements:
+        token: '[a-zA-Z0-9]+'
+
+# =====================================================
+# RUTAS DE COMPATIBILIDAD Y REDIRECCIONES
+# =====================================================
+
+# Redirección para usuarios que vayan a /member
+member_redirect:
+    path: /member
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+    defaults:
+        route: dashboard_redirect
+        permanent: true
+
+# Redirección para usuarios que vayan a /user
+user_redirect:
+    path: /user
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+    defaults:
+        route: dashboard_redirect
+        permanent: true
+
+# config/routes.yaml - Agregar estas rutas
+
+# Rutas de pago
+payment_routes:
+    resource: ../src/Controller/PaymentController.php
+    type: annotation
+
+# Rutas de webhooks  
+webhook_routes:
+    resource: ../src/Controller/WebhookController.php
+    type: annotation
+
+# Ruta específica para webhooks de Stripe (sin autenticación)
+webhook_stripe:
+    path: /webhook/stripe
+    controller: App\Controller\WebhookController::handleStripeWebhook
+    methods: [POST]
+
+# =====================================================
+# RUTAS DE GESTIÓN DE MEMBRESÍA (FUTURO)
+# =====================================================
+
+# Proceso de checkout/pago (futuro)
+# membership_checkout:
+#     path: /membership/checkout/{level}
+#     controller: App\Controller\MembershipController::checkout
+#     requirements:
+#         level: 'ruby|gold|platinum'
+
+# Gestión de suscripción (futuro)
+# membership_manage:
+#     path: /membership/manage
+#     controller: App\Controller\MembershipController::manage
+
+# Actualización de membresía (futuro)
+# membership_upgrade:
+#     path: /membership/upgrade
+#     controller: App\Controller\MembershipController::upgrade

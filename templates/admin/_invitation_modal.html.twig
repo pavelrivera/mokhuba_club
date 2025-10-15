@@ -1,0 +1,42 @@
+<!-- Modal de Invitación Reutilizable -->
+<div class="modal fade" id="invitationModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: linear-gradient(135deg, rgba(45, 24, 23, 0.95), rgba(92, 26, 26, 0.9)); border: 2px solid var(--gold-primary);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
+        <h5 class="modal-title" id="invitationModalLabel" style="color: var(--gold-primary);">
+          <i class="fas fa-envelope me-2"></i>Enviar Invitación
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="invitationForm">
+          <div class="mb-3">
+            <label for="inviteeName" class="form-label" style="color: var(--cream);">Nombre completo *</label>
+            <input type="text" class="form-control" id="inviteeName" name="name" required placeholder="Ej: Juan Pérez">
+          </div>
+          <div class="mb-3">
+            <label for="inviteeEmail" class="form-label" style="color: var(--cream);">Email *</label>
+            <input type="email" class="form-control" id="inviteeEmail" name="email" required placeholder="ejemplo@email.com">
+          </div>
+          <div class="mb-3">
+            <label for="inviteePhone" class="form-label" style="color: var(--cream);">Teléfono (opcional)</label>
+            <input type="tel" class="form-control" id="inviteePhone" name="phone" placeholder="+1 234 567 8900">
+          </div>
+          <div class="mb-3">
+            <label for="inviteeMessage" class="form-label" style="color: var(--cream);">Mensaje (opcional)</label>
+            <textarea class="form-control" id="inviteeMessage" name="message" rows="3" placeholder="Mensaje opcional para el invitado..."></textarea>
+          </div>
+          <div class="alert alert-info">
+            La invitación expirará en 72 horas y solo puede usarse una vez.
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-lg btn-warning fw-bold">
+              Enviar Invitación
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

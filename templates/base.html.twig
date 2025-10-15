@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mokhuba Club{% endblock %}</title>
+    
+    {# Bootstrap CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    {# Font Awesome #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {# Google Fonts #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {# Custom Styles #}
+    <style>
+        :root {
+            /* Colores principales */
+            --gold-primary: #D4AF37;
+            --gold-secondary: #B8952B;
+            --gold-light: #E8C24E;
+            --dark-brown: #3d2414;
+            --black-premium: #130606;
+            --cream: #f8f2e7;
+            
+            /* Tipografías */
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--black-premium);
+            color: var(--cream);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+        }
+
+        /* Flash Messages */
+        .flash-messages-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .flash-message {
+            background: rgba(45, 24, 23, 0.95);
+            border: 1px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .flash-message.success {
+            border-color: #10b981;
+        }
+
+        .flash-message.error {
+            border-color: #ef4444;
+        }
+
+        .flash-message.warning {
+            border-color: #f59e0b;
+        }
+
+        .flash-message.info {
+            border-color: #3b82f6;
+        }
+
+        .flash-message-icon {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .flash-message.success .flash-message-icon {
+            color: #10b981;
+        }
+
+        .flash-message.error .flash-message-icon {
+            color: #ef4444;
+        }
+
+        .flash-message.warning .flash-message-icon {
+            color: #f59e0b;
+        }
+
+        .flash-message.info .flash-message-icon {
+            color: #3b82f6;
+        }
+
+        .flash-message-text {
+            color: var(--cream);
+            font-size: 0.95rem;
+        }
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    {# Flash Messages Container #}
+    <div class="flash-messages-container">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-message {{ label }}">
+                    <span class="flash-message-icon">
+                        {% if label == 'success' %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elseif label == 'error' %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% elseif label == 'warning' %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                        {% elseif label == 'info' %}
+                            <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </span>
+                    <span class="flash-message-text">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {# Main Content #}
+    {% block body %}{% endblock %}
+
+    {# Bootstrap JS Bundle #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block javascripts %}
+        <script>
+            // Auto-hide flash messages after 5 seconds
+            document.addEventListener('DOMContentLoaded', function() {
+                const flashMessages = document.querySelectorAll('.flash-message');
+                if (flashMessages.length > 0) {
+                    flashMessages.forEach(message => {
+                        setTimeout(() => {
+                            message.style.opacity = '0';
+                            message.style.transform = 'translateX(100%)';
+                            setTimeout(() => message.remove(), 300);
+                        }, 5000);
+                    });
+                }
+            });
+
+            // =====================================================
+            // IMPORTANTE: NO usar showPremiumModal
+            // Esta función fue REMOVIDA para evitar conflictos
+            // Usar window.location.href directamente para redirigir
+            // =====================================================
+            
+            // Debug logging para desarrollo
+            console.log('Mokhuba Club - Sistema cargado');
+            {% if app.user %}
+            console.log('Usuario autenticado:', '{{ app.user.email }}');
+            {% else %}
+            console.log('Usuario no autenticado');
+            {% endif %}
+        </script>
+
+        {# Animación de spin para loading #}
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    {% endblock %}
+</body>
+</html>

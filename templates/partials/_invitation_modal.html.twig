@@ -1,0 +1,20 @@
+{# templates/partials/_invitation_modal.html.twig #}
+<div class="modal fade" id="invitationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Enviar invitación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="invitationForm">
+          <input class="form-control mb-2" id="inviteeName" placeholder="Nombre completo" required>
+          <input class="form-control mb-2" id="inviteeEmail" placeholder="correo@dominio.com" type="email" required>
+          <input class="form-control mb-2" id="inviteePhone" placeholder="Teléfono (opcional)">
+          <textarea class="form-control mb-3" id="inviteeMessage" rows="3" placeholder="Mensaje (opcional)"></textarea>
+          <button class="btn btn-primary w-100" type="submit">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

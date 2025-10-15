@@ -1,0 +1,10 @@
+{% if status == 'ok' %}
+<h1>Invitación aceptada ✅</h1>
+<p>Gracias. Ya puedes continuar con el registro.</p>
+{% elseif status == 'expired' %}
+<h1>Invitación expirada ⏰</h1>
+<p>Solicita una nueva invitación.</p>
+{% else %}
+<h1>Invitación ya utilizada ℹ️</h1>
+<p>Esta invitación ya fue usada.</p>
+{% endif %}

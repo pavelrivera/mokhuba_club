@@ -1,0 +1,172 @@
+{# templates/emails/welcome.html.twig #}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a Mokhuba Club</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a0f0f;
+            color: #f8f2e7;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #2d1817 0%, #5c1a1a 100%);
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #D4AF37, #F4E5C2);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #2a1a12;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 1.5rem;
+            color: #D4AF37;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .user-code-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #D4AF37;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .user-code {
+            font-size: 2rem;
+            color: #D4AF37;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #D4AF37, #F4E5C2);
+            color: #2a1a12;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        .benefits-list {
+            margin: 30px 0;
+        }
+        .benefit-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #D4AF37;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">🚬</div>
+            <h1>¡BIENVENIDO!</h1>
+            <p style="margin: 10px 0 0 0; color: #2a1a12; font-style: italic;">
+                Ya eres parte de Mokhuba Club
+            </p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                ¡Hola {{ user.firstName }}!
+            </div>
+
+            <p style="font-size: 1.1rem; line-height: 1.6;">
+                Es un placer darte la bienvenida a <strong>Mokhuba Club</strong>. 
+                Tu cuenta ha sido creada exitosamente y ya puedes acceder a todos nuestros servicios.
+            </p>
+
+            <div class="user-code-box">
+                <div style="font-size: 0.9rem; margin-bottom: 10px; opacity: 0.8;">
+                    Tu código único de socio
+                </div>
+                <div class="user-code">{{ user.uniqueCode }}</div>
+            </div>
+
+            <h2 style="color: #D4AF37; font-size: 1.5rem; margin: 30px 0 20px 0;">
+                ¿Qué puedes hacer ahora?
+            </h2>
+
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <strong style="color: #D4AF37;">🎯 Explora tu Dashboard</strong><br>
+                    Accede a tu panel personal y descubre todas las funcionalidades disponibles.
+                </div>
+
+                <div class="benefit-item">
+                    <strong style="color: #D4AF37;">💎 Elige tu Membresía</strong><br>
+                    Selecciona entre nuestras membresías Ruby, Gold o Platinum según tus preferencias.
+                </div>
+
+                <div class="benefit-item">
+                    <strong style="color: #D4AF37;">🎫 Accede a Eventos</strong><br>
+                    Mantente al tanto de nuestros eventos exclusivos y degustaciones.
+                </div>
+
+                <div class="benefit-item">
+                    <strong style="color: #D4AF37;">👥 Invita Amigos</strong><br>
+                    Comparte la experiencia premium con tus conocidos.
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{ app.request.schemeAndHttpHost ~ path('auth_login') }}" class="cta-button">
+                    🚀 Acceder al Dashboard
+                </a>
+            </div>
+
+            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 20px; margin-top: 30px;">
+                <strong style="color: #93c5fd;">💡 Consejo:</strong><br>
+                <span style="color: #f8f2e7; opacity: 0.9;">
+                    Completa tu perfil y personaliza tus preferencias de tabaco para obtener recomendaciones personalizadas.
+                </span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div style="font-size: 1.2rem; margin-bottom: 10px;">🚬</div>
+            <p style="margin: 10px 0; font-weight: 600;">MOKHUBA CLUB</p>
+            <p style="margin: 5px 0; font-size: 0.9rem; opacity: 0.7;">
+                La experiencia premium que mereces
+            </p>
+            
+            <p style="font-size: 0.85rem; opacity: 0.6; margin-top: 20px;">
+                Si tienes alguna pregunta, no dudes en contactarnos.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

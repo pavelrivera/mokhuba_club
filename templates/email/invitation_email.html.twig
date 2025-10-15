@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial;">
+    <div style="max-width:600px;margin:0 auto;padding:24px;background:#111;color:#eee;border:1px solid #d4af37;">
+      <h2 style="color:#d4af37;margin-top:0;">Invitación a Mokhuba Club</h2>
+      <p>Hola {{ name }},</p>
+      {% if message %}<p>{{ message }}</p>{% endif %}
+      <p>Has recibido una invitación para crear tu cuenta. Este enlace es de un solo uso y expira el <strong>{{ expiresAt|date('Y-m-d H:i') }}</strong>.</p>
+      <p style="margin:24px 0;"><a href="{{ link }}" style="padding:12px 18px;background:#d4af37;color:#2d1817;text-decoration:none;font-weight:700;border-radius:6px;">Crear mi cuenta</a></p>
+      <p>Si no esperabas este correo, puedes ignorarlo.</p>
+    </div>
+  </body>
+</html>

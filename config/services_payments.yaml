@@ -1,0 +1,54 @@
+# Configuración de servicios para el sistema de pagos Mokhuba
+# Agregar al final de config/services.yaml
+
+parameters:
+    # Configuración de Stripe
+    stripe.publishable_key: '%env(STRIPE_PUBLISHABLE_KEY)%'
+    stripe.secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe.webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+    
+    # IDs de precios de membresías en Stripe
+    membership.prices.ruby: '%env(STRIPE_PRICE_RUBY)%'
+    membership.prices.gold: '%env(STRIPE_PRICE_GOLD)%'
+    membership.prices.platinum: '%env(STRIPE_PRICE_PLATINUM)%'
+    
+    # Configuración general
+    site.base_url: '%env(SITE_BASE_URL)%'
+
+services:
+    # Servicio principal de Stripe
+    App\Service\StripeService:
+        arguments:
+            $stripeSecretKey: '%stripe.secret_key%'
+            $stripePublishableKey: '%stripe.publishable_key%'
+            $rubyPriceId: '%membership.prices.ruby%'
+            $goldPriceId: '%membership.prices.gold%'
+            $platinumPriceId: '%membership.prices.platinum%'
+            $siteBaseUrl: '%site.base_url%'
+            $logger: '@monolog.logger'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $subscriptionRepository: '@App\Repository\SubscriptionRepository'
+            $paymentRepository: '@App\Repository\PaymentRepository'
+
+    # Comando de validación
+    App\Command\ValidatePaymentSystemCommand:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $connection: '@doctrine.dbal.default_connection'
+            $logger: '@monolog.logger'
+            $stripeService: '@App\Service\StripeService'
+        tags:
+            - { name: 'console.command' }
+
+    # Repositorios (auto-registrados por Doctrine)
+    App\Repository\SubscriptionRepository:
+        arguments: ['@doctrine']
+        tags: ['doctrine.repository_service']
+
+    App\Repository\PaymentRepository:
+        arguments: ['@doctrine']
+        tags: ['doctrine.repository_service']
+
+    App\Repository\WebhookEventRepository:
+        arguments: ['@doctrine']
+        tags: ['doctrine.repository_service']

@@ -1,0 +1,28 @@
+
+{% extends 'base.html.twig' %}
+{% block title %}Enviar Invitación{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h1 class="mb-3">Enviar invitación</h1>
+
+  {% for msg in app.flashes('success') %}
+    <div class="alert alert-success">{{ msg }}</div>
+  {% endfor %}
+  {% for msg in app.flashes('error') %}
+    <div class="alert alert-danger">{{ msg }}</div>
+  {% endfor %}
+
+  <form method="post" action="{{ path('admin_invitations_create') }}">
+    <div class="mb-3">
+      <label class="form-label">Email del invitado</label>
+      <input class="form-control" type="email" name="email" required maxlength="180">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Notas (opcional)</label>
+      <textarea class="form-control" name="notes" rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary">Enviar invitación</button>
+  </form>
+</div>
+{% endblock %}

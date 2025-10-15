@@ -1,0 +1,498 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - Club Mokhuba{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --black-premium: #1a0f0f;
+            --dark-brown: #2d1818;
+            --brown-medium: #5c1a1a;
+            --gold-primary: #d4af37;
+            --gold-light: #f4e5c2;
+            --cream: #fff8dc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, var(--black-premium) 0%, var(--dark-brown) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        /* Header Superior */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-emblem {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            border: 3px solid var(--gold-primary);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .club-title h1 {
+            font-size: 2.5rem;
+            color: var(--gold-primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 4px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icon-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 2px solid var(--gold-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gold-primary);
+            font-size: 1.3rem;
+        }
+
+        .icon-button:hover {
+            background: var(--gold-primary);
+            color: var(--dark-brown);
+            transform: scale(1.1);
+        }
+
+        /* Avatar Dropdown */
+        .user-avatar-dropdown {
+            position: relative;
+        }
+
+        .avatar-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            cursor: pointer;
+            border: 2px solid var(--gold-primary);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-circle:hover {
+            transform: scale(1.1);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(45, 24, 23, 0.98);
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 10px 0;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--gold-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold-primary);
+            padding-left: 25px;
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .welcome-message h2 {
+            font-size: 2rem;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        .welcome-message .user-name {
+            font-size: 2.5rem;
+            color: var(--gold-primary);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Tarjetas Principales */
+        .main-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.9), rgba(92, 26, 26, 0.8));
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            color: var(--gold-primary);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: var(--gold-primary);
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card-description {
+            color: var(--cream);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .card-button {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            color: var(--dark-brown);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Menú de Navegación */
+        .navigation-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            background: rgba(92, 26, 26, 0.5);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--gold-light);
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--gold-primary);
+            transform: translateY(-5px);
+        }
+
+        .nav-item i {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Botones Secundarios */
+        .secondary-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, rgba(45, 24, 23, 0.8), rgba(92, 26, 26, 0.7));
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: 15px 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gold-primary);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .club-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .main-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .secondary-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Header Superior -->
+    <div class="top-header">
+        <div class="logo-section">
+            <div class="logo-emblem">M</div>
+            <div class="club-title">
+                <h1>CLUB MOKUBA</h1>
+            </div>
+        </div>
+        <div class="header-icons">
+            <div class="icon-button" title="Banderas">
+                <i class="fas fa-flag"></i>
+            </div>
+            <div class="icon-button" title="Mensajes">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="icon-button" title="Editar">
+                <i class="fas fa-pen"></i>
+            </div>
+            <div class="user-avatar-dropdown">
+                <div class="avatar-circle" onclick="toggleDropdown()">
+                    {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                </div>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="{{ path('profile_edit') }}" class="dropdown-item">
+                        <i class="fas fa-user-edit"></i> Editar Perfil
+                    </a>
+                    <a href="{{ path('app_logout') }}" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje de Bienvenida -->
+    <div class="welcome-message">
+        <h2>BIENVENIDO,</h2>
+        <p class="user-name">{{ user.firstName|upper }} {{ user.lastName|upper }}</p>
+    </div>
+
+    <!-- Tarjetas Principales -->
+    <div class="main-cards">
+        <!-- MI MARCA -->
+        <div class="feature-card">
+            <div class="card-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="card-title">Mi Marca</h3>
+            <p class="card-description">
+                Regina 146 Cronas personal colecces Blend Dmalín
+            </p>
+            <button class="card-button" onclick="window.location.href='#'">Crear Marca</button>
+        </div>
+
+        <!-- MI HUMIDOR -->
+        <div class="feature-card">
+            <div class="card-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <h3 class="card-title">Mi Humidor</h3>
+            <p class="card-description">
+                Gestiona tu colección personal de puros
+            </p>
+            <button class="card-button" onclick="window.location.href='#'">Mi Humidor</button>
+        </div>
+
+        <!-- CLUB -->
+        <div class="feature-card">
+            <div class="card-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3 class="card-title">Club</h3>
+            <p class="card-description">
+                Descubre orcitos causa aui esperaste lunche Blend colettes
+            </p>
+            <button class="card-button" onclick="window.location.href='#'">Ver Calendario</button>
+        </div>
+    </div>
+
+    <!-- Menú de Navegación -->
+    <div class="navigation-menu">
+        <a href="#" class="nav-item">
+            <i class="fas fa-gem"></i>
+            <span>Nuestra Esencia</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Compra</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>Eventos</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-truck"></i>
+            <span>Envío</span>
+        </a>
+    </div>
+
+    <!-- Botones Secundarios -->
+    <div class="secondary-buttons">
+        <div class="secondary-btn" onclick="window.location.href='#'">
+            Novedades
+        </div>
+        <div class="secondary-btn" onclick="window.location.href='#'">
+            Cosecha
+        </div>
+        <div class="secondary-btn" onclick="window.location.href='#'">
+            Galería de Procesos
+        </div>
+        <div class="secondary-btn" onclick="window.location.href='#'">
+            Consejos
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Toggle dropdown
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar dropdown al hacer click fuera
+        window.addEventListener('click', function(e) {
+            if (!e.target.matches('.avatar-circle')) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+{% endblock %}
