@@ -884,10 +884,12 @@ class AdminDashboardController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $membershipStats = $this->userRepository->countByMembershipLevel();
+        //$membershipStats = $this->userRepository->countByMembershipLevel();
+        $stats = $this->userRepository->getStats();
         
         return $this->render('admin/memberships/index.html.twig', [
-            'membership_stats' => $membershipStats,
+            'user' => $user,
+            'stats' => $stats,
             'basica_users' => $this->userRepository->findActiveByMembershipLevel('basica'),
             'premium_users' => $this->userRepository->findActiveByMembershipLevel('premium'),
             'vip_users' => $this->userRepository->findActiveByMembershipLevel('vip')

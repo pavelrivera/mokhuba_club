@@ -1,0 +1,318 @@
+
+{% extends 'admin/admin_base.html.twig' %}
+{% block stylesheets %}
+{{ parent() }}
+<style>
+
+    /* =====================================================
+       CONTENT AREA
+    ===================================================== */
+    .admin-content {
+        padding: 32px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--gold-primary), var(--gold-secondary));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-strong);
+        border-color: var(--gold-primary);
+    }
+
+    .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .stat-title {
+        font-size: 0.875rem;
+        color: rgba(255, 248, 220, 0.8);
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(212, 175, 55, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gold-primary);
+        font-size: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--cream);
+        margin: 0 0 8px 0;
+        font-family: var(--font-heading);
+    }
+
+    .stat-change {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+    }
+
+    .stat-change.positive {
+        color: var(--success);
+    }
+
+    .stat-change.negative {
+        color: var(--error);
+    }
+
+    .stat-change.neutral {
+        color: rgba(255, 248, 220, 0.6);
+    }
+
+    /* =====================================================
+       CONTENT CARDS
+    ===================================================== */
+    .content-section {
+        margin-bottom: 32px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        color: var(--cream);
+        margin: 0;
+        font-family: var(--font-heading);
+    }
+
+    .content-card {
+        background: rgba(45, 24, 23, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(184, 148, 31, 0.05));
+    }
+
+    .card-body {
+        padding: 24px;
+    }
+
+    /* =====================================================
+       TABLES
+    ===================================================== */
+    .table-wrapper {
+        overflow-x: auto;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .users-table th {
+        background: rgba(212, 175, 55, 0.1);
+        padding: 16px 20px;
+        text-align: left;
+        color: var(--gold-primary);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        position: sticky;
+        top: 0;
+    }
+
+    .users-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        color: var(--cream);
+        vertical-align: middle;
+    }
+
+    .users-table tr:hover {
+        background: rgba(212, 175, 55, 0.05);
+    }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-cell .avatar {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-details .name {
+        font-weight: 600;
+        color: var(--cream);
+        margin-bottom: 2px;
+    }
+
+    .user-details .email {
+        font-size: 0.875rem;
+        color: rgba(255, 248, 220, 0.7);
+    }
+
+</style>
+{% endblock %}
+{% block admin_main %}
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div>
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Gestión de Membresías</h1>
+                <p class="page-subtitle">Administra todas los membresías del club </p>
+            </div>
+
+            <div class="header-actions">
+                <div class="admin-user">
+                    <div class="user-avatar">
+                        {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                        <div class="user-role">Administrador</div>
+                    </div>
+                </div>
+
+                <a href="{{ path('auth_logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Salir</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="admin-content">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            
+        </div>
+
+        <!-- Distribución de Membresías -->
+        <div class="content-section">
+            
+        </div>
+
+        <!-- Usuarios Recientes -->
+        <div class="content-section">
+
+            <div class="content-card">
+                <div class="table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            {% if users is defined and users is not empty %}
+                                {% for user_item in users %}
+                                    <tr class="user-row" 
+                                        data-name="{{ user_item.firstName|lower }} {{ user_item.lastName|lower }}" 
+                                        data-email="{{ user_item.email|lower }}" 
+                                        data-membership="{{ user_item.membershipLevel|default('guest') }}" 
+                                        data-status="active">
+                                        
+                                        <td>
+                                            <code style="background: rgba(212, 175, 55, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--gold-primary); font-size: 0.8rem;">
+                                                {{ user_item.uniqueCode|default('N/A') }}
+                                            </code>
+                                        </td>
+                                        
+                                        <td>{{ user_item.phone|default('N/R') }}</td>
+                                        <td>
+                                            <div class="actions-cell">
+                                                <button class="btn btn-secondary btn-sm" onclick="editUser({{ user_item.id }})" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 40px;">
+                                        <div style="color: rgba(255, 248, 220, 0.7);">
+                                            <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                            <h3>No hay membresías registradass</h3>
+                                            <p>Las nuevas membresías aparecerán aquí una vez que se registren.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}

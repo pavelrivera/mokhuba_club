@@ -1,62 +1,174 @@
-{% extends 'base.html.twig' %}
-{% set body_class = 'body home' %}
-{% block body %}
-{% set memberCount = memberCount|default(247) %}
-{% set cigarCount = cigarCount|default(0) %}
-{% set eventCount = eventCount|default(3) %}
-
-<section class="hero-section">
-  <div class="w-container">
-    <div class="hero-badge">
-      <div class="premium-chip gold"><span class="chip-text">MIEMBRO EXCLUSIVO</span></div>
-    </div>
-    <h1 class="hero-title">Bienvenido</h1>
-    <p class="hero-subtitle">Club VIP Mokhuba | Cigarros Exclusivos</p>
-
-    <div class="hero-stats">
-      <div class="w-row">
-        <div class="w-col w-col-4 w-col-small-12">
-          <div class="stat-item">
-            <div class="stat-number">{{ memberCount }}</div>
-            <div class="stat-label">Miembros</div>
-          </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOKHUBA - Cigarros Exclusivos</title>
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="MOKHUBA" class="logo-image">
+                <span class="logo-text">MOKHUBA</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#nosotros" class="nav-link">NOSOTROS</a></li>
+                <li><a href="#servicio" class="nav-link">SERVICIO</a></li>
+                <li><a href="#siembra" class="nav-link">SIEMBRA</a></li>
+                <li><a href="#contacto" class="nav-link">CONTACTO</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="https://wa.me/TUNUMERO" target="_blank" class="btn-personaliza">Personaliza tus puros</a>
+                <div class="language-selector">
+                    <button class="language-button" id="currentLang">
+                        <img src="https://flagcdn.com/w20/es.png" alt="ES" class="flag-img">
+                        <span>ES</span>
+                        <svg width="10" height="6" viewBox="0 0 12 8" fill="none">
+                            <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <div class="language-dropdown" id="langDropdown">
+                        <a href="#" class="lang-option" data-lang="es" data-flag="es">
+                            <img src="https://flagcdn.com/w20/es.png" alt="ES" class="flag-img"> Español
+                        </a>
+                        <a href="#" class="lang-option" data-lang="en" data-flag="gb">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="EN" class="flag-img"> English
+                        </a>
+                        <a href="#" class="lang-option" data-lang="fr" data-flag="fr">
+                            <img src="https://flagcdn.com/w20/fr.png" alt="FR" class="flag-img"> Français
+                        </a>
+                        <a href="#" class="lang-option" data-lang="de" data-flag="de">
+                            <img src="https://flagcdn.com/w20/de.png" alt="DE" class="flag-img"> Deutsch
+                        </a>
+                        <a href="#" class="lang-option" data-lang="pt" data-flag="pt">
+                            <img src="https://flagcdn.com/w20/pt.png" alt="PT" class="flag-img"> Português
+                        </a>
+                        <a href="#" class="lang-option" data-lang="zh" data-flag="cn">
+                            <img src="https://flagcdn.com/w20/cn.png" alt="CN" class="flag-img"> 中文
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="w-col w-col-4 w-col-small-12">
-          <div class="stat-item">
-            <div class="stat-number">{{ cigarCount }}</div>
-            <div class="stat-label">Cigarros</div>
-          </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Descubre la tradición y<br>
+                exclusividad de MOKHUBA
+            </h1>
+            <p class="hero-subtitle">
+                Tabacos personalizados hechos a mano con la más alta calidad y dedicación,<br>
+                ofreciendo una experiencia de sabor única.
+            </p>
+            <div class="hero-buttons">
+                <a href="https://wa.me/+240222824078?text=Hola,%20quiero%20información%20sobre%20puros%20personalizados" target="_blank" class="btn btn-primary">Quiero mis puros</a>
+                <a href="{{ path('auth_login') }}" class="btn btn-secondary">Club MOKHUBA</a>
+            </div>
         </div>
-        <div class="w-col w-col-4 w-col-small-12">
-          <div class="stat-item">
-            <div class="stat-number">{{ eventCount }}</div>
-            <div class="stat-label">Eventos</div>
-          </div>
+    </section>
+
+    <!-- Secciones temporales (para futuro desarrollo) 
+    <section id="nosotros" class="content-section">
+        <div class="container">
+            <h2>Nosotros</h2>
+            <p>Contenido próximamente...</p>
         </div>
-      </div>
-    </div>
+    </section>
 
-    <div class="cta-wrap">
-      <a href="{{ path('auth_login') }}" class="button gold w-button">Iniciar Sesión</a>
-      <a href="{{ path('beneficios') }}" class="button outline gold w-button">Explorar Beneficios</a>
-    </div>
-  </div>
-</section>
+    <section id="servicio" class="content-section">
+        <div class="container">
+            <h2>Servicio</h2>
+            <p>Contenido próximamente...</p>
+        </div>
+    </section>
 
-<div class="modal-overlay" data-modal style="display:none">
-  <div class="modal-card">
-    <div class="modal-header"><div class="logo">MOKHUBA</div></div>
-    <div class="modal-body">
-      <h3>Acceso al Club Privado</h3>
-      <p>Para acceder a los beneficios exclusivos del club, debes iniciar sesión como miembro.</p>
-      <a href="{{ path('auth_login') }}" class="button gold w-button">Iniciar Sesión</a>
-    </div>
-  </div>
-</div>
+    <section id="siembra" class="content-section">
+        <div class="container">
+            <h2>Siembra</h2>
+            <p>Contenido próximamente...</p>
+        </div>
+    </section>
 
-<section id="beneficios" class="section">
-  <div class="w-container">
-    <h2 class="section-title text-center">Beneficios del Club</h2>
-  </div>
-</section>
-{% endblock %}
+    <section id="contacto" class="content-section">
+        <div class="container">
+            <h2>Contacto</h2>
+            <p>Contenido próximamente...</p>
+        </div>
+    </section>
+-->
+    <script>
+        // Smooth scroll para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Hacer navbar fija al hacer scroll
+        let lastScroll = 0;
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Selector de idiomas
+        const langButton = document.getElementById('currentLang');
+        const langDropdown = document.getElementById('langDropdown');
+
+        langButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('active');
+        });
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', () => {
+            langDropdown.classList.remove('active');
+        });
+
+        // Prevenir que el dropdown se cierre al hacer clic dentro
+        langDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Cambiar bandera al seleccionar idioma
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                const flag = this.getAttribute('data-flag');
+                const lang = this.getAttribute('data-lang');
+                const flagImg = this.querySelector('.flag-img').src;
+                
+                // Actualizar botón actual
+                document.querySelector('#currentLang .flag-img').src = flagImg;
+                document.querySelector('#currentLang span').textContent = lang.toUpperCase();
+            });
+        });
+    </script>
+</body>
+</html>
