@@ -293,9 +293,41 @@
         color: var(--gold-primary);
     }
 
+    .btn-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white !important;
+        border: 1px solid #10b981;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white !important;
+        border: 1px solid #ef4444;
+    }
+
     .btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--gold-secondary), var(--gold-primary));
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: var(--gold-primary);
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
     }
 
     .filters-section {
@@ -360,6 +392,7 @@
     .users-table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 1000px;
     }
 
     .users-table th {
@@ -467,6 +500,85 @@
     .btn-sm {
         padding: 6px 10px;
         font-size: 0.75rem;
+    }
+
+    /* =====================================================
+       VISTA MÓVIL CON TARJETAS
+    ===================================================== */
+    .mobile-cards-view {
+        display: none;
+    }
+
+    .user-mobile-card {
+        background: rgba(45, 24, 23, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        transition: var(--transition-smooth);
+    }
+
+    .user-mobile-card:hover {
+        border-color: var(--gold-primary);
+        background: rgba(45, 24, 23, 0.8);
+    }
+
+    .mobile-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    .mobile-header-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .mobile-header-badges .badge {
+        padding: 3px 6px;
+    }
+
+    .mobile-card-body {
+        margin-bottom: 12px;
+    }
+
+    .mobile-info-grid {
+        display: grid;
+        gap: 8px;
+    }
+
+    .mobile-info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+    }
+
+    .mobile-label {
+        font-size: 0.8rem;
+        color: rgba(255, 248, 220, 0.7);
+        font-weight: 500;
+    }
+
+    .mobile-card-footer {
+        padding-top: 12px;
+        border-top: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    .mobile-empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: rgba(255, 248, 220, 0.7);
+    }
+
+    .mobile-empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
     }
 
     /* =====================================================
@@ -886,52 +998,33 @@
     }
 
     /* =====================================================
-       RESPONSIVE MODAL ADJUSTMENTS
+       RESPONSIVE DESIGN
     ===================================================== */
-    
-    /* Ajustes para modales en diferentes resoluciones */
-    .premium-modal[style*="max-width: 600px"] {
-        max-width: min(600px, 90vw);
-        width: 100%;
-    }
-    
-    /* Ajustes específicos para diferentes tamaños de pantalla */
-    @media (min-width: 1920px) {
-        .premium-modal[style*="max-width: 600px"] {
-            max-width: 650px;
-        }
-        
-        .modal-body-premium {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-    }
-    
-    @media (min-width: 1440px) and (max-width: 1919px) {
-        .premium-modal[style*="max-width: 600px"] {
-            max-width: 600px;
-        }
-    }
-    
-    @media (min-width: 1200px) and (max-width: 1439px) {
-        .premium-modal[style*="max-width: 600px"] {
-            max-width: 550px;
-        }
-        
-        .modal-header-premium,
-        .modal-body-premium,
-        .modal-footer-premium {
-            padding-left: 28px;
-            padding-right: 28px;
-        }
+
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--gold-primary);
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        font-size: 1.1rem;
     }
 
-    /* =====================================================
-       MOBILE RESPONSIVE
-    ===================================================== */
+    .mobile-menu-btn:hover {
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    /* Tablet */
     @media (max-width: 1024px) {
         .admin-sidebar {
             transform: translateX(-100%);
+        }
+
+        .admin-sidebar.mobile-open {
+            transform: translateX(0);
         }
 
         .admin-main {
@@ -942,19 +1035,39 @@
             display: block;
         }
         
+        .users-table {
+            min-width: 900px;
+        }
+        
         .premium-modal[style*="max-width: 600px"] {
             max-width: 95vw;
             margin: 10px;
         }
+
+        .header-actions {
+            flex-wrap: wrap;
+        }
+
+        /*.admin-user .user-info {
+            display: none;
+        }*/
+
     }
 
+    /* Mobile */
     @media (max-width: 768px) {
         .admin-content {
             padding: 20px;
         }
 
-        .filters-grid {
-            grid-template-columns: 1fr;
+        .admin-header {
+            padding: 12px 16px;
+        }
+
+        .header-content {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
         }
 
         .users-header {
@@ -966,6 +1079,45 @@
         .users-actions {
             width: 100%;
             justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .table-wrapper {
+            display: none;
+        }
+
+        .mobile-cards-view {
+            display: block;
+            padding: 16px;
+        }
+
+        .user-cell .avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .user-details .name {
+            font-size: 1rem;
+        }
+
+        .mobile-info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .mobile-label {
+            font-size: 0.75rem;
+        }
+
+        .actions-cell {
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .premium-modal[style*="max-width: 600px"] {
@@ -1007,9 +1159,71 @@
             max-height: 60vh;
             overflow-y: auto;
         }
+
+        /*.logout-btn span {
+            display: none;
+        }*/
+
+        .logout-btn {
+            padding: 8px;
+        }
     }
 
+    /* Small Mobile */
     @media (max-width: 480px) {
+        .admin-content {
+            padding: 16px;
+        }
+
+        .admin-header {
+            padding: 10px 12px;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+        }
+
+        .page-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .users-actions {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .users-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .mobile-cards-view {
+            padding: 12px;
+        }
+
+        .user-mobile-card {
+            padding: 12px;
+        }
+
+        .mobile-card-header {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mobile-header-badges {
+            align-self: flex-start;
+        }
+
+        .actions-cell {
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .actions-cell .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
         .premium-modal[style*="max-width: 600px"] {
             width: 98vw;
             margin: 5px;
@@ -1042,6 +1256,16 @@
             padding: 10px 16px;
             font-size: 0.9rem;
         }
+
+        .user-cell {
+            flex-direction: column;
+            text-align: center;
+            gap: 8px;
+        }
+        
+        .user-details {
+            align-items: center;
+        }
     }
 
     /* Ajustes especiales para landscape en tablets */
@@ -1058,21 +1282,6 @@
         .premium-modal[style*="max-width: 600px"] {
             max-width: 80vw;
         }
-    }
-
-    .mobile-menu-btn {
-        display: none;
-        background: transparent;
-        border: 1px solid rgba(212, 175, 55, 0.5);
-        color: var(--gold-primary);
-        padding: 8px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: var(--transition-smooth);
-    }
-
-    .mobile-menu-btn:hover {
-        background: rgba(212, 175, 55, 0.1);
     }
 
     .sidebar-overlay {
@@ -1181,12 +1390,14 @@
         <!-- Header (COMPARTIDO) -->
         <header class="admin-header">
             <div class="header-content">
-                <div>
+                <div style="display: flex; align-items: center; gap: 16px;">
                     <button class="mobile-menu-btn" onclick="toggleSidebar()">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="page-title">Gestión de Usuarios</h1>
-                    <p class="page-subtitle">Administra todos los miembros del club</p>
+                    <div>
+                        <h1 class="page-title">Gestión de Usuarios</h1>
+                        <p class="page-subtitle">Administra todos los miembros del club</p>
+                    </div>
                 </div>
 
                 <div class="header-actions">
@@ -1389,6 +1600,114 @@
                             {% endif %}
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Vista móvil con tarjetas -->
+                <div class="mobile-cards-view">
+                    {% if users is defined and users is not empty %}
+                        {% for user_item in users %}
+                            <div class="user-mobile-card" 
+                                data-name="{{ user_item.firstName|lower }} {{ user_item.lastName|lower }}" 
+                                data-email="{{ user_item.email|lower }}" 
+                                data-membership="{{ user_item.membershipLevel|default('guest') }}" 
+                                data-status="{{ user_item.isActive ? 'active' : 'inactive' }}">
+                                <div class="mobile-card-header">
+                                    <div class="user-cell">
+                                        <div class="avatar">
+                                            {{ user_item.firstName|first|upper }}{{ user_item.lastName|first|upper }}
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="name">{{ user_item.firstName }} {{ user_item.lastName }}</div>
+                                            <div class="email">{{ user_item.email }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="mobile-header-badges">
+                                        {% set membership = user_item.membershipLevel|default('guest') %}
+                                        {% if membership == 'admin' %}
+                                            <span class="badge" style="background: rgba(111, 66, 193, 0.2); color: #6f42c1; border: 1px solid rgba(111, 66, 193, 0.3);">
+                                                <i class="fas fa-shield-alt"></i>
+                                            </span>
+                                        {% elseif membership == 'ruby' %}
+                                            <span class="badge" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3);">
+                                                <i class="fas fa-gem"></i>
+                                            </span>
+                                        {% elseif membership == 'gold' %}
+                                            <span class="badge badge-primary">
+                                                <i class="fas fa-medal"></i>
+                                            </span>
+                                        {% elseif membership == 'platinum' %}
+                                            <span class="badge" style="background: rgba(149, 165, 166, 0.2); color: #95a5a6; border: 1px solid rgba(149, 165, 166, 0.3);">
+                                                <i class="fas fa-star"></i>
+                                            </span>
+                                        {% else %}
+                                            <span class="badge" style="background: rgba(108, 117, 125, 0.2); color: #6c757d; border: 1px solid rgba(108, 117, 125, 0.3);">
+                                                <i class="fas fa-user"></i>
+                                            </span>
+                                        {% endif %}
+                                        
+                                        {% if user_item.isActive %}
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle"></i>
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-warning">
+                                                <i class="fas fa-pause-circle"></i>
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mobile-card-body">
+                                    <div class="mobile-info-grid">
+                                        <div class="mobile-info-item">
+                                            <span class="mobile-label">Código:</span>
+                                            <code style="background: rgba(212, 175, 55, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--gold-primary); font-size: 0.8rem;">
+                                                {{ user_item.uniqueCode|default('N/A') }}
+                                            </code>
+                                        </div>
+                                        <div class="mobile-info-item">
+                                            <span class="mobile-label">Teléfono:</span>
+                                            <span>{{ user_item.phone|default('N/R') }}</span>
+                                        </div>
+                                        <div class="mobile-info-item">
+                                            <span class="mobile-label">Registro:</span>
+                                            <span>{{ user_item.createdAt ? user_item.createdAt|date('d/m/Y') : 'N/A' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mobile-card-footer">
+                                    <div class="actions-cell">
+                                        <button class="btn btn-secondary btn-sm" onclick="editUser({{ user_item.id }})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                            <span>Editar</span>
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" onclick="changePassword({{ user_item.id }})" title="Contraseña">
+                                            <i class="fas fa-key"></i>
+                                            <span>Contraseña</span>
+                                        </button>
+                                        {% if user_item.isActive %}
+                                            <button class="btn btn-danger btn-sm" onclick="toggleStatus({{ user_item.id }})" title="Desactivar">
+                                                <i class="fas fa-user-slash"></i>
+                                                <span>Desactivar</span>
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-success btn-sm" onclick="toggleStatus({{ user_item.id }})" title="Activar">
+                                                <i class="fas fa-user-check"></i>
+                                                <span>Activar</span>
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mobile-empty-state">
+                            <i class="fas fa-users"></i>
+                            <h3>No hay usuarios registrados</h3>
+                            <p>Los nuevos miembros aparecerán aquí una vez que se registren.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -1769,7 +2088,8 @@ let generatedPassword = '';
 // Variables globales para editar usuario
 let currentEditingUserId = null;
 let originalUserData = null;
-let pendingEditData = null;  // NUEVA VARIABLE: Almacena datos de edición temporalmente
+let pendingEditData = null;
+
 
 // =====================================================
 // FUNCIONES BÁSICAS Y HELPERS
