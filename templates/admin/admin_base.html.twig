@@ -410,7 +410,41 @@
         display: none !important;
     }
 
-    
+    /* =====================================================
+       MOBILE MENU BUTTON
+    ===================================================== */
+    .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--gold-primary);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+
+    .mobile-menu-btn:hover {
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    /* =====================================================
+       OVERLAY PARA MOBILE
+    ===================================================== */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
 
     /* =====================================================
        RESPONSIVE DESIGN
@@ -456,42 +490,6 @@
             width: 100%;
             justify-content: space-between;
         }
-    }
-
-    /* =====================================================
-       MOBILE MENU BUTTON
-    ===================================================== */
-    .mobile-menu-btn {
-        display: none;
-        background: transparent;
-        border: 1px solid rgba(212, 175, 55, 0.5);
-        color: var(--gold-primary);
-        padding: 8px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: var(--transition-smooth);
-    }
-
-    .mobile-menu-btn:hover {
-        background: rgba(212, 175, 55, 0.1);
-    }
-
-    /* =====================================================
-       OVERLAY PARA MOBILE
-    ===================================================== */
-    .sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 99;
-    }
-
-    .sidebar-overlay.active {
-        display: block;
     }
 
 </style>

@@ -141,13 +141,14 @@
     /* =====================================================
        TABLES
     ===================================================== */
-    .table-container {
+     .table-container {
         overflow-x: auto;
     }
 
     .admin-table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 800px;
     }
 
     .admin-table th {
@@ -204,6 +205,229 @@
     .user-details .email {
         font-size: 0.875rem;
         color: rgba(255, 248, 220, 0.7);
+    }
+
+    /* =====================================================
+       RESPONSIVE STYLES
+    ===================================================== */
+    
+    /* Badges mejorados */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .badge-ruby {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .badge-gold {
+        background: rgba(212, 175, 55, 0.2);
+        color: var(--gold-primary);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .badge-platinum {
+        background: #95a5a6;
+        color: white;
+    }
+
+    .badge-pending {
+        background: rgba(255, 248, 220, 0.2);
+        color: var(--cream);
+    }
+
+    .badge-success {
+        background: rgba(46, 204, 113, 0.2);
+        color: #2ecc71;
+        border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .badge-warning {
+        background: rgba(243, 156, 18, 0.2);
+        color: #f39c12;
+        border: 1px solid rgba(243, 156, 18, 0.3);
+    }
+
+    /* Botones de acción */
+    .actions-cell {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
+    }
+
+    .action-text {
+        display: inline;
+    }
+
+    /* Mobile Cards View */
+    .mobile-cards-view {
+        display: none;
+    }
+
+    .user-mobile-card {
+        background: rgba(45, 24, 23, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        transition: var(--transition-smooth);
+    }
+
+    .user-mobile-card:hover {
+        border-color: var(--gold-primary);
+        background: rgba(45, 24, 23, 0.8);
+    }
+
+    .mobile-card-header {
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    .mobile-card-body {
+        margin-bottom: 12px;
+    }
+
+    .mobile-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.05);
+    }
+
+    .mobile-info-row:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-label {
+        font-size: 0.875rem;
+        color: rgba(255, 248, 220, 0.7);
+        font-weight: 500;
+    }
+
+    .mobile-card-footer {
+        padding-top: 12px;
+        border-top: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    .date-cell {
+        font-size: 0.875rem;
+        color: rgba(255, 248, 220, 0.9);
+    }
+
+    /* =====================================================
+       MEDIA QUERIES
+    ===================================================== */
+    
+    /* Tablet */
+    @media (max-width: 1024px) {
+        .admin-table {
+            min-width: 700px;
+        }
+        
+        .admin-table th,
+        .admin-table td {
+            padding: 14px 16px;
+        }
+        
+        .action-text {
+            display: none;
+        }
+        
+        .btn-action {
+            padding: 6px 8px;
+        }
+    }
+
+    /* Mobile - Switch to cards */
+    @media (max-width: 768px) {
+        .admin-table {
+            display: none;
+        }
+        
+        .mobile-cards-view {
+            display: block;
+        }
+        
+        .user-cell .avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+        
+        .user-details .name {
+            font-size: 1rem;
+        }
+        
+        .mobile-info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+        
+        .mobile-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+    }
+
+    /* Small Mobile */
+    @media (max-width: 480px) {
+        .user-mobile-card {
+            padding: 12px;
+        }
+        
+        .actions-cell {
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .btn-action {
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .action-text {
+            display: inline;
+        }
+        
+        .user-cell {
+            flex-direction: column;
+            text-align: center;
+            gap: 8px;
+        }
+        
+        .user-details {
+            align-items: center;
+        }
+    }
+
+    /* Fallback para tablets muy pequeñas */
+    @media (max-width: 600px) and (min-width: 481px) {
+        .admin-table {
+            display: none;
+        }
+        
+        .mobile-cards-view {
+            display: block;
+        }
     }
 
 </style>
@@ -381,13 +605,13 @@
                                         <th>Membresía</th>
                                         <th>Estado</th>
                                         <th>Registrado</th>
-                                        <th>Acciones</th>
+                                        <th class="actions-column">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for user_item in recent_users|slice(0, 5) %}
-                                        <tr>
-                                            <td>
+                                        <tr class="user-row">
+                                            <td data-label="Usuario">
                                                 <div class="user-cell">
                                                     <div class="avatar">
                                                         {{ user_item.firstName|first|upper }}{{ user_item.lastName|first|upper }}
@@ -398,27 +622,27 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td data-label="Membresía">
                                                 {% set membership = user_item.membershipLevel|default('guest') %}
                                                 {% if membership == 'ruby' %}
-                                                    <span class="badge" style="background: #e74c3c; color: white;">
+                                                    <span class="badge badge-ruby">
                                                         <i class="fas fa-gem"></i> Rubí
                                                     </span>
                                                 {% elseif membership == 'gold' %}
-                                                    <span class="badge badge-primary">
+                                                    <span class="badge badge-gold">
                                                         <i class="fas fa-medal"></i> Oro
                                                     </span>
                                                 {% elseif membership == 'platinum' %}
-                                                    <span class="badge" style="background: #95a5a6; color: white;">
+                                                    <span class="badge badge-platinum">
                                                         <i class="fas fa-star"></i> Platino
                                                     </span>
                                                 {% else %}
-                                                    <span class="badge" style="background: rgba(255, 248, 220, 0.2); color: var(--cream);">
+                                                    <span class="badge badge-pending">
                                                         Pendiente
                                                     </span>
                                                 {% endif %}
                                             </td>
-                                            <td>
+                                            <td data-label="Estado">
                                                 {% if user_item.isActive %}
                                                     <span class="badge badge-success">
                                                         <i class="fas fa-check"></i> Activo
@@ -429,16 +653,20 @@
                                                     </span>
                                                 {% endif %}
                                             </td>
-                                            <td>
-                                                {{ user_item.createdAt ? user_item.createdAt|date('d/m/Y') : 'N/A' }}
+                                            <td data-label="Registrado">
+                                                <span class="date-cell">
+                                                    {{ user_item.createdAt ? user_item.createdAt|date('d/m/Y') : 'N/A' }}
+                                                </span>
                                             </td>
-                                            <td>
-                                                <div style="display: flex; gap: 8px;">
-                                                    <button class="btn btn-secondary btn-sm" title="Ver perfil">
+                                            <td data-label="Acciones" class="actions-column">
+                                                <div class="actions-cell">
+                                                    <button class="btn btn-secondary btn-sm btn-action" title="Ver perfil">
                                                         <i class="fas fa-eye"></i>
+                                                        <span class="action-text">Ver</span>
                                                     </button>
-                                                    <button class="btn btn-secondary btn-sm" title="Editar">
+                                                    <button class="btn btn-secondary btn-sm btn-action" title="Editar">
                                                         <i class="fas fa-edit"></i>
+                                                        <span class="action-text">Editar</span>
                                                     </button>
                                                 </div>
                                             </td>
@@ -446,6 +674,82 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                        
+                        <!-- Mobile Cards View -->
+                        <div class="mobile-cards-view">
+                            {% for user_item in recent_users|slice(0, 5) %}
+                                <div class="user-mobile-card">
+                                    <div class="mobile-card-header">
+                                        <div class="user-cell">
+                                            <div class="avatar">
+                                                {{ user_item.firstName|first|upper }}{{ user_item.lastName|first|upper }}
+                                            </div>
+                                            <div class="user-details">
+                                                <div class="name">{{ user_item.firstName }} {{ user_item.lastName }}</div>
+                                                <div class="email">{{ user_item.email }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mobile-card-body">
+                                        <div class="mobile-info-row">
+                                            <span class="mobile-label">Membresía:</span>
+                                            {% set membership = user_item.membershipLevel|default('guest') %}
+                                            {% if membership == 'ruby' %}
+                                                <span class="badge badge-ruby">
+                                                    <i class="fas fa-gem"></i> Rubí
+                                                </span>
+                                            {% elseif membership == 'gold' %}
+                                                <span class="badge badge-gold">
+                                                    <i class="fas fa-medal"></i> Oro
+                                                </span>
+                                            {% elseif membership == 'platinum' %}
+                                                <span class="badge badge-platinum">
+                                                    <i class="fas fa-star"></i> Platino
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-pending">
+                                                    Pendiente
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mobile-info-row">
+                                            <span class="mobile-label">Estado:</span>
+                                            {% if user_item.isActive %}
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check"></i> Activo
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-warning">
+                                                    <i class="fas fa-pause"></i> Inactivo
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mobile-info-row">
+                                            <span class="mobile-label">Registrado:</span>
+                                            <span class="date-cell">
+                                                {{ user_item.createdAt ? user_item.createdAt|date('d/m/Y') : 'N/A' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mobile-card-footer">
+                                        <div class="actions-cell">
+                                            <button class="btn btn-secondary btn-sm btn-action" title="Ver perfil">
+                                                <i class="fas fa-eye"></i>
+                                                <span class="action-text">Ver</span>
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm btn-action" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                                <span class="action-text">Editar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     {% else %}
                         <div class="text-center p-4">
