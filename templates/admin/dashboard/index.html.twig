@@ -435,6 +435,9 @@
 {% block admin_main %}
     <!-- Header -->
     <header class="admin-header">
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo.png') }}">
+
         <div class="header-content">
             <div>
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
@@ -532,7 +535,7 @@
             </div>
         </div>
 
-        <!-- Distribución de Membresías -->
+        <!-- Distribución de Membresías
         <div class="content-section">
             <div class="section-header">
                 <h2 class="section-title">Distribución de Membresías</h2>
@@ -583,7 +586,7 @@
                 </div>
             </div>
         </div>
-
+ -->
         <!-- Usuarios Recientes -->
         <div class="content-section">
             <div class="section-header">
@@ -605,7 +608,7 @@
                                         <th>Membresía</th>
                                         <th>Estado</th>
                                         <th>Registrado</th>
-                                        <th class="actions-column">Acciones</th>
+                                        <!-- <th class="actions-column">Acciones</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -658,6 +661,7 @@
                                                     {{ user_item.createdAt ? user_item.createdAt|date('d/m/Y') : 'N/A' }}
                                                 </span>
                                             </td>
+                                        <!--
                                             <td data-label="Acciones" class="actions-column">
                                                 <div class="actions-cell">
                                                     <button class="btn btn-secondary btn-sm btn-action" title="Ver perfil">
@@ -670,6 +674,7 @@
                                                     </button>
                                                 </div>
                                             </td>
+                                             -->
                                         </tr>
                                     {% endfor %}
                                 </tbody>
