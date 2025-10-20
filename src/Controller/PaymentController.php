@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\Membresia;
 
 
 class PaymentController extends AbstractController
@@ -116,6 +117,7 @@ class PaymentController extends AbstractController
      */
     public function createCheckoutSession(Request $request): Response
     {
+        $em = $this->entityManager;
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         try {
@@ -132,7 +134,7 @@ class PaymentController extends AbstractController
             ]);
 
             // Validar tipo de membresía
-            if (!$membershipType || !in_array($membershipType, ['ruby', 'gold', 'platinum'])) {
+            if (!$membershipType || !in_array($membershipType, [1, 2, 3])) {
                 throw new \Exception('Tipo de membresía inválido');
             }
 
@@ -152,8 +154,10 @@ class PaymentController extends AbstractController
                 'gold' => $_ENV['GOLD_PRICE_ID'] ?? '',
                 'platinum' => $_ENV['PLATINUM_PRICE_ID'] ?? ''
             ];
+
+            $membership = $em->getRepository(Membresia::class)->find($membershipType);
             
-            $priceId = $priceIds[$membershipType];
+            $priceId = $membership->getPrecio();
 
             // Validar que el Price ID existe
             if (empty($priceId)) {
@@ -235,6 +239,7 @@ class PaymentController extends AbstractController
      */
     private function processMockPayment($user, string $membershipType): Response
     {
+        $em = $this->entityManager;
         try {
             $this->logger->info('🎭 PROCESANDO PAGO EN MODO MOCK', [
                 'user_id' => $user->getId(),
@@ -248,7 +253,9 @@ class PaymentController extends AbstractController
                 'platinum' => 999
             ];
 
-            $amount = $prices[$membershipType];
+            $membership = $em->getRepository(Membresia::class)->find($membershipType);
+
+            $amount = $membership->getPrecio();
 
             // Crear registro de pago simulado
             $payment = new Payment();
@@ -438,19 +445,24 @@ class PaymentController extends AbstractController
      */
     public function showCheckoutForm(string $membershipType): Response
     {
+        $em = $this->entityManager;
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         // Validar tipo de membresía
-        if (!in_array($membershipType, ['ruby', 'gold', 'platinum'])) {
+        if (!in_array($membershipType, [1,2,3])) {
             $this->addFlash('error', 'Tipo de membresía inválido');
             return $this->redirectToRoute('app_dashboard');
         }
 
+        $membership = $em->getRepository(Membresia::class)->find($membershipType);
+            
+        $price = $membership->getPrecio();
+
         // Configuración de membresías
         $memberships = [
-            'ruby' => [
+            1 => [
                 'name' => 'Rubí',
-                'price' => 299,
+                'price' => $price,
                 'benefits' => [
                     'Acceso a eventos mensuales exclusivos',
                     'Compras prioritarias de ediciones limitadas',
@@ -458,9 +470,9 @@ class PaymentController extends AbstractController
                     'Acceso anticipado a nuevas vitolas'
                 ]
             ],
-            'gold' => [
+            2 => [
                 'name' => 'Oro',
-                'price' => 599,
+                'price' => $price,
                 'benefits' => [
                     'Todos los beneficios de Rubí',
                     '1 marca personalizada exclusiva',
@@ -469,9 +481,9 @@ class PaymentController extends AbstractController
                     'Asesoría personalizada de productos'
                 ]
             ],
-            'platinum' => [
+            3 => [
                 'name' => 'Platino',
-                'price' => 999,
+                'price' => $price,
                 'benefits' => [
                     'Todos los beneficios de Oro',
                     'Hasta 3 marcas personalizadas',

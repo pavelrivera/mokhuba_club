@@ -3,8 +3,10 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Invitation;
+use App\Entity\Membresia;
 use App\Repository\UserRepository;
 use App\Repository\InvitationRepository;
+use App\Repository\MembresiaRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -878,22 +880,180 @@ class AdminDashboardController extends AbstractController
      */
     public function memberships(): Response
     {
+        $em = $this->entityManager;
         $user = $this->getUser();
         
         if (!$user || !$user->isAdmin()) {
             throw $this->createAccessDeniedException();
         }
 
-        //$membershipStats = $this->userRepository->countByMembershipLevel();
+        $membership = $em->getRepository(Membresia::class)->findAll();
         $stats = $this->userRepository->getStats();
-        
+
         return $this->render('admin/memberships/index.html.twig', [
             'user' => $user,
             'stats' => $stats,
-            'basica_users' => $this->userRepository->findActiveByMembershipLevel('basica'),
-            'premium_users' => $this->userRepository->findActiveByMembershipLevel('premium'),
-            'vip_users' => $this->userRepository->findActiveByMembershipLevel('vip')
+            'membership' => $membership
         ]);
+    }
+
+    /**
+     * @Route("/memberships/{id}/get", name="admin_memberships_get", methods={"GET"})
+     */
+    public function fetchMembershipsById(int $id): JsonResponse
+    {
+        $em = $this->entityManager;
+        error_log("📥 AdminController::fetchMembershipsById() - Membresia ID: " . $id);
+        
+        $currentUser = $this->getUser();
+        if (!$currentUser || !$currentUser->isAdmin()) {
+            error_log("❌ Usuario no es admin");
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 403);
+        }
+
+        try {
+            $membership = $em->getRepository(Membresia::class)->find($id);
+            if (!$membership) {
+                error_log("❌ Membresia no encontrada: " . $id);
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'Membresia no encontrada.'
+                ], 404);
+            }
+
+            error_log("✅ Membresia encontrada: " . $membership->getNombre());
+            
+            return new JsonResponse([
+                'success' => true,
+                'membership' => [
+                    'id' => $membership->getId(),
+                    'nombre' => $membership->getNombre(),
+                    'precio' => $membership->getPrecio()
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            error_log("💥 Error fetching Membresia: " . $e->getMessage());
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Error interno del servidor.',
+                'debug' => $this->getParameter('kernel.environment') === 'dev' ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+
+    /**
+     * @Route("/memberships/{id}/edit", name="admin_memberships_edit", methods={"POST"})
+     */
+    public function editMemberships(int $id, Request $request): JsonResponse
+    {
+        $em = $this->entityManager;
+        error_log("✏️ AdminController::editMemberships() - Memberships ID: " . $id);
+        
+        $currentUser = $this->getUser();
+        if (!$currentUser || !$currentUser->isAdmin()) {
+            error_log("❌ Usuario no es admin");
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 403);
+        }
+
+        try {
+            // Obtener datos del request
+            $rawContent = $request->getContent();
+            error_log("📦 Contenido de edición recibido: " . $rawContent);
+            
+            $data = json_decode($rawContent, true);
+            
+            if (!$data) {
+                error_log("❌ Error parseando JSON de edición");
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'Datos inválidos. Se requiere JSON válido.'
+                ], 400);
+            }
+            
+            error_log("📄 Datos de edición parseados: " . print_r($data, true));
+            
+            // Obtener la membresía a editar
+            $membership = $em->getRepository(Membresia::class)->find($id);
+            if (!$membership) {
+                error_log("❌ Membresía a editar no encontrada: " . $id);
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'Membresía no encontrada.'
+                ], 404);
+            }
+
+            // Validar campos requeridos
+            $requiredFields = ['nombre', 'precio'];
+            foreach ($requiredFields as $field) {
+                if (!isset($data[$field]) || trim($data[$field]) === '') {
+                    error_log("❌ Campo requerido faltante en edición: " . $field);
+                    return new JsonResponse([
+                        'success' => false,
+                        'error' => "El campo {$field} es obligatorio."
+                    ], 400);
+                }
+            }
+
+            // Validar que el precio sea un número válido
+            $precio = $data['precio'];
+            if (!is_numeric($precio) || $precio < 0) {
+                error_log("❌ Precio inválido: " . $precio);
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => "El precio debe ser un número válido mayor o igual a 0."
+                ], 400);
+            }
+
+            error_log("✅ Validaciones de edición pasadas, actualizando membresía...");
+
+            // Obtener el repositorio
+            $membresiaRepository = $em->getRepository(Membresia::class);
+            
+            // Actualizar datos usando el método update del repositorio
+            $membershipUpdated = $membresiaRepository->update(
+                $membership, 
+                $data['nombre'], 
+                floatval($data['precio']) // Asegurar que sea float
+            );
+
+            error_log("✅ Membresía actualizada exitosamente: " . $membershipUpdated->getId());
+
+            // Log de auditoría
+            error_log(sprintf(
+                "AUDIT: Admin %s (%s) actualizó membresía %s (Precio: %s)",
+                $currentUser->getFullName(),
+                $currentUser->getEmail(),
+                $membershipUpdated->getNombre(),
+                $membershipUpdated->getPrecio()
+            ));
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Membresía actualizada exitosamente.',
+                'membership' => [
+                    'id' => $membershipUpdated->getId(),
+                    'nombre' => $membershipUpdated->getNombre(),
+                    'precio' => $membershipUpdated->getPrecio()
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            error_log("💥 Error actualizando membresía: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Error al actualizar membresía.',
+                'debug' => $this->getParameter('kernel.environment') === 'dev' ? $e->getMessage() : null
+            ], 500);
+        }
     }
 
     /**

@@ -5,14 +5,18 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Membresia;
 
 class MembershipDashboardController extends AbstractController
 {
     private $userRepository;
+    private $entityManager;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
         $this->userRepository = $userRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -125,6 +129,7 @@ class MembershipDashboardController extends AbstractController
      */
     public function membershipSelection(): Response
     {
+        $em = $this->entityManager;
         $user = $this->getUser();
         
         error_log("❓ MembershipSelection: Usuario " . ($user ? $user->getEmail() : 'null'));
@@ -141,9 +146,10 @@ class MembershipDashboardController extends AbstractController
             return $this->redirectToRoute('dashboard_redirect');
         }
 
-        $membershipPlans = $this->getMembershipPlans();
+        $membershipPlans = $em->getRepository(Membresia::class)->findAll();
 
         error_log("✅ Renderizando página de selección de membresía");
+
 
         return $this->render('dashboard/membership-selection.html.twig', [
             'user' => $user,

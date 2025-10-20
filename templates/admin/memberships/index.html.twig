@@ -147,12 +147,12 @@
         overflow-y: auto;
     }
 
-    .users-table {
+    .table-table {
         width: 100%;
         border-collapse: collapse;
     }
 
-    .users-table th {
+    .table-table th {
         background: rgba(212, 175, 55, 0.1);
         padding: 16px 20px;
         text-align: left;
@@ -166,24 +166,24 @@
         top: 0;
     }
 
-    .users-table td {
+    .table-table td {
         padding: 16px 20px;
         border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         color: var(--cream);
         vertical-align: middle;
     }
 
-    .users-table tr:hover {
+    .table-table tr:hover {
         background: rgba(212, 175, 55, 0.05);
     }
 
-    .user-cell {
+    .table-cell {
         display: flex;
         align-items: center;
         gap: 12px;
     }
 
-    .user-cell .avatar {
+    .table-cell .avatar {
         width: 32px;
         height: 32px;
         background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
@@ -196,20 +196,467 @@
         font-size: 0.875rem;
     }
 
-    .user-details {
+    .actions-cell {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--gold-primary);
+    }
+
+     /* =====================================================
+       MODAL PREMIUM STYLES
+    ===================================================== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay:not(.hidden) {
+        opacity: 1;
+    }
+
+    .premium-modal {
+        background: linear-gradient(135deg, #2D1817, #3A1F1E);
+        border: 2px solid #D4AF37;
+        border-radius: 20px;
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.5),
+            0 0 40px rgba(212, 175, 55, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        max-width: 480px;
+        width: 90%;
+        max-height: 90vh;
+        overflow: hidden;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        position: relative;
+    }
+
+    .modal-overlay:not(.hidden) .premium-modal {
+        transform: scale(1);
+    }
+
+    .premium-modal::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #D4AF37, #B8941F, #D4AF37);
+    }
+
+    .modal-header-premium {
+        padding: 32px 32px 24px;
+        text-align: center;
+        position: relative;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+    }
+
+    .modal-icon-container {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+    }
+
+    .modal-icon-container i {
+        font-size: 1.8rem;
+        color: #2D1817;
+    }
+
+    .modal-icon-container.warning {
+        background: linear-gradient(135deg, #f59e0b, #f59e0b);
+    }
+
+    .modal-icon-container.warning i {
+        color: white;
+    }
+
+    .modal-icon-container.error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .modal-icon-container.error i {
+        color: white;
+    }
+
+    .modal-icon-container.success {
+        background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .modal-icon-container.success i {
+        color: white;
+    }
+
+    .modal-title-premium {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #FFF8DC;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-close-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(212, 175, 55, 0.2);
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        color: #D4AF37;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close-btn:hover {
+        background: #D4AF37;
+        color: #2D1817;
+        transform: rotate(90deg);
+    }
+
+    .modal-body-premium {
+        padding: 0 32px 24px;
+        text-align: center;
+    }
+
+    .modal-message {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: rgba(255, 248, 220, 0.9);
+        margin: 0;
+    }
+
+    .modal-footer-premium {
+        padding: 24px 32px 32px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+    }
+
+    .btn-modal-primary,
+    .btn-modal-secondary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .btn-modal-primary {
+        background: linear-gradient(135deg, #D4AF37, #B8941F);
+        color: #2D1817;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-modal-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-modal-secondary {
+        background: transparent;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        color: #D4AF37;
+    }
+
+    .btn-modal-secondary:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: #D4AF37;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* =====================================================
+       ESTILOS ESPECÍFICOS PARA FORMULARIOS DE MODALES
+    ===================================================== */
+
+    /* Form Groups */
+    .form-group {
         display: flex;
         flex-direction: column;
+        gap: 6px;
     }
 
-    .user-details .name {
+    .form-label {
+        color: var(--gold-primary);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-input, .form-select {
+        padding: 12px 16px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        background: rgba(45, 24, 23, 0.6);
+        color: var(--cream);
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--gold-primary);
+        background: rgba(45, 24, 23, 0.8);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 248, 220, 0.5);
+    }
+
+    .form-select option {
+        background: var(--dark-brown);
+        color: var(--cream);
+        padding: 8px;
+    }
+
+    /* Field Errors */
+    .field-error {
+        color: #ef4444;
+        font-size: 0.75rem;
+        min-height: 18px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+    }
+
+    .field-error.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .field-error::before {
+        content: '⚠ ';
+    }
+
+    /* Checkboxes */
+    .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 6px;
+        transition: background 0.3s ease;
+    }
+
+    .form-checkbox:hover {
+        background: rgba(212, 175, 55, 0.05);
+    }
+
+    .form-checkbox input[type="checkbox"] {
+        display: none;
+    }
+
+    .checkmark {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        border-radius: 4px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .form-checkbox input[type="checkbox"]:checked + .checkmark {
+        background: var(--gold-primary);
+        border-color: var(--gold-primary);
+    }
+
+    .form-checkbox input[type="checkbox"]:checked + .checkmark::after {
+        content: '✓';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--dark-brown);
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+
+    .checkbox-label {
+        color: rgba(255, 248, 220, 0.9);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* User Preview */
+    .user-preview {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .user-preview:not(.hidden) {
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .preview-header {
+        color: var(--gold-primary);
+        font-weight: 600;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .preview-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .preview-avatar {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-brown);
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .preview-details {
+        flex: 1;
+    }
+
+    .preview-name {
         font-weight: 600;
         color: var(--cream);
-        margin-bottom: 2px;
+        font-size: 1rem;
+        margin-bottom: 4px;
     }
 
-    .user-details .email {
-        font-size: 0.875rem;
+    .preview-email {
         color: rgba(255, 248, 220, 0.7);
+        font-size: 0.875rem;
+        margin-bottom: 4px;
+    }
+
+    .preview-membership {
+        color: var(--gold-primary);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .preview-codes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .preview-code {
+        font-size: 0.75rem;
+        color: rgba(255, 248, 220, 0.8);
+    }
+
+    .preview-code code {
+        background: rgba(45, 24, 23, 0.8);
+        padding: 4px 8px;
+        border-radius: 4px;
+        color: var(--gold-primary);
+        font-family: monospace;
+        display: inline-block;
+        margin-left: 4px;
+    }
+
+    .form-flex-responsive {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .form-flex-responsive .form-group {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 250px;
+    }
+
+    /* Tablets */
+    @media (max-width: 768px) {
+        .modal-body-premium {
+            padding: 0 20px !important;
+        }
+        
+        .form-flex-responsive .form-group {
+            flex: 1 1 100%;
+            min-width: auto;
+        }
+    }
+
+    /* Móviles pequeños */
+    @media (max-width: 480px) {
+        .modal-body-premium {
+            padding: 0 16px !important;
+        }
+        
+        .form-flex-responsive {
+            gap: 12px;
+        }
     }
 
 </style>
@@ -247,22 +694,12 @@
 
     <!-- Content -->
     <div class="admin-content">
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            
-        </div>
 
-        <!-- Distribución de Membresías -->
-        <div class="content-section">
-            
-        </div>
-
-        <!-- Usuarios Recientes -->
         <div class="content-section">
 
             <div class="content-card">
                 <div class="table-wrapper">
-                    <table class="users-table">
+                    <table class="table-table">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -270,25 +707,22 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="usersTableBody">
-                            {% if users is defined and users is not empty %}
-                                {% for user_item in users %}
-                                    <tr class="user-row" 
-                                        data-name="{{ user_item.firstName|lower }} {{ user_item.lastName|lower }}" 
-                                        data-email="{{ user_item.email|lower }}" 
-                                        data-membership="{{ user_item.membershipLevel|default('guest') }}" 
-                                        data-status="active">
+                        <tbody id="tableBody">
+                            {% if membership is defined and membership is not empty %}
+                                {% for membership_item in membership %}
+                                    <tr class="table-row" 
+                                        data-id="{{ membership_item.id }}">
                                         
                                         <td>
                                             <code style="background: rgba(212, 175, 55, 0.2); padding: 4px 8px; border-radius: 4px; color: var(--gold-primary); font-size: 0.8rem;">
-                                                {{ user_item.uniqueCode|default('N/A') }}
+                                                {{ membership_item.getNombre() }}
                                             </code>
                                         </td>
                                         
-                                        <td>{{ user_item.phone|default('N/R') }}</td>
+                                        <td>{{ membership_item.getPrecio()|number_format(2, ',', '.')  }}</td>
                                         <td>
                                             <div class="actions-cell">
-                                                <button class="btn btn-secondary btn-sm" onclick="editUser({{ user_item.id }})" title="Editar">
+                                                <button class="btn btn-secondary btn-sm" onclick="editMembresia({{ membership_item.id }})" title="Editar">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </div>
@@ -312,7 +746,488 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Editar Membresia -->
+    <div id="editMembresiaModal" class="modal-overlay hidden" onclick="closeEditMembresiaModal(event)">
+        <div class="premium-modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container" style="background: linear-gradient(135deg, #f59e0b, #f59e0b);">
+                    <i class="fas fa-edit" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">Editar Membresía</h3>
+                <button class="modal-close-btn" onclick="closeEditMembresiaModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body-premium" style="padding: 0 32px;">
+                <div id="editMembresiaFormContainer">
+                    <!-- Flexbox responsive -->
+                    <div class="form-flex-responsive">
+                        <!-- Nombre -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user"></i>
+                                Nombre *
+                            </label>
+                            <input type="text" 
+                                id="editNombre" 
+                                name="editNombre" disabled 
+                                class="form-input" 
+                                placeholder="Nombre de la membresía" 
+                                required>
+                            <div class="field-error" id="editNombreError"></div>
+                        </div>
+
+                        <!-- Precio -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Precio *
+                            </label>
+                            <input type="number" 
+                                id="editPrecio" 
+                                name="editPrecio" 
+                                class="form-input" 
+                                placeholder="0.00" 
+                                step="0.01"
+                                min="0"
+                                required>
+                            <div class="field-error" id="editPrecioError"></div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="editMembresiaId" value="">
+                </div>
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button type="button" class="btn-modal-secondary" onclick="closeEditMembresiaModal()">
+                    <i class="fas fa-times"></i>
+                    <span>Cancelar</span>
+                </button>
+                <button type="button" class="btn-modal-primary" onclick="handleEditMembresia()">
+                    <i class="fas fa-save"></i>
+                    <span>Guardar Cambios</span>
+                </button>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block javascripts %}
 {{ parent() }}
+<script>
+
+// Symfony exige id numérico; usamos 0 como placeholder y lo reemplazamos en JS.
+  const ROUTES = {
+    get:    "{{ path('admin_memberships_get',            { id: 0 }) }}",
+    edit:   "{{ path('admin_memberships_edit',           { id: 0 }) }}"
+  };
+  function membresiaUrl(tpl, id) {
+    // Reemplaza la primera ocurrencia de "/0" por "/<id>"
+    return (tpl || '').replace(/\/0(\/|$)/, '/' + String(id) + '$1');
+  }
+
+  // =====================================================
+// MODALES DE ÉXITO Y ERROR
+// =====================================================
+
+function showSuccessMessage(data) {
+    console.log('🎉 Mostrando mensaje de éxito:', data);
+    
+    const membership = data.membership;
+    const credentials = data.credentials;
+    
+    const successModal = document.createElement('div');
+    successModal.id = 'successModal';
+    successModal.className = 'modal-overlay';
+    successModal.innerHTML = `
+        <div class="premium-modal" style="max-width: 500px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container success">
+                    <i class="fas fa-check" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">${credentials ? 'Membresía Creado Exitosamente!' : 'Membresía Actualizado!'}</h3>
+            </div>
+            
+            <div class="modal-body-premium" style="text-align: left; padding: 0 32px 24px;">
+                <div class="success-details">
+                    <div class="user-created-info">
+                        <div class="created-details">
+                            <p><strong>Nombre:</strong> ${membership.nombre}</p>
+                            <p><strong>Precio:</strong> <code>${membership.precio}</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button class="btn-modal-primary" onclick="closeSuccessModal()" style="width: 100%;">
+                    <i class="fas fa-check"></i>
+                    <span>Perfecto, Entendido</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(successModal);
+    successModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        closeSuccessModal();
+        setTimeout(() => location.reload(), 500);
+    }, 8000);
+}
+
+function closeSuccessModal() {
+    console.log('🔄 Cerrando modal de éxito');
+    
+    const successModal = document.getElementById('successModal');
+    if (successModal) {
+        successModal.remove();
+        document.body.style.overflow = '';
+    }
+    
+    setTimeout(() => location.reload(), 300);
+}
+
+function showErrorMessage(errorMessage, details = '') {
+    console.log('❌ Mostrando modal de error:', errorMessage);
+    
+    const errorModal = document.createElement('div');
+    errorModal.id = 'errorModal';
+    errorModal.className = 'modal-overlay';
+    errorModal.innerHTML = `
+        <div class="premium-modal" style="max-width: 450px;">
+            <div class="modal-header-premium">
+                <div class="modal-icon-container error">
+                    <i class="fas fa-exclamation-triangle" style="color: white;"></i>
+                </div>
+                <h3 class="modal-title-premium">Error</h3>
+                <button class="modal-close-btn" onclick="closeErrorModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body-premium">
+                <p class="modal-message">${errorMessage}</p>
+                ${details ? `<div style="margin-top: 16px; padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; font-size: 0.875rem; color: rgba(255, 248, 220, 0.8);">${details}</div>` : ''}
+            </div>
+            
+            <div class="modal-footer-premium">
+                <button class="btn-modal-primary" onclick="closeErrorModal()" style="width: 100%;">
+                    <i class="fas fa-times"></i>
+                    <span>Entendido</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(errorModal);
+    errorModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeErrorModal() {
+    console.log('🔄 Cerrando modal de error');
+    
+    const errorModal = document.getElementById('errorModal');
+    if (errorModal) {
+        errorModal.remove();
+        document.body.style.overflow = '';
+    }
+}
+
+// Limpiar todos los errores de campo
+function clearAllErrors() {
+    console.log('🧹 Limpiando todos los errores...');
+    
+    const errorElements = document.querySelectorAll('.field-error');
+    errorElements.forEach(error => {
+        error.classList.remove('active');
+        error.textContent = '';
+    });
+    
+    console.log('✅ Errores limpiados');
+}
+
+
+// =====================================================
+// FUNCIONES DEL MODAL EDITAR MEMBRESIA (CORREGIDAS)
+// =====================================================
+
+let currentEditingMembresiaId = null;
+let originalMembresiaData = null;
+let pendingEditData = null;
+
+// Función auxiliar para mostrar errores de campo
+function showFieldError(fieldId, message) {
+    const errorElement = document.getElementById(fieldId);
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add('active');
+    }
+}
+
+function editMembresia(membresiaId) {
+    console.log('✏️ Iniciando edición de membresía:', membresiaId);
+    
+    currentEditingMembresiaId = membresiaId;
+    
+    fetch(membresiaUrl(ROUTES.get, membresiaId), {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        console.log('📡 Respuesta de obtener membresía, status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('✅ Datos de la membresía obtenidos:', data);
+        
+        if (data.success) {
+            originalMembresiaData = data.membership;
+            openEditMembresiaModal(data.membership);
+        } else {
+            showErrorMessage('Error al cargar membresía', data.error || 'No se pudieron obtener los datos de la membresía');
+        }
+    })
+    .catch(error => {
+        console.error('💥 Error al obtener membresía:', error);
+        
+        let errorMessage = 'Error al cargar datos';
+        let details = 'No se pudieron cargar los datos de la membresía para editar';
+        
+        if (error.message.includes('404')) {
+            errorMessage = 'Membresía no encontrada';
+            details = 'La membresía especificada no existe en el sistema.';
+        } else if (error.message.includes('403')) {
+            errorMessage = 'Acceso denegado';
+            details = 'No tiene permisos para editar membresías.';
+        }
+        
+        showErrorMessage(errorMessage, details);
+    });
+}
+
+function openEditMembresiaModal(membresiaData) {
+    console.log('🔧 Abriendo modal de editar membresía:', membresiaData);
+    
+    // Llenar los campos del formulario con los datos actuales
+    document.getElementById('editMembresiaId').value = membresiaData.id;
+    document.getElementById('editNombre').value = membresiaData.nombre || '';
+    
+    // Formatear precio correctamente
+    const precio = parseFloat(membresiaData.precio || 0);
+    document.getElementById('editPrecio').value = precio.toFixed(2);
+    
+    // Mostrar modal
+    const modal = document.getElementById('editMembresiaModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus en el primer campo
+    setTimeout(() => {
+        document.getElementById('editNombre').focus();
+    }, 100);
+}
+
+function closeEditMembresiaModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    
+    const modal = document.getElementById('editMembresiaModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    
+    console.log('🔄 Modal de editar cerrado, manteniendo currentEditingMembresiaId:', currentEditingMembresiaId);
+}
+
+function validateEditMembresiaForm() {
+    console.log('🔍 Validando formulario de editar membresía...');
+    
+    let isValid = true;
+    
+    // Limpiar errores previos
+    clearAllErrors();
+    
+    // Validar nombre
+    const nombre = document.getElementById('editNombre')?.value.trim();
+    if (!nombre) {
+        showFieldError('editNombreError', 'El nombre es obligatorio');
+        isValid = false;
+    }
+    
+    // Validar precio
+    const precioInput = document.getElementById('editPrecio')?.value.trim();
+    if (!precioInput) {
+        showFieldError('editPrecioError', 'El precio es obligatorio');
+        isValid = false;
+    } else {
+        const precio = parseFloat(precioInput);
+        if (isNaN(precio) || precio < 0) {
+            showFieldError('editPrecioError', 'El precio debe ser un número válido');
+            isValid = false;
+        }
+    }
+    
+    console.log(isValid ? '✅ Formulario de edición válido' : '❌ Formulario de edición inválido');
+    return isValid;
+}
+
+function handleEditMembresia() {
+    console.log('📝 Iniciando actualización de membresía...');
+    console.log('🔍 currentEditingMembresiaId actual:', currentEditingMembresiaId);
+    
+    if (!validateEditMembresiaForm()) { // CORREGIDO: validateEditMembresiaForm
+        console.log('❌ Validación de edición fallida');
+        return false;
+    }
+    
+    console.log('✅ Formulario de edición válido, recopilando datos...');
+    
+    const formData = {
+        nombre: document.getElementById('editNombre').value.trim(),
+        precio: parseFloat(document.getElementById('editPrecio').value.trim())
+    };
+    
+    // GUARDAR en pendingEditData antes de cerrar modal
+    pendingEditData = {
+        membresiaId: currentEditingMembresiaId,
+        formData: formData
+    };
+    
+    console.log('📦 Datos de edición guardados temporalmente:', pendingEditData);
+    
+    // Cerrar modal primero
+    closeEditMembresiaModal();
+    
+    // Mostrar confirmación
+    setTimeout(() => {
+        showConfirmModal({
+            title: 'Confirmar Cambios',
+            message: `¿Guardar los cambios para ${formData.nombre}?`,
+            icon: 'fas fa-save',
+            confirmText: 'Guardar Cambios',
+            cancelText: 'Cancelar',
+            onConfirm: () => {
+                console.log('✅ Usuario confirmó cambios, enviando al backend...');
+                console.log('🔍 Usando pendingEditData:', pendingEditData);
+                
+                if (pendingEditData && pendingEditData.membresiaId) {
+                    submitEditMembresia(pendingEditData.membresiaId, pendingEditData.formData);
+                } else {
+                    showErrorMessage('Error de datos', 'Se perdió la referencia de la membresía. Intente nuevamente.');
+                }
+            }
+        });
+    }, 300);
+    
+    return false;
+}
+
+function submitEditMembresia(membresiaId, membresiaData) {
+    console.log('🚀 Enviando datos actualizados al backend:', { membresiaId, membresiaData });
+    
+    // Validar que el membresiaId no sea null o undefined
+    if (!membresiaId || membresiaId === 'null' || membresiaId === null || membresiaId === undefined) {
+        console.error('❌ Error: membresiaId es inválido:', membresiaId);
+        showErrorMessage('Error de datos', 'ID de membresía inválido. Intente cerrar y abrir el modal nuevamente.');
+        return;
+    }
+    
+    fetch(membresiaUrl(ROUTES.edit, membresiaId), { // CORREGIDO: membresiaUrl 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(membresiaData)
+    })
+    .then(response => {
+        console.log('📡 Respuesta de actualización recibida, status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        console.log('✅ Respuesta de actualización parseada:', data);
+        
+        if (data.success) {
+            showSuccessMessage({
+                membership: data.membership,
+                credentials: null
+            });
+            
+            // Limpiar variables después del éxito
+            setTimeout(() => {
+                resetEditMembresiaForm();
+            }, 500);
+        } else {
+            showErrorMessage(
+                data.error || 'No se pudo actualizar la membresía',
+                data.validation_errors ? 'Errores de validación: ' + data.validation_errors.join(', ') : ''
+            );
+        }
+    })
+    .catch(error => {
+        console.error('💥 Error al actualizar membresía:', error);
+        
+        let errorMessage = 'Error de conexión al servidor';
+        let details = '';
+        
+        if (error.message.includes('404')) {
+            errorMessage = 'Membresía no encontrada';
+            details = 'La membresía especificada no existe en el sistema.';
+        } else if (error.message.includes('403')) {
+            errorMessage = 'Acceso denegado';
+            details = 'No tiene permisos para editar membresías.';
+        } else if (error.message.includes('400')) {
+            errorMessage = 'Datos inválidos';
+            details = 'Verifique que todos los campos estén correctamente llenados.';
+        } else if (error.message.includes('500')) {
+            errorMessage = 'Error interno del servidor';
+            details = 'Revise los logs de Symfony para más detalles.';
+        } else {
+            details = 'Verifique su conexión a internet e intente nuevamente.';
+        }
+        
+        showErrorMessage(errorMessage, details);
+    });
+}
+
+function resetEditMembresiaForm() {
+    console.log('🧹 Limpiando formulario de editar membresía...');
+    
+    // Limpiar campos
+    const fieldsToReset = ['editMembresiaId', 'editNombre', 'editPrecio'];
+    fieldsToReset.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+        }
+    });
+    
+    // Limpiar errores
+    clearAllErrors();
+    
+    // Reset variables
+    currentEditingMembresiaId = null;
+    originalMembresiaData = null;
+    pendingEditData = null;
+    
+    console.log('✅ Formulario de edición limpio');
+}
+</script>
 {% endblock %}

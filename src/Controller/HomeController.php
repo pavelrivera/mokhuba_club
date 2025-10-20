@@ -6,9 +6,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Membresia;
 
 class HomeController extends AbstractController
 {
+
     /**
      * Página principal (/)
      * @Route("/", name="home")
@@ -38,10 +40,13 @@ class HomeController extends AbstractController
         // Verificar si el usuario tiene membresía activa
         $hasMembership = $this->hasActiveMembership($user);
 
+        $membershipPlans = $em->getRepository(Membresia::class)->findAll();
+
         if (!$hasMembership) {
             // Sin membresía: Mostrar selección
             return $this->render('dashboard/membership-selection-new.html.twig', [
                 'user' => $user,
+                'membershipPlans' => $membershipPlans,
                 'stripe_key' => $_ENV['STRIPE_PUBLIC_KEY'] ?? ''
             ]);
         }

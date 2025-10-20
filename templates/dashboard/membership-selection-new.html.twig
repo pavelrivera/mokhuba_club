@@ -425,33 +425,36 @@
         <!-- Grid de Membresías -->
         <div class="memberships-grid">
             <!-- Rubí -->
-            <div class="membership-card" onclick="selectMembership('ruby')">
+            <div class="membership-card" onclick="selectMembership(1)">
                 <div class="membership-icon ruby">
                     <i class="fas fa-gem"></i>
                 </div>
                 <h3 class="membership-name">Rubí</h3>
-                <p class="membership-price">$299<small>/mes</small></p>
+                {% set membresiaR = membershipPlans|filter(m => m.id == 1)|first %}
+                <p class="membership-price">${{ membresiaR.getPrecio()|number_format(2, ',', '.') }}<small>/mes</small></p>
                 <button class="membership-button" type="button">Seleccionar</button>
             </div>
 
             <!-- Oro (Popular) -->
-            <div class="membership-card popular" onclick="selectMembership('gold')">
+            <div class="membership-card popular" onclick="selectMembership(2)">
                 <div class="popular-badge">¡POPULAR!</div>
                 <div class="membership-icon gold">
                     <i class="fas fa-medal"></i>
                 </div>
                 <h3 class="membership-name">Oro</h3>
-                <p class="membership-price">$599<small>/mes</small></p>
+                {% set membresiaR = membershipPlans|filter(m => m.id == 2)|first %}
+                <p class="membership-price">${{ membresiaR.getPrecio()|number_format(2, ',', '.') }}<small>/mes</small></p>
                 <button class="membership-button" type="button">Seleccionar</button>
             </div>
 
             <!-- Platino -->
-            <div class="membership-card" onclick="selectMembership('platinum')">
+            <div class="membership-card" onclick="selectMembership(3)">
                 <div class="membership-icon platinum">
                     <i class="fas fa-crown"></i>
                 </div>
                 <h3 class="membership-name">Platino</h3>
-                <p class="membership-price">$999<small>/mes</small></p>
+                {% set membresiaR = membershipPlans|filter(m => m.id == 3)|first %}
+                <p class="membership-price">${{ membresiaR.getPrecio()|number_format(2, ',', '.') }}<small>/mes</small></p>
                 <button class="membership-button" type="button">Seleccionar</button>
             </div>
         </div>
@@ -485,6 +488,17 @@
 
         // Seleccionar membresía con confirmación
         function selectMembership(type) {
+            var nombre='';
+            var precio='';
+            {% for member in  membershipPlans %}
+                var idMember = '{{ member.id }}';
+
+                if (idMember == type) {
+                    nombre='{{ member.getNombre() }}';
+                    precio='{{ member.getPrecio() }}';
+                }
+            {% endfor %}
+            var textofull=nombre+' '+'($'+precio+'/mes)';
             const levelNames = {
                 'ruby': 'Rubí ($299/mes)',
                 'gold': 'Oro ($599/mes)',
@@ -492,7 +506,7 @@
             };
             
             // Confirmación
-            const confirmed = confirm('¿Confirmas que deseas la membresía ' + levelNames[type] + '?\n\nSerás redirigido al sistema de pago.');
+            const confirmed = confirm('¿Confirmas que deseas la membresía ' + textofull + '?\n\nSerás redirigido al sistema de pago.');
             
             if (confirmed) {
                 document.getElementById('membershipType').value = type;
