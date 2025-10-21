@@ -1,15 +1,16 @@
 <?php
-// src/Entity/Marca.php
+// src/Entity/Marcas.php
 
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\MarcaRepository")
- * @ORM\Table(name="marca")
+ * @ORM\Entity(repositoryClass="App\Repository\MarcasRepository")
+ * @ORM\Table(name="marcas")
  */
-class Marca
+class Marcas
 {
     /**
      * @ORM\Id
@@ -60,10 +61,35 @@ class Marca
     private $color3;
 
     /**
+     * @ORM\OneToMany(targetEntity="Anillos", mappedBy="marca" , cascade={"remove"})
+     * @OrderBy({"id" = "ASC"})
+     */
+    private $anillos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Cajas", mappedBy="marca" , cascade={"remove"})
+     * @OrderBy({"id" = "ASC"})
+     */
+    private $cajas;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Vitolarios", mappedBy="marca" , cascade={"remove"})
+     * @OrderBy({"id" = "ASC"})
+     */
+    private $vitolarios;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Documento")
      * @ORM\JoinColumn(nullable=true)
      */
     private $documento;
+
+    public function __construct()
+    {
+        $this->anillos = new ArrayCollection();
+        $this->cajas = new ArrayCollection();
+        $this->vitolarios = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -167,5 +193,107 @@ class Marca
     {
         $this->documento = $documento;
         return $this;
+    }
+
+    /**
+     * Add anillo
+     *
+     * @param \App\Entity\Anillos $anillo
+     *
+     * @return Marcas
+     */
+    public function addAnillo(\App\Entity\Anillos $anillo)
+    {
+        $this->anillos[] = $anillo;
+
+        return $this;
+    }
+
+    /**
+     * Remove anillos
+     *
+     * @param \App\Entity\Anillos $anillo
+     */
+    public function removeAnillo(\App\Entity\Anillos $anillo)
+    {
+        $this->anillos->removeElement($anillo);
+    }
+
+    /**
+     * Get anillos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAnillos()
+    {
+        return $this->anillos;
+    }
+
+    /**
+     * Add caja
+     *
+     * @param \App\Entity\Cajas $caja
+     *
+     * @return Marcas
+     */
+    public function addCaja(\App\Entity\Cajas $caja)
+    {
+        $this->cajas[] = $caja;
+
+        return $this;
+    }
+
+    /**
+     * Remove caja
+     *
+     * @param \App\Entity\Cajas $caja
+     */
+    public function removeCaja(\App\Entity\Cajas $caja)
+    {
+        $this->cajas->removeElement($caja);
+    }
+
+    /**
+     * Get caja
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCajas()
+    {
+        return $this->cajas;
+    }
+
+    /**
+     * Add vitolario
+     *
+     * @param \App\Entity\Vitolarios $vitolario
+     *
+     * @return Marcas
+     */
+    public function addVitolario(\App\Entity\Vitolarios $vitolario)
+    {
+        $this->vitolarios[] = $vitolario;
+
+        return $this;
+    }
+
+    /**
+     * Remove vitolario
+     *
+     * @param \App\Entity\Vitolarios $vitolario
+     */
+    public function remoVitolario(\App\Entity\Vitolarios $vitolario)
+    {
+        $this->anillos->removeElement($vitolario);
+    }
+
+    /**
+     * Get vitolarios
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVitolario()
+    {
+        return $this->vitolarios;
     }
 }

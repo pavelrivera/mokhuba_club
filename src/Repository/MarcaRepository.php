@@ -3,7 +3,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Marca;
+use App\Entity\Marcas;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,10 +19,10 @@ class MarcaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Marca::class);
+        parent::__construct($registry, Marcas::class);
     }
 
-    public function save(Marca $entity, bool $flush = false): void
+    public function save(Marcas $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -31,7 +31,7 @@ class MarcaRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Marca $entity, bool $flush = false): void
+    public function remove(Marcas $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
